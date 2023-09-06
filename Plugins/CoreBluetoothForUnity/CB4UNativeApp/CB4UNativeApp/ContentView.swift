@@ -6,14 +6,28 @@
 //
 
 import SwiftUI
+import CoreBluetoothForUnity
 
 struct ContentView: View {
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
+            Text("HOME")
+                .font(.largeTitle)
+                .fontWeight(.bold)
                 .foregroundColor(.accentColor)
-            Text("Hello, world!")
+            
+            
+            Button(action: {
+                cb4u_hello()
+            }) {
+                Text("Tap me!")
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .foregroundColor(.white)
+                    .padding()
+                    .background(Color.accentColor)
+                    .cornerRadius(10)
+            }
         }
         .padding()
     }

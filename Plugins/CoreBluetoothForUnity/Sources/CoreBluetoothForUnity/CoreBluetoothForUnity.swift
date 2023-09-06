@@ -1,6 +1,4 @@
-public struct CoreBluetoothForUnity {
-    public private(set) var text = "Hello, World!"
-
-    public init() {
-    }
+@_cdecl("cb4u_hello")
+public func cb4u_hello() {
+    print("Hello from CoreBluetoothForUnity")
 }

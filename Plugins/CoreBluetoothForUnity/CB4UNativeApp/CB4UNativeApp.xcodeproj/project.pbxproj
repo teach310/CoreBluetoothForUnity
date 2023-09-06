@@ -11,6 +11,7 @@
 		CEC33AA52AA8B85300D49CC1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC33AA42AA8B85300D49CC1 /* ContentView.swift */; };
 		CEC33AA72AA8B85400D49CC1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CEC33AA62AA8B85400D49CC1 /* Assets.xcassets */; };
 		CEC33AAA2AA8B85400D49CC1 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CEC33AA92AA8B85400D49CC1 /* Preview Assets.xcassets */; };
+		CED9AC7E2AA8B96800755CF9 /* CoreBluetoothForUnity in Frameworks */ = {isa = PBXBuildFile; productRef = CED9AC7D2AA8B96800755CF9 /* CoreBluetoothForUnity */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CED9AC7E2AA8B96800755CF9 /* CoreBluetoothForUnity in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -37,6 +39,7 @@
 			children = (
 				CEC33AA12AA8B85300D49CC1 /* CB4UNativeApp */,
 				CEC33AA02AA8B85300D49CC1 /* Products */,
+				CED9AC7C2AA8B96800755CF9 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -67,6 +70,13 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		CED9AC7C2AA8B96800755CF9 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -83,6 +93,9 @@
 			dependencies = (
 			);
 			name = CB4UNativeApp;
+			packageProductDependencies = (
+				CED9AC7D2AA8B96800755CF9 /* CoreBluetoothForUnity */,
+			);
 			productName = CB4UNativeApp;
 			productReference = CEC33A9F2AA8B85300D49CC1 /* CB4UNativeApp.app */;
 			productType = "com.apple.product-type.application";
@@ -339,6 +352,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		CED9AC7D2AA8B96800755CF9 /* CoreBluetoothForUnity */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = CoreBluetoothForUnity;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = CEC33A972AA8B85300D49CC1 /* Project object */;
 }
