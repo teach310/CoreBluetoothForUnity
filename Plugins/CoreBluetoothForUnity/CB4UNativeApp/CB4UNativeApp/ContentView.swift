@@ -18,7 +18,7 @@ struct ContentView: View {
             
             
             Button(action: {
-                cb4u_hello()
+                print(cb4u_hello())
             }) {
                 Text("Tap me!")
                     .font(.title)
