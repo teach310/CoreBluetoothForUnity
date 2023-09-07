@@ -1,0 +1,30 @@
+{
+  "name": "com.teach310.core-bluetooth-for-unity",
+  "version": "0.0.1",
+  "displayName": "CoreBluetooth",
+  "description": "Provides native Apple CoreBluetooth integration for use with Unity.",
+  "unity": "2022.3",
+  "documentationUrl": "https://github.com/teach310/CoreBluetoothForUnity",
+  "changelogUrl": "https://github.com/teach310/CoreBluetoothForUnity/releases",
+  "licensesUrl": "https://github.com/teach310/CoreBluetoothForUnity/blob/main/LICENSE",
+  "keywords": [
+    "bluetooth",
+    "ble",
+    "unity"
+  ],
+  "author": {
+    "name": "teach310"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/teach310/CoreBluetoothForUnity"
+  },
+  "samples": [
+    {
+      "displayName": "Central",
+      "description": "This sample demonstrates how to use CoreBluetooth to scan for and connect to peripherals.",
+      "path": "Samples~/Central"
+    }
+  ]
+}

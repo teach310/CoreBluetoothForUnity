@@ -1,5 +1,11 @@
 {
   "dependencies": {
+    "com.teach310.core-bluetooth-for-unity": {
+      "version": "file:com.teach310.core-bluetooth-for-unity",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.unity.collab-proxy": {
       "version": "2.0.7",
       "depth": 0,
