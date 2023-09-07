@@ -10,7 +10,7 @@ namespace CoreBluetoothSample
         void Start()
         {
             CoreBluetoothForUnity coreBluetooth = new CoreBluetoothForUnity();
-            coreBluetooth.Hello();
+            Debug.Log(coreBluetooth.Hello());
         }
     }
 }

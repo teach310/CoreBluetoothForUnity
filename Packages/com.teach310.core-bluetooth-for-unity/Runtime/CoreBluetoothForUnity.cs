@@ -6,9 +6,10 @@ namespace CoreBluetooth
 {
     public class CoreBluetoothForUnity
     {
-        public void Hello()
+        public int Hello()
         {
             Debug.Log("Hello from CoreBluetoothForUnity");
+            return NativeMethods.cb4u_hello();
         }
     }
 }
