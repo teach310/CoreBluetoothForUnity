@@ -24,7 +24,7 @@
     {
       "displayName": "Central",
       "description": "This sample demonstrates how to use CoreBluetooth to scan for and connect to peripherals.",
-      "path": "Samples~/Central"
+      "path": "Samples~/01_Central"
     }
   ]
 }
