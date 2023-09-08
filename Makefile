@@ -1,3 +1,5 @@
+PACKAGE_DIR := Packages/com.teach310.core-bluetooth-for-unity
+
 .PHONY: help
 #: ヘルプコマンド
 help:
@@ -10,3 +12,7 @@ help:
 .PHONY: format
 format:
 	dotnet format CoreBluetoothForUnity.sln
+
+# .PHONY: mv/samples
+mv/samples:
+	mv -f ./Assets/CoreBluetooth/Samples/ ./${PACKAGE_DIR}/Samples~/
