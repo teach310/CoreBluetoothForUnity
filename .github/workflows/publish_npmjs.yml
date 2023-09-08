@@ -12,7 +12,7 @@ jobs:
         with:
           node-version: '18.x'
           registry-url: 'https://registry.npmjs.org'
-      - run: make mv/samples
+      - run: make package/build
       - run: npm publish
         working-directory: Packages/com.teach310.core-bluetooth-for-unity
         env:
