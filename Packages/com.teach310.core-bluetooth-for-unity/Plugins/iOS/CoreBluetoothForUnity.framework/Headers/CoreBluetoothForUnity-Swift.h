@@ -281,7 +281,10 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 
 #if defined(__OBJC__)
 
-SWIFT_EXTERN int32_t cb4u_hello(void) SWIFT_WARN_UNUSED_RESULT;
+SWIFT_EXTERN void * _Nonnull cb4u_central_manager_new(void) SWIFT_WARN_UNUSED_RESULT;
+
+
+SWIFT_EXTERN void cb4u_central_manager_release(void const * _Nonnull centralManagerPtr);
 
 #endif
 #if defined(__cplusplus)
