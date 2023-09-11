@@ -260,6 +260,8 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 #if __has_warning("-Watimport-in-framework-header")
 #pragma clang diagnostic ignored "-Watimport-in-framework-header"
 #endif
+@import CoreBluetooth;
+@import ObjectiveC;
 #endif
 
 #endif
@@ -281,7 +283,22 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 
 #if defined(__OBJC__)
 
+SWIFT_CLASS("_TtC21CoreBluetoothForUnity18CB4UCentralManager")
+@interface CB4UCentralManager : NSObject
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+@end
+
+@class CBCentralManager;
+
+@interface CB4UCentralManager (SWIFT_EXTENSION(CoreBluetoothForUnity)) <CBCentralManagerDelegate>
+- (void)centralManagerDidUpdateState:(CBCentralManager * _Nonnull)central;
+@end
+
+
 SWIFT_EXTERN void * _Nonnull cb4u_central_manager_new(void) SWIFT_WARN_UNUSED_RESULT;
+
+
+SWIFT_EXTERN void cb4u_central_manager_register_handlers(void const * _Nonnull centralPtr, void (* _Nonnull didUpdateStateHandler)(void const * _Nonnull, int32_t));
 
 
 SWIFT_EXTERN void cb4u_central_manager_release(void const * _Nonnull centralManagerPtr);

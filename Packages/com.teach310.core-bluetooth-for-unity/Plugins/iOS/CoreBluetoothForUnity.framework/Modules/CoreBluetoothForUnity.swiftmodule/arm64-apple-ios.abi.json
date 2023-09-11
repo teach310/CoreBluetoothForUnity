@@ -12,10 +12,205 @@
         "moduleName": "CoreBluetoothForUnity"
       },
       {
+        "kind": "Import",
+        "name": "CoreBluetooth",
+        "printedName": "CoreBluetooth",
+        "declKind": "Import",
+        "moduleName": "CoreBluetoothForUnity"
+      },
+      {
         "kind": "TypeDecl",
         "name": "CB4UCentralManager",
         "printedName": "CB4UCentralManager",
         "children": [
+          {
+            "kind": "Var",
+            "name": "didUpdateStateHandler",
+            "printedName": "didUpdateStateHandler",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "((Swift.UnsafeRawPointer, Swift.Int32) -> ())?",
+                "children": [
+                  {
+                    "kind": "TypeFunc",
+                    "name": "Function",
+                    "printedName": "(Swift.UnsafeRawPointer, Swift.Int32) -> ()",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Void",
+                        "printedName": "()"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Tuple",
+                        "printedName": "(Swift.UnsafeRawPointer, Swift.Int32)",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "UnsafeRawPointer",
+                            "printedName": "Swift.UnsafeRawPointer",
+                            "usr": "s:SV"
+                          },
+                          {
+                            "kind": "TypeNominal",
+                            "name": "Int32",
+                            "printedName": "Swift.Int32",
+                            "usr": "s:s5Int32V"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:21CoreBluetoothForUnity18CB4UCentralManagerC21didUpdateStateHandlerySV_s5Int32VtXCSgvp",
+            "mangledName": "$s21CoreBluetoothForUnity18CB4UCentralManagerC21didUpdateStateHandlerySV_s5Int32VtXCSgvp",
+            "moduleName": "CoreBluetoothForUnity",
+            "isOpen": true,
+            "declAttributes": [
+              "HasInitialValue",
+              "HasStorage"
+            ],
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "((Swift.UnsafeRawPointer, Swift.Int32) -> ())?",
+                    "children": [
+                      {
+                        "kind": "TypeFunc",
+                        "name": "Function",
+                        "printedName": "(Swift.UnsafeRawPointer, Swift.Int32) -> ()",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "Void",
+                            "printedName": "()"
+                          },
+                          {
+                            "kind": "TypeNominal",
+                            "name": "Tuple",
+                            "printedName": "(Swift.UnsafeRawPointer, Swift.Int32)",
+                            "children": [
+                              {
+                                "kind": "TypeNominal",
+                                "name": "UnsafeRawPointer",
+                                "printedName": "Swift.UnsafeRawPointer",
+                                "usr": "s:SV"
+                              },
+                              {
+                                "kind": "TypeNominal",
+                                "name": "Int32",
+                                "printedName": "Swift.Int32",
+                                "usr": "s:s5Int32V"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:21CoreBluetoothForUnity18CB4UCentralManagerC21didUpdateStateHandlerySV_s5Int32VtXCSgvg",
+                "mangledName": "$s21CoreBluetoothForUnity18CB4UCentralManagerC21didUpdateStateHandlerySV_s5Int32VtXCSgvg",
+                "moduleName": "CoreBluetoothForUnity",
+                "implicit": true,
+                "isOpen": true,
+                "accessorKind": "get"
+              },
+              {
+                "kind": "Accessor",
+                "name": "Set",
+                "printedName": "Set()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "((Swift.UnsafeRawPointer, Swift.Int32) -> ())?",
+                    "children": [
+                      {
+                        "kind": "TypeFunc",
+                        "name": "Function",
+                        "printedName": "(Swift.UnsafeRawPointer, Swift.Int32) -> ()",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "Void",
+                            "printedName": "()"
+                          },
+                          {
+                            "kind": "TypeNominal",
+                            "name": "Tuple",
+                            "printedName": "(Swift.UnsafeRawPointer, Swift.Int32)",
+                            "children": [
+                              {
+                                "kind": "TypeNominal",
+                                "name": "UnsafeRawPointer",
+                                "printedName": "Swift.UnsafeRawPointer",
+                                "usr": "s:SV"
+                              },
+                              {
+                                "kind": "TypeNominal",
+                                "name": "Int32",
+                                "printedName": "Swift.Int32",
+                                "usr": "s:s5Int32V"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:21CoreBluetoothForUnity18CB4UCentralManagerC21didUpdateStateHandlerySV_s5Int32VtXCSgvs",
+                "mangledName": "$s21CoreBluetoothForUnity18CB4UCentralManagerC21didUpdateStateHandlerySV_s5Int32VtXCSgvs",
+                "moduleName": "CoreBluetoothForUnity",
+                "implicit": true,
+                "isOpen": true,
+                "accessorKind": "set"
+              },
+              {
+                "kind": "Accessor",
+                "name": "Modify",
+                "printedName": "Modify()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:21CoreBluetoothForUnity18CB4UCentralManagerC21didUpdateStateHandlerySV_s5Int32VtXCSgvM",
+                "mangledName": "$s21CoreBluetoothForUnity18CB4UCentralManagerC21didUpdateStateHandlerySV_s5Int32VtXCSgvM",
+                "moduleName": "CoreBluetoothForUnity",
+                "implicit": true,
+                "isOpen": true,
+                "accessorKind": "_modify"
+              }
+            ]
+          },
           {
             "kind": "Constructor",
             "name": "init",
@@ -25,27 +220,141 @@
                 "kind": "TypeNominal",
                 "name": "CB4UCentralManager",
                 "printedName": "CoreBluetoothForUnity.CB4UCentralManager",
-                "usr": "s:21CoreBluetoothForUnity18CB4UCentralManagerC"
+                "usr": "c:@M@CoreBluetoothForUnity@objc(cs)CB4UCentralManager"
               }
             ],
             "declKind": "Constructor",
-            "usr": "s:21CoreBluetoothForUnity18CB4UCentralManagerCACycfc",
+            "usr": "c:@M@CoreBluetoothForUnity@objc(cs)CB4UCentralManager(im)init",
             "mangledName": "$s21CoreBluetoothForUnity18CB4UCentralManagerCACycfc",
             "moduleName": "CoreBluetoothForUnity",
-            "implicit": true,
+            "overriding": true,
+            "objc_name": "init",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "Override",
+              "AccessControl"
+            ],
             "init_kind": "Designated"
+          },
+          {
+            "kind": "Function",
+            "name": "selfPointer",
+            "printedName": "selfPointer()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "UnsafeMutableRawPointer",
+                "printedName": "Swift.UnsafeMutableRawPointer",
+                "usr": "s:Sv"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:21CoreBluetoothForUnity18CB4UCentralManagerC11selfPointerSvyF",
+            "mangledName": "$s21CoreBluetoothForUnity18CB4UCentralManagerC11selfPointerSvyF",
+            "moduleName": "CoreBluetoothForUnity",
+            "isOpen": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "centralManagerDidUpdateState",
+            "printedName": "centralManagerDidUpdateState(_:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "CBCentralManager",
+                "printedName": "CoreBluetooth.CBCentralManager",
+                "usr": "c:objc(cs)CBCentralManager"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@CM@CoreBluetoothForUnity@objc(cs)CB4UCentralManager(im)centralManagerDidUpdateState:",
+            "mangledName": "$s21CoreBluetoothForUnity18CB4UCentralManagerC07centralG14DidUpdateStateyySo09CBCentralG0CF",
+            "moduleName": "CoreBluetoothForUnity",
+            "isOpen": true,
+            "objc_name": "centralManagerDidUpdateState:",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
           }
         ],
         "declKind": "Class",
-        "usr": "s:21CoreBluetoothForUnity18CB4UCentralManagerC",
+        "usr": "c:@M@CoreBluetoothForUnity@objc(cs)CB4UCentralManager",
         "mangledName": "$s21CoreBluetoothForUnity18CB4UCentralManagerC",
         "moduleName": "CoreBluetoothForUnity",
         "isOpen": true,
         "declAttributes": [
           "AccessControl",
-          "RawDocComment"
+          "RawDocComment",
+          "ObjC"
         ],
-        "hasMissingDesignatedInitializers": true
+        "superclassUsr": "c:objc(cs)NSObject",
+        "inheritsConvenienceInitializers": true,
+        "superclassNames": [
+          "ObjectiveC.NSObject"
+        ],
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "Equatable",
+            "printedName": "Equatable",
+            "usr": "s:SQ",
+            "mangledName": "$sSQ"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Hashable",
+            "printedName": "Hashable",
+            "usr": "s:SH",
+            "mangledName": "$sSH"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CVarArg",
+            "printedName": "CVarArg",
+            "usr": "s:s7CVarArgP",
+            "mangledName": "$ss7CVarArgP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "_KeyValueCodingAndObservingPublishing",
+            "printedName": "_KeyValueCodingAndObservingPublishing",
+            "usr": "s:10Foundation37_KeyValueCodingAndObservingPublishingP",
+            "mangledName": "$s10Foundation37_KeyValueCodingAndObservingPublishingP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "_KeyValueCodingAndObserving",
+            "printedName": "_KeyValueCodingAndObserving",
+            "usr": "s:10Foundation27_KeyValueCodingAndObservingP",
+            "mangledName": "$s10Foundation27_KeyValueCodingAndObservingP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CustomStringConvertible",
+            "printedName": "CustomStringConvertible",
+            "usr": "s:s23CustomStringConvertibleP",
+            "mangledName": "$ss23CustomStringConvertibleP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CustomDebugStringConvertible",
+            "printedName": "CustomDebugStringConvertible",
+            "usr": "s:s28CustomDebugStringConvertibleP",
+            "mangledName": "$ss28CustomDebugStringConvertibleP"
+          }
+        ]
       },
       {
         "kind": "Function",
@@ -89,6 +398,64 @@
         "declKind": "Func",
         "usr": "c:(cm)cb4u_central_manager_release:",
         "mangledName": "$s21CoreBluetoothForUnity28cb4u_central_manager_releaseyySVF",
+        "moduleName": "CoreBluetoothForUnity",
+        "declAttributes": [
+          "AccessControl",
+          "CDecl"
+        ],
+        "funcSelfKind": "NonMutating"
+      },
+      {
+        "kind": "Function",
+        "name": "cb4u_central_manager_register_handlers",
+        "printedName": "cb4u_central_manager_register_handlers(_:_:)",
+        "children": [
+          {
+            "kind": "TypeNominal",
+            "name": "Void",
+            "printedName": "()"
+          },
+          {
+            "kind": "TypeNominal",
+            "name": "UnsafeRawPointer",
+            "printedName": "Swift.UnsafeRawPointer",
+            "usr": "s:SV"
+          },
+          {
+            "kind": "TypeFunc",
+            "name": "Function",
+            "printedName": "(Swift.UnsafeRawPointer, Swift.Int32) -> ()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Tuple",
+                "printedName": "(Swift.UnsafeRawPointer, Swift.Int32)",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "UnsafeRawPointer",
+                    "printedName": "Swift.UnsafeRawPointer",
+                    "usr": "s:SV"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Int32",
+                    "printedName": "Swift.Int32",
+                    "usr": "s:s5Int32V"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "declKind": "Func",
+        "usr": "c:(cm)cb4u_central_manager_register_handlers::",
+        "mangledName": "$s21CoreBluetoothForUnity38cb4u_central_manager_register_handlersyySV_ySV_s5Int32VtXCtF",
         "moduleName": "CoreBluetoothForUnity",
         "declAttributes": [
           "AccessControl",
