@@ -2,8 +2,22 @@
 // swift-compiler-version: Apple Swift version 5.8 (swiftlang-5.8.0.124.2 clang-1403.0.22.11.100)
 // swift-module-flags: -target arm64-apple-ios11.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name CoreBluetoothForUnity
 // swift-module-flags-ignorable: -enable-bare-slash-regex
+import CoreBluetooth
+import Foundation
 import Swift
 import _Concurrency
 import _StringProcessing
-@_cdecl("cb4u_hello")
-public func cb4u_hello() -> Swift.Int32
+@objc @_inheritsConvenienceInitializers public class CB4UCentralManager : ObjectiveC.NSObject {
+  @objc override dynamic public init()
+  @objc deinit
+}
+extension CoreBluetoothForUnity.CB4UCentralManager : CoreBluetooth.CBCentralManagerDelegate {
+  @objc dynamic public func centralManagerDidUpdateState(_ central: CoreBluetooth.CBCentralManager)
+}
+@_cdecl("cb4u_central_manager_new")
+public func cb4u_central_manager_new() -> Swift.UnsafeMutableRawPointer
+@_cdecl("cb4u_central_manager_release")
+public func cb4u_central_manager_release(_ centralManagerPtr: Swift.UnsafeRawPointer)
+public typealias CB4UCentralManagerDidUpdateStateHandler = @convention(c) (Swift.UnsafeRawPointer, Swift.Int32) -> Swift.Void
+@_cdecl("cb4u_central_manager_register_handlers")
+public func cb4u_central_manager_register_handlers(_ centralPtr: Swift.UnsafeRawPointer, _ didUpdateStateHandler: CoreBluetoothForUnity.CB4UCentralManagerDidUpdateStateHandler)
