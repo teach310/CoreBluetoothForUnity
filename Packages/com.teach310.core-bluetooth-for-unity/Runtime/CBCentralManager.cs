@@ -31,6 +31,8 @@ namespace CoreBluetooth
             }
         }
 
+        public CBManagerState state { get; private set; } = CBManagerState.unknown;
+
         CBCentralManager() { }
 
         ~CBCentralManager() => Dispose(false);
@@ -41,6 +43,13 @@ namespace CoreBluetooth
             instance._handle = SafeNativeCentralManagerHandle.Create(instance);
             instance.centralManagerDelegate = centralManagerDelegate;
             return instance;
+        }
+
+        internal void OnDidUpdateState(CBManagerState state)
+        {
+            if (_disposed) return;
+            this.state = state;
+            centralManagerDelegate?.DidUpdateState(this);
         }
 
         public void Dispose()
