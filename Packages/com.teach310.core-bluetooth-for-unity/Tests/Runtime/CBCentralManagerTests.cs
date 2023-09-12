@@ -14,7 +14,7 @@ namespace CoreBluetoothTests
         public void DidUpdateState(CBCentralManager central) => state = central.state;
     }
 
-    public class CBCentralManagerTest
+    public class CBCentralManagerTests
     {
         [Test]
         public void Create()
