@@ -11,11 +11,19 @@ namespace CoreBluetoothTests
     {
         public CBManagerState state { get; private set; } = CBManagerState.unknown;
 
+        public void DidDiscoverPeripheral(CBCentralManager central, CBPeripheral peripheral, int rssi)
+        {
+            throw new NotImplementedException();
+        }
+
         public void DidUpdateState(CBCentralManager central) => state = central.state;
+
     }
 
     public class CBCentralManagerTests
     {
+        string validUUID1 = "ea521290-a651-4fa0-a958-0ce73f4dae55";
+
         [Test]
         public void Create()
         {
@@ -41,6 +49,32 @@ namespace CoreBluetoothTests
 
             yield return WaitUntilWithTimeout(() => delegateMock.state != CBManagerState.unknown, 1f);
             Assert.That(delegateMock.state, Is.Not.EqualTo(CBManagerState.unknown));
+        }
+
+        [UnityTest]
+        public IEnumerator ScanForPeripherals_InvalidServiceUUID_Throw()
+        {
+            using var centralManager = CBCentralManager.Create();
+            yield return WaitUntilWithTimeout(() => centralManager.state != CBManagerState.unknown, 1f);
+            if (centralManager.state != CBManagerState.poweredOn) yield break;
+
+            Assert.That(() => centralManager.ScanForPeripherals(new string[] { "invalid" }), Throws.TypeOf<ArgumentException>());
+        }
+
+        [UnityTest]
+        public IEnumerator ScanStartStop()
+        {
+            using var centralManager = CBCentralManager.Create();
+            yield return WaitUntilWithTimeout(() => centralManager.state != CBManagerState.unknown, 1f);
+            if (centralManager.state != CBManagerState.poweredOn) yield break;
+
+            Assert.That(centralManager.isScanning, Is.False);
+
+            centralManager.ScanForPeripherals(new string[] { validUUID1 });
+            Assert.That(centralManager.isScanning, Is.True);
+
+            centralManager.StopScan();
+            Assert.That(centralManager.isScanning, Is.False);
         }
 
         IEnumerator WaitUntilWithTimeout(Func<bool> predicate, float timeout)
