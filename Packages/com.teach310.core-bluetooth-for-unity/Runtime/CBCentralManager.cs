@@ -8,6 +8,7 @@ namespace CoreBluetooth
     /// </summary>
     public interface CBCentralManagerDelegate
     {
+        void DidDiscoverPeripheral(CBCentralManager central, CBPeripheral peripheral, int rssi);
         void DidUpdateState(CBCentralManager central);
     }
 
@@ -33,6 +34,8 @@ namespace CoreBluetooth
 
         public CBManagerState state { get; private set; } = CBManagerState.unknown;
 
+        NativeCentralManagerProxy _nativeCentralManagerProxy;
+
         CBCentralManager() { }
 
         ~CBCentralManager() => Dispose(false);
@@ -42,7 +45,29 @@ namespace CoreBluetooth
             var instance = new CBCentralManager();
             instance._handle = SafeNativeCentralManagerHandle.Create(instance);
             instance.centralManagerDelegate = centralManagerDelegate;
+            instance._nativeCentralManagerProxy = new NativeCentralManagerProxy(instance._handle);
             return instance;
+        }
+
+        public void ScanForPeripherals(string[] serviceUUIDs = null)
+        {
+            ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
+            _nativeCentralManagerProxy.ScanForPeripherals(serviceUUIDs);
+        }
+
+        public void StopScan()
+        {
+            ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
+            _nativeCentralManagerProxy.StopScan();
+        }
+
+        public bool isScanning
+        {
+            get
+            {
+                ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
+                return _nativeCentralManagerProxy.IsScanning();
+            }
         }
 
         internal void OnDidUpdateState(CBManagerState state)
@@ -50,6 +75,13 @@ namespace CoreBluetooth
             if (_disposed) return;
             this.state = state;
             centralManagerDelegate?.DidUpdateState(this);
+        }
+
+        internal void OnDidDiscoverPeripheral(string peripheralId, string peripheralName, int rssi)
+        {
+            if (_disposed) return;
+            var peripheral = new CBPeripheral(peripheralId, peripheralName);
+            centralManagerDelegate?.DidDiscoverPeripheral(this, peripheral, rssi);
         }
 
         public void Dispose()

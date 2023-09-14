@@ -16,12 +16,28 @@ namespace CoreBluetooth
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void cb4u_central_manager_release(IntPtr handle);
 
+        internal delegate void CB4UCentralManagerDidDiscoverPeripheralHandler(IntPtr centralPtr, IntPtr peripheralIdPtr, IntPtr peripheralNamePtr, int rssi);
         internal delegate void CB4UCentralManagerDidUpdateStateHandler(IntPtr centralPtr, CBManagerState state);
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void cb4u_central_manager_register_handlers(
             SafeNativeCentralManagerHandle handle,
+            CB4UCentralManagerDidDiscoverPeripheralHandler didDiscoverPeripheralHandler,
             CB4UCentralManagerDidUpdateStateHandler didUpdateStateHandler
         );
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void cb4u_central_manager_scan_for_peripherals(
+            SafeNativeCentralManagerHandle handle,
+            [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPStr, SizeParamIndex = 2)] string[] serviceUUIDs,
+            int serviceUUIDsCount
+        );
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void cb4u_central_manager_stop_scan(SafeNativeCentralManagerHandle handle);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.I1)]
+        internal static extern bool cb4u_central_manager_is_scanning(SafeNativeCentralManagerHandle handle);
     }
 }

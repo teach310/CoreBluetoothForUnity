@@ -14,5 +14,14 @@ namespace CoreBluetooth
                 throw new ObjectDisposedException(instance.GetType().FullName);
             }
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static void ThrowArgumentExceptionIfInvalidCBUUID(string uuidString, string paramName = null)
+        {
+            if (!uuidString.IsCBUUID())
+            {
+                throw new ArgumentException($"Invalid UUID: {uuidString}", paramName);
+            }
+        }
     }
 }

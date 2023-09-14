@@ -8,16 +8,31 @@ import Swift
 import _Concurrency
 import _StringProcessing
 @objc @_inheritsConvenienceInitializers public class CB4UCentralManager : ObjectiveC.NSObject {
+  public var didDiscoverPeripheralHandler: CoreBluetoothForUnity.CB4UCentralManagerDidDiscoverPeripheralHandler?
+  public var didUpdateStateHandler: CoreBluetoothForUnity.CB4UCentralManagerDidUpdateStateHandler?
   @objc override dynamic public init()
+  public func scanForPeripherals(withServices serviceUUIDs: [CoreBluetooth.CBUUID]?)
+  public func stopScan()
+  public var isScanning: Swift.Bool {
+    get
+  }
   @objc deinit
 }
 extension CoreBluetoothForUnity.CB4UCentralManager : CoreBluetooth.CBCentralManagerDelegate {
+  @objc dynamic public func centralManager(_ central: CoreBluetooth.CBCentralManager, didDiscover peripheral: CoreBluetooth.CBPeripheral, advertisementData: [Swift.String : Any], rssi RSSI: Foundation.NSNumber)
   @objc dynamic public func centralManagerDidUpdateState(_ central: CoreBluetooth.CBCentralManager)
 }
 @_cdecl("cb4u_central_manager_new")
 public func cb4u_central_manager_new() -> Swift.UnsafeMutableRawPointer
 @_cdecl("cb4u_central_manager_release")
 public func cb4u_central_manager_release(_ centralManagerPtr: Swift.UnsafeRawPointer)
+public typealias CB4UCentralManagerDidDiscoverPeripheralHandler = @convention(c) (Swift.UnsafeRawPointer, Swift.UnsafePointer<Swift.CChar>, Swift.UnsafePointer<Swift.CChar>, Swift.Int32) -> Swift.Void
 public typealias CB4UCentralManagerDidUpdateStateHandler = @convention(c) (Swift.UnsafeRawPointer, Swift.Int32) -> Swift.Void
 @_cdecl("cb4u_central_manager_register_handlers")
-public func cb4u_central_manager_register_handlers(_ centralPtr: Swift.UnsafeRawPointer, _ didUpdateStateHandler: CoreBluetoothForUnity.CB4UCentralManagerDidUpdateStateHandler)
+public func cb4u_central_manager_register_handlers(_ centralPtr: Swift.UnsafeRawPointer, _ didDiscoverPeripheralHandler: CoreBluetoothForUnity.CB4UCentralManagerDidDiscoverPeripheralHandler, _ didUpdateStateHandler: CoreBluetoothForUnity.CB4UCentralManagerDidUpdateStateHandler)
+@_cdecl("cb4u_central_manager_scan_for_peripherals")
+public func cb4u_central_manager_scan_for_peripherals(_ centralPtr: Swift.UnsafeRawPointer, _ serviceUUIDs: Swift.UnsafePointer<Swift.UnsafePointer<Swift.CChar>?>, _ serviceUUIDsCount: Swift.Int32)
+@_cdecl("cb4u_central_manager_stop_scan")
+public func cb4u_central_manager_stop_scan(_ centralPtr: Swift.UnsafeRawPointer)
+@_cdecl("cb4u_central_manager_is_scanning")
+public func cb4u_central_manager_is_scanning(_ centralPtr: Swift.UnsafeRawPointer) -> Swift.Bool
