@@ -22,7 +22,7 @@ namespace CoreBluetoothTests
 
     public class CBCentralManagerTests
     {
-        string validUUID1 = "ea521290-a651-4fa0-a958-0ce73f4dae55";
+        string validUUID1 = "EA521290-A651-4FA0-A958-0CE73F4DAE55";
 
         [Test]
         public void Create()
