@@ -23,5 +23,19 @@ namespace CoreBluetooth
             SafeNativeCentralManagerHandle handle,
             CB4UCentralManagerDidUpdateStateHandler didUpdateStateHandler
         );
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void cb4u_central_manager_scan_for_peripherals(
+            SafeNativeCentralManagerHandle handle,
+            [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPStr, SizeParamIndex = 2)] string[] serviceUUIDs,
+            int serviceUUIDsCount
+        );
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void cb4u_central_manager_stop_scan(SafeNativeCentralManagerHandle handle);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.I1)]
+        internal static extern bool cb4u_central_manager_is_scanning(SafeNativeCentralManagerHandle handle);
     }
 }
