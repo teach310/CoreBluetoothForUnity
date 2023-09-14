@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CEACF0A82AB33A6E00DAE05A /* BLEPeripheralView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEACF0A72AB33A6E00DAE05A /* BLEPeripheralView.swift */; };
+		CEACF0AA2AB33B6100DAE05A /* BLEPeripheral.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEACF0A92AB33B6100DAE05A /* BLEPeripheral.swift */; };
 		CEC33AA32AA8B85300D49CC1 /* CB4UNativeAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC33AA22AA8B85300D49CC1 /* CB4UNativeAppApp.swift */; };
 		CEC33AA52AA8B85300D49CC1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC33AA42AA8B85300D49CC1 /* ContentView.swift */; };
 		CEC33AA72AA8B85400D49CC1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CEC33AA62AA8B85400D49CC1 /* Assets.xcassets */; };
@@ -15,6 +17,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		CEACF0A72AB33A6E00DAE05A /* BLEPeripheralView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEPeripheralView.swift; sourceTree = "<group>"; };
+		CEACF0A92AB33B6100DAE05A /* BLEPeripheral.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEPeripheral.swift; sourceTree = "<group>"; };
 		CEC33A9F2AA8B85300D49CC1 /* CB4UNativeApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CB4UNativeApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEC33AA22AA8B85300D49CC1 /* CB4UNativeAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CB4UNativeAppApp.swift; sourceTree = "<group>"; };
 		CEC33AA42AA8B85300D49CC1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -58,6 +62,8 @@
 				CEC33AA42AA8B85300D49CC1 /* ContentView.swift */,
 				CEC33AA62AA8B85400D49CC1 /* Assets.xcassets */,
 				CEC33AA82AA8B85400D49CC1 /* Preview Content */,
+				CEACF0A72AB33A6E00DAE05A /* BLEPeripheralView.swift */,
+				CEACF0A92AB33B6100DAE05A /* BLEPeripheral.swift */,
 			);
 			path = CB4UNativeApp;
 			sourceTree = "<group>";
@@ -151,7 +157,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				CEC33AA52AA8B85300D49CC1 /* ContentView.swift in Sources */,
+				CEACF0AA2AB33B6100DAE05A /* BLEPeripheral.swift in Sources */,
 				CEC33AA32AA8B85300D49CC1 /* CB4UNativeAppApp.swift in Sources */,
+				CEACF0A82AB33A6E00DAE05A /* BLEPeripheralView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -283,6 +291,7 @@
 				DEVELOPMENT_TEAM = 8KC4L2BAV2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "use Bluetooth";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -312,6 +321,7 @@
 				DEVELOPMENT_TEAM = 8KC4L2BAV2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "use Bluetooth";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
