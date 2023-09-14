@@ -8,6 +8,7 @@ namespace CoreBluetooth
     /// </summary>
     public interface CBCentralManagerDelegate
     {
+        void DidDiscoverPeripheral(CBCentralManager central, CBPeripheral peripheral, int rssi);
         void DidUpdateState(CBCentralManager central);
     }
 
@@ -74,6 +75,13 @@ namespace CoreBluetooth
             if (_disposed) return;
             this.state = state;
             centralManagerDelegate?.DidUpdateState(this);
+        }
+
+        internal void OnDidDiscoverPeripheral(string peripheralId, string peripheralName, int rssi)
+        {
+            if (_disposed) return;
+            var peripheral = new CBPeripheral(peripheralId, peripheralName);
+            centralManagerDelegate?.DidDiscoverPeripheral(this, peripheral, rssi);
         }
 
         public void Dispose()
