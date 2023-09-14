@@ -10,26 +10,24 @@ import CoreBluetoothForUnity
 
 struct ContentView: View {
     var body: some View {
-        VStack {
-            Text("HOME")
-                .font(.largeTitle)
-                .fontWeight(.bold)
-                .foregroundColor(.accentColor)
-            
-            
-            Button(action: {
-//                print(cb4u_hello())
-            }) {
-                Text("Tap me!")
-                    .font(.title)
+        NavigationView {
+            VStack {
+                Text("CB4U")
+                    .font(.largeTitle)
                     .fontWeight(.bold)
-                    .foregroundColor(.white)
-                    .padding()
-                    .background(Color.accentColor)
-                    .cornerRadius(10)
+                    .foregroundColor(.accentColor)
+                
+                NavigationLink(destination: BLEPeripheralView()) {
+                    Text("BLEPeripheral")
+                        .font(.title)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                        .padding()
+                        .background(Color.blue)
+                        .cornerRadius(10)
+                }
             }
         }
-        .padding()
     }
 }
 
