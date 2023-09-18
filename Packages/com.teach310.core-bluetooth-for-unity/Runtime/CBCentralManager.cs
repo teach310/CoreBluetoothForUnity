@@ -21,6 +21,9 @@ namespace CoreBluetooth
         bool _disposed = false;
         SafeNativeCentralManagerHandle _handle;
 
+        // key: peripheralId
+        Dictionary<string, CBPeripheral> _peripherals = new Dictionary<string, CBPeripheral>();
+
         CBCentralManagerDelegate _centralManagerDelegate;
         public CBCentralManagerDelegate centralManagerDelegate
         {
@@ -80,7 +83,12 @@ namespace CoreBluetooth
         internal void OnDidDiscoverPeripheral(string peripheralId, string peripheralName, int rssi)
         {
             if (_disposed) return;
-            var peripheral = new CBPeripheral(peripheralId, peripheralName);
+
+            if (!_peripherals.TryGetValue(peripheralId, out var peripheral))
+            {
+                peripheral = new CBPeripheral(peripheralId, peripheralName);
+                _peripherals.Add(peripheralId, peripheral);
+            }
             centralManagerDelegate?.DidDiscoverPeripheral(this, peripheral, rssi);
         }
 
