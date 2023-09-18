@@ -32,5 +32,14 @@ namespace CoreBluetoothSample
                 central.ScanForPeripherals(new string[] { serviceUUID });
             }
         }
+
+        void OnDestroy()
+        {
+            if (centralManager != null)
+            {
+                centralManager.Dispose();
+                centralManager = null;
+            }
+        }
     }
 }
