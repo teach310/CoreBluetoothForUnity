@@ -32,6 +32,9 @@ namespace CoreBluetooth
         {
             NativeMethods.cb4u_central_manager_register_handlers(
                 handle,
+                OnDidConnect,
+                OnDidDisconnectPeripheral,
+                OnDidFailToConnect,
                 OnDidDiscoverPeripheral,
                 OnDidUpdateState
             );
@@ -44,6 +47,30 @@ namespace CoreBluetooth
                 UnityEngine.Debug.LogError("CBCentralManager instance not found.");
             }
             return centralManager;
+        }
+
+        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UCentralManagerDidConnectHandler))]
+        internal static void OnDidConnect(IntPtr centralPtr, IntPtr peripheralIdPtr)
+        {
+            GetCentralManager(centralPtr)?.OnDidConnect(Marshal.PtrToStringUTF8(peripheralIdPtr));
+        }
+
+        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UCentralManagerDidDisconnectPeripheralHandler))]
+        internal static void OnDidDisconnectPeripheral(IntPtr centralPtr, IntPtr peripheralIdPtr, int errorCode)
+        {
+            GetCentralManager(centralPtr)?.OnDidDisconnectPeripheral(
+                Marshal.PtrToStringUTF8(peripheralIdPtr),
+                CBError.CreateOrNullFromCode(errorCode)
+            );
+        }
+
+        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UCentralManagerDidFailToConnectHandler))]
+        internal static void OnDidFailToConnect(IntPtr centralPtr, IntPtr peripheralIdPtr, int errorCode)
+        {
+            GetCentralManager(centralPtr)?.OnDidFailToConnect(
+                Marshal.PtrToStringUTF8(peripheralIdPtr),
+                CBError.CreateOrNullFromCode(errorCode)
+            );
         }
 
         [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UCentralManagerDidDiscoverPeripheralHandler))]

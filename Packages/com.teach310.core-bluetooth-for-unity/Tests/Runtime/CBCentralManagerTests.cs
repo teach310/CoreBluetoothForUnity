@@ -11,7 +11,22 @@ namespace CoreBluetoothTests
     {
         public CBManagerState state { get; private set; } = CBManagerState.unknown;
 
+        public void DidConnect(CBCentralManager central, CBPeripheral peripheral)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DidDisconnectPeripheral(CBCentralManager central, CBPeripheral peripheral, CBError error)
+        {
+            throw new NotImplementedException();
+        }
+
         public void DidDiscoverPeripheral(CBCentralManager central, CBPeripheral peripheral, int rssi)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DidFailToConnect(CBCentralManager central, CBPeripheral peripheral, CBError error)
         {
             throw new NotImplementedException();
         }
