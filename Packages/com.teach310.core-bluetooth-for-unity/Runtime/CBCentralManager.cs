@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace CoreBluetooth
 {
@@ -8,6 +9,9 @@ namespace CoreBluetooth
     /// </summary>
     public interface CBCentralManagerDelegate
     {
+        void DidConnect(CBCentralManager central, CBPeripheral peripheral);
+        void DidDisconnectPeripheral(CBCentralManager central, CBPeripheral peripheral, CBError error);
+        void DidFailToConnect(CBCentralManager central, CBPeripheral peripheral, CBError error);
         void DidDiscoverPeripheral(CBCentralManager central, CBPeripheral peripheral, int rssi);
         void DidUpdateState(CBCentralManager central);
     }
@@ -52,6 +56,39 @@ namespace CoreBluetooth
             return instance;
         }
 
+        CBPeripheral GetPeripheral(string peripheralId)
+        {
+            if (!_peripherals.TryGetValue(peripheralId, out var peripheral))
+            {
+                UnityEngine.Debug.LogError("Peripheral not found.");
+                return null;
+            }
+            return peripheral;
+        }
+
+        void ThrowIfPeripheralNotDiscovered(CBPeripheral peripheral)
+        {
+            if (!_peripherals.ContainsKey(peripheral.identifier))
+            {
+                throw new ArgumentException($"Peripheral {peripheral} is not discovered.");
+            }
+        }
+
+        public void Connect(CBPeripheral peripheral)
+        {
+            ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
+            ThrowIfPeripheralNotDiscovered(peripheral);
+
+            _nativeCentralManagerProxy.Connect(peripheral.identifier);
+        }
+
+        public void CancelPeripheralConnection(CBPeripheral peripheral)
+        {
+            ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
+            ThrowIfPeripheralNotDiscovered(peripheral);
+            _nativeCentralManagerProxy.CancelPeripheralConnection(peripheral.identifier);
+        }
+
         public void ScanForPeripherals(string[] serviceUUIDs = null)
         {
             ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
@@ -73,11 +110,28 @@ namespace CoreBluetooth
             }
         }
 
-        internal void OnDidUpdateState(CBManagerState state)
+        internal void OnDidConnect(string peripheralId)
         {
             if (_disposed) return;
-            this.state = state;
-            centralManagerDelegate?.DidUpdateState(this);
+            var peripheral = GetPeripheral(peripheralId);
+            if (peripheral == null) return;
+            centralManagerDelegate?.DidConnect(this, peripheral);
+        }
+
+        internal void OnDidDisconnectPeripheral(string peripheralId, CBError error)
+        {
+            if (_disposed) return;
+            var peripheral = GetPeripheral(peripheralId);
+            if (peripheral == null) return;
+            centralManagerDelegate?.DidDisconnectPeripheral(this, peripheral, error);
+        }
+
+        internal void OnDidFailToConnect(string peripheralId, CBError error)
+        {
+            if (_disposed) return;
+            var peripheral = GetPeripheral(peripheralId);
+            if (peripheral == null) return;
+            centralManagerDelegate?.DidFailToConnect(this, peripheral, error);
         }
 
         internal void OnDidDiscoverPeripheral(string peripheralId, string peripheralName, int rssi)
@@ -90,6 +144,13 @@ namespace CoreBluetooth
                 _peripherals.Add(peripheralId, peripheral);
             }
             centralManagerDelegate?.DidDiscoverPeripheral(this, peripheral, rssi);
+        }
+
+        internal void OnDidUpdateState(CBManagerState state)
+        {
+            if (_disposed) return;
+            this.state = state;
+            centralManagerDelegate?.DidUpdateState(this);
         }
 
         public void Dispose()
