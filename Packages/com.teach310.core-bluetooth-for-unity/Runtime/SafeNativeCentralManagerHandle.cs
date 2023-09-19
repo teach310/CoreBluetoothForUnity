@@ -36,7 +36,8 @@ namespace CoreBluetooth
                 OnDidDisconnectPeripheral,
                 OnDidFailToConnect,
                 OnDidDiscoverPeripheral,
-                OnDidUpdateState
+                OnDidUpdateState,
+                OnPeripheralDidDiscoverServices
             );
         }
 
@@ -87,6 +88,22 @@ namespace CoreBluetooth
         internal static void OnDidUpdateState(IntPtr centralPtr, CBManagerState state)
         {
             GetCentralManager(centralPtr)?.OnDidUpdateState(state);
+        }
+
+        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralDidDiscoverServicesHandler))]
+        internal static void OnPeripheralDidDiscoverServices(IntPtr centralPtr, IntPtr peripheralIdPtr, IntPtr commaSeparatedServiceUUIDsPtr, int errorCode)
+        {
+            string commaSeparatedServiceUUIDs = Marshal.PtrToStringUTF8(commaSeparatedServiceUUIDsPtr);
+            if (string.IsNullOrEmpty(commaSeparatedServiceUUIDs))
+            {
+                throw new ArgumentException("commaSeparatedServiceUUIDs is null or empty.");
+            }
+
+            GetCentralManager(centralPtr)?.OnPeripheralDidDiscoverServices(
+                Marshal.PtrToStringUTF8(peripheralIdPtr),
+                commaSeparatedServiceUUIDs.Split(','),
+                CBError.CreateOrNullFromCode(errorCode)
+            );
         }
     }
 }

@@ -5,7 +5,7 @@ using CoreBluetooth;
 
 namespace CoreBluetoothSample
 {
-    public class Sample_Central : MonoBehaviour, CBCentralManagerDelegate
+    public class Sample_Central : MonoBehaviour, CBCentralManagerDelegate, CBPeripheralDelegate
     {
         CBCentralManager centralManager;
 
@@ -21,6 +21,7 @@ namespace CoreBluetoothSample
         public void DidDiscoverPeripheral(CBCentralManager central, CBPeripheral peripheral, int rssi)
         {
             Debug.Log($"[DidDiscoverPeripheral] peripheral: {peripheral}  rssi: {rssi}");
+            peripheral.peripheralDelegate = this;
             central.StopScan();
             central.Connect(peripheral);
         }
@@ -38,6 +39,7 @@ namespace CoreBluetoothSample
         public void DidConnect(CBCentralManager central, CBPeripheral peripheral)
         {
             Debug.Log($"[DidConnect] peripheral: {peripheral}");
+            peripheral.DiscoverServices(new string[] { serviceUUID });
         }
 
         public void DidDisconnectPeripheral(CBCentralManager central, CBPeripheral peripheral, CBError error)
@@ -48,6 +50,11 @@ namespace CoreBluetoothSample
         public void DidFailToConnect(CBCentralManager central, CBPeripheral peripheral, CBError error)
         {
             Debug.Log($"[DidFailToConnect] peripheral: {peripheral}  error: {error}");
+        }
+
+        public void DidDiscoverServices(CBPeripheral peripheral, CBError error)
+        {
+            Debug.Log($"[DidDiscoverServices] peripheral: {peripheral}  error: {error}");
         }
 
         void OnDestroy()

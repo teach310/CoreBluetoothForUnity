@@ -13,6 +13,8 @@ public class CB4UCentralManager : NSObject {
     public var didDiscoverPeripheralHandler: CB4UCentralManagerDidDiscoverPeripheralHandler?
     public var didUpdateStateHandler: CB4UCentralManagerDidUpdateStateHandler?
     
+    public var peripheralDidDiscoverServicesHandler: CB4UPeripheralDidDiscoverServicesHandler?
+    
     let peripheralNotFound: Int32 = -1
     let success: Int32 = 0
     
@@ -95,6 +97,7 @@ extension CB4UCentralManager : CBCentralManagerDelegate {
     
     public func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
         let peripheralId = peripheral.identifier.uuidString
+        peripheral.delegate = self
         peripherals[peripheralId] = peripheral
         peripheralId.withCString { (uuidCString) in
             (peripheral.name ?? "").withCString { (nameCString) in
@@ -105,5 +108,21 @@ extension CB4UCentralManager : CBCentralManagerDelegate {
     
     public func centralManagerDidUpdateState(_ central: CBCentralManager) {
         didUpdateStateHandler?(selfPointer(), Int32(central.state.rawValue))
+    }
+}
+
+extension CB4UCentralManager : CBPeripheralDelegate {
+    
+    // MARK: - CB4UPeripheralDelegate
+    
+    public func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
+        let peripheralId = peripheral.identifier.uuidString
+        let commaSeparatedServiceIds = peripheral.services?.map { $0.uuid.uuidString }.joined(separator: ",") ?? ""
+        
+        peripheralId.withCString { (uuidCString) in
+            commaSeparatedServiceIds.withCString { (commaSeparatedServiceIdsCString) in
+                peripheralDidDiscoverServicesHandler?(selfPointer(), uuidCString, commaSeparatedServiceIdsCString, errorToCode(error))
+            }
+        }
     }
 }

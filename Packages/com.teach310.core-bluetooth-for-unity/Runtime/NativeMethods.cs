@@ -22,6 +22,9 @@ namespace CoreBluetooth
         internal delegate void CB4UCentralManagerDidDiscoverPeripheralHandler(IntPtr centralPtr, IntPtr peripheralIdPtr, IntPtr peripheralNamePtr, int rssi);
         internal delegate void CB4UCentralManagerDidUpdateStateHandler(IntPtr centralPtr, CBManagerState state);
 
+        // NOTE: using comma-separated service UUIDs instead of an array of service UUIDs to avoid marshalling issues
+        internal delegate void CB4UPeripheralDidDiscoverServicesHandler(IntPtr centralPtr, IntPtr peripheralIdPtr, IntPtr commaSeparatedServiceUUIDsPtr, int errorCode);
+
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void cb4u_central_manager_register_handlers(
             SafeNativeCentralManagerHandle handle,
@@ -29,7 +32,8 @@ namespace CoreBluetooth
             CB4UCentralManagerDidDisconnectPeripheralHandler didDisconnectPeripheralHandler,
             CB4UCentralManagerDidFailToConnectHandler didFailToConnectHandler,
             CB4UCentralManagerDidDiscoverPeripheralHandler didDiscoverPeripheralHandler,
-            CB4UCentralManagerDidUpdateStateHandler didUpdateStateHandler
+            CB4UCentralManagerDidUpdateStateHandler didUpdateStateHandler,
+            CB4UPeripheralDidDiscoverServicesHandler peripheralDidDiscoverServicesHandler
         );
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
@@ -51,5 +55,13 @@ namespace CoreBluetooth
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.I1)]
         internal static extern bool cb4u_central_manager_is_scanning(SafeNativeCentralManagerHandle handle);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int cb4u_central_manager_peripheral_discover_services(
+            SafeNativeCentralManagerHandle handle,
+            [MarshalAs(UnmanagedType.LPStr), In] string peripheralId,
+            [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPStr, SizeParamIndex = 3)] string[] serviceUUIDs,
+            int serviceUUIDsCount
+        );
     }
 }

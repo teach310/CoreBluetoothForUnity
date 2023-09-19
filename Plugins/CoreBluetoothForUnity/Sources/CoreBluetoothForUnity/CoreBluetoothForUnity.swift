@@ -16,6 +16,8 @@ public typealias CB4UCentralManagerDidFailToConnectHandler = @convention(c) (Uns
 public typealias CB4UCentralManagerDidDiscoverPeripheralHandler = @convention(c) (UnsafeRawPointer, UnsafePointer<CChar>, UnsafePointer<CChar>, Int32) -> Void
 public typealias CB4UCentralManagerDidUpdateStateHandler = @convention(c) (UnsafeRawPointer, Int32) -> Void
 
+public typealias CB4UPeripheralDidDiscoverServicesHandler = @convention(c) (UnsafeRawPointer, UnsafePointer<CChar>, UnsafePointer<CChar>, Int32) -> Void
+
 @_cdecl("cb4u_central_manager_register_handlers")
 public func cb4u_central_manager_register_handlers(
     _ centralPtr: UnsafeRawPointer,
@@ -23,7 +25,8 @@ public func cb4u_central_manager_register_handlers(
     _ didDisconnectPeripheralHandler: @escaping CB4UCentralManagerDidDisconnectPeripheralHandler,
     _ didFailToConnectHandler: @escaping CB4UCentralManagerDidFailToConnectHandler,
     _ didDiscoverPeripheralHandler: @escaping CB4UCentralManagerDidDiscoverPeripheralHandler,
-    _ didUpdateStateHandler: @escaping CB4UCentralManagerDidUpdateStateHandler
+    _ didUpdateStateHandler: @escaping CB4UCentralManagerDidUpdateStateHandler,
+    _ peripheralDidDiscoverServicesHandler: @escaping CB4UPeripheralDidDiscoverServicesHandler
 ) {
     let instance = Unmanaged<CB4UCentralManager>.fromOpaque(centralPtr).takeUnretainedValue()
     
@@ -32,6 +35,8 @@ public func cb4u_central_manager_register_handlers(
     instance.didFailToConnectHandler = didFailToConnectHandler
     instance.didDiscoverPeripheralHandler = didDiscoverPeripheralHandler
     instance.didUpdateStateHandler = didUpdateStateHandler
+    
+    instance.peripheralDidDiscoverServicesHandler = peripheralDidDiscoverServicesHandler
 }
 
 @_cdecl("cb4u_central_manager_connect")
@@ -76,4 +81,21 @@ public func cb4u_central_manager_is_scanning(_ centralPtr: UnsafeRawPointer) -> 
     let instance = Unmanaged<CB4UCentralManager>.fromOpaque(centralPtr).takeUnretainedValue()
     
     return instance.isScanning
+}
+
+@_cdecl("cb4u_central_manager_peripheral_discover_services")
+public func cb4u_central_manager_peripheral_discover_services(
+    _ centralPtr: UnsafeRawPointer,
+    _ peripheralId: UnsafePointer<CChar>,
+    _ serviceUUIDs: UnsafePointer<UnsafePointer<CChar>?>,
+    _ serviceUUIDsCount: Int32
+) -> Int32 {
+    let instance = Unmanaged<CB4UCentralManager>.fromOpaque(centralPtr).takeUnretainedValue()
+    
+    let serviceUUIDsArray = (0..<Int(serviceUUIDsCount)).map { index -> CBUUID in
+        let uuidString = String(cString: serviceUUIDs[index]!)
+        return CBUUID(string: uuidString)
+    }
+    
+    return instance.peripheralDiscoverServices(String(cString: peripheralId), serviceUUIDsArray)
 }
