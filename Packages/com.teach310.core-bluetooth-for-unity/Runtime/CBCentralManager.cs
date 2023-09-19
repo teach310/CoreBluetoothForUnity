@@ -140,7 +140,8 @@ namespace CoreBluetooth
 
             if (!_peripherals.TryGetValue(peripheralId, out var peripheral))
             {
-                peripheral = new CBPeripheral(peripheralId, peripheralName);
+                var nativePeriphalProxy = new NativePeripheralProxy(peripheralId, _handle);
+                peripheral = new CBPeripheral(peripheralId, peripheralName, nativePeriphalProxy);
                 _peripherals.Add(peripheralId, peripheral);
             }
             centralManagerDelegate?.DidDiscoverPeripheral(this, peripheral, rssi);
