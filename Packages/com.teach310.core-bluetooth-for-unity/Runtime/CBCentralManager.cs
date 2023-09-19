@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CoreBluetooth
 {
@@ -152,6 +153,16 @@ namespace CoreBluetooth
             if (_disposed) return;
             this.state = state;
             centralManagerDelegate?.DidUpdateState(this);
+        }
+
+        internal void OnPeripheralDidDiscoverServices(string peripheralId, string[] serviceUUIDs, CBError error)
+        {
+            if (_disposed) return;
+            var peripheral = GetPeripheral(peripheralId);
+            if (peripheral == null) return;
+
+            var services = serviceUUIDs.Select(uuid => new CBService(uuid, peripheral)).ToArray();
+            peripheral.OnDidDiscoverServices(services, error);
         }
 
         public void Dispose()
