@@ -9,6 +9,7 @@ import _Concurrency
 import _StringProcessing
 extension CoreBluetoothForUnity.CB4UCentralManager {
   public func peripheralDiscoverServices(_ peripheralId: Swift.String, _ serviceUUIDs: [CoreBluetooth.CBUUID]?) -> Swift.Int32
+  public func peripheralState(_ peripheralId: Swift.String) -> Swift.Int32
 }
 @objc @_inheritsConvenienceInitializers public class CB4UCentralManager : ObjectiveC.NSObject {
   public var didConnectHandler: CoreBluetoothForUnity.CB4UCentralManagerDidConnectHandler?
@@ -61,3 +62,5 @@ public func cb4u_central_manager_stop_scan(_ centralPtr: Swift.UnsafeRawPointer)
 public func cb4u_central_manager_is_scanning(_ centralPtr: Swift.UnsafeRawPointer) -> Swift.Bool
 @_cdecl("cb4u_central_manager_peripheral_discover_services")
 public func cb4u_central_manager_peripheral_discover_services(_ centralPtr: Swift.UnsafeRawPointer, _ peripheralId: Swift.UnsafePointer<Swift.CChar>, _ serviceUUIDs: Swift.UnsafePointer<Swift.UnsafePointer<Swift.CChar>?>, _ serviceUUIDsCount: Swift.Int32) -> Swift.Int32
+@_cdecl("cb4u_central_manager_peripheral_state")
+public func cb4u_central_manager_peripheral_state(_ centralPtr: Swift.UnsafeRawPointer, _ peripheralId: Swift.UnsafePointer<Swift.CChar>) -> Swift.Int32
