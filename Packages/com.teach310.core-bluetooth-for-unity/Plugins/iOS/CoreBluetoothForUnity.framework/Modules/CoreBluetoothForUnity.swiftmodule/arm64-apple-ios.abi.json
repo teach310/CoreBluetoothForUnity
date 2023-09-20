@@ -1964,6 +1964,35 @@
           },
           {
             "kind": "Function",
+            "name": "peripheralState",
+            "printedName": "peripheralState(_:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Int32",
+                "printedName": "Swift.Int32",
+                "usr": "s:s5Int32V"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:21CoreBluetoothForUnity18CB4UCentralManagerC15peripheralStateys5Int32VSSF",
+            "mangledName": "$s21CoreBluetoothForUnity18CB4UCentralManagerC15peripheralStateys5Int32VSSF",
+            "moduleName": "CoreBluetoothForUnity",
+            "isOpen": true,
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
             "name": "centralManager",
             "printedName": "centralManager(_:didConnect:)",
             "children": [
@@ -2943,6 +2972,48 @@
         "declKind": "Func",
         "usr": "c:(cm)cb4u_central_manager_peripheral_discover_services::::",
         "mangledName": "$s21CoreBluetoothForUnity49cb4u_central_manager_peripheral_discover_servicesys5Int32VSV_SPys4Int8VGSPyAGSgGADtF",
+        "moduleName": "CoreBluetoothForUnity",
+        "declAttributes": [
+          "AccessControl",
+          "CDecl"
+        ],
+        "funcSelfKind": "NonMutating"
+      },
+      {
+        "kind": "Function",
+        "name": "cb4u_central_manager_peripheral_state",
+        "printedName": "cb4u_central_manager_peripheral_state(_:_:)",
+        "children": [
+          {
+            "kind": "TypeNominal",
+            "name": "Int32",
+            "printedName": "Swift.Int32",
+            "usr": "s:s5Int32V"
+          },
+          {
+            "kind": "TypeNominal",
+            "name": "UnsafeRawPointer",
+            "printedName": "Swift.UnsafeRawPointer",
+            "usr": "s:SV"
+          },
+          {
+            "kind": "TypeNominal",
+            "name": "UnsafePointer",
+            "printedName": "Swift.UnsafePointer<Swift.Int8>",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Int8",
+                "printedName": "Swift.Int8",
+                "usr": "s:s4Int8V"
+              }
+            ],
+            "usr": "s:SP"
+          }
+        ],
+        "declKind": "Func",
+        "usr": "c:(cm)cb4u_central_manager_peripheral_state::",
+        "mangledName": "$s21CoreBluetoothForUnity37cb4u_central_manager_peripheral_stateys5Int32VSV_SPys4Int8VGtF",
         "moduleName": "CoreBluetoothForUnity",
         "declAttributes": [
           "AccessControl",

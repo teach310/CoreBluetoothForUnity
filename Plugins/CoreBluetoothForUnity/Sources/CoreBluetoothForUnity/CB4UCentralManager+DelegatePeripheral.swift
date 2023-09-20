@@ -20,4 +20,10 @@ extension CB4UCentralManager {
             peripheral.discoverServices(serviceUUIDs)
         }
     }
+    
+    public func peripheralState(_ peripheralId: String) -> Int32 {
+        return delegatePeripheral(peripheralId) { (peripheral) -> Int32 in
+            return Int32(peripheral.state.rawValue)
+        }
+    }
 }

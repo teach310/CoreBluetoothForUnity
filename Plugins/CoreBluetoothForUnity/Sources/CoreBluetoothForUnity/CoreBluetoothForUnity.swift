@@ -99,3 +99,10 @@ public func cb4u_central_manager_peripheral_discover_services(
     
     return instance.peripheralDiscoverServices(String(cString: peripheralId), serviceUUIDsArray)
 }
+
+@_cdecl("cb4u_central_manager_peripheral_state")
+public func cb4u_central_manager_peripheral_state(_ centralPtr: UnsafeRawPointer, _ peripheralId: UnsafePointer<CChar>) -> Int32 {
+    let instance = Unmanaged<CB4UCentralManager>.fromOpaque(centralPtr).takeUnretainedValue()
+    
+    return instance.peripheralState(String(cString: peripheralId))
+}

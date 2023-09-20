@@ -35,5 +35,14 @@ namespace CoreBluetooth
                 throw new Exception($"Peripheral not found: {_peripheralId}");
             }
         }
+
+        CBPeripheralState INativePeripheral.State
+        {
+            get
+            {
+                int state = NativeMethods.cb4u_central_manager_peripheral_state(_handle, _peripheralId);
+                return (CBPeripheralState)state;
+            }
+        }
     }
 }
