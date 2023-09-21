@@ -5,10 +5,10 @@ namespace CoreBluetooth
 {
     public enum CBPeripheralState
     {
-        disconnected = 0,
-        connecting,
-        connected,
-        disconnecting
+        Disconnected = 0,
+        Connecting,
+        Connected,
+        Disconnecting
     }
 
     internal interface INativePeripheral
