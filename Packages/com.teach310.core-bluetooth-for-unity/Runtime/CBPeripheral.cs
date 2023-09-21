@@ -28,20 +28,20 @@ namespace CoreBluetooth
     /// </summary>
     public class CBPeripheral
     {
-        public string identifier { get; }
-        public string name { get; }
-        public CBPeripheralDelegate peripheralDelegate { get; set; }
+        public string Identifier { get; }
+        public string Name { get; }
+        public CBPeripheralDelegate Delegate { get; set; }
         List<CBService> _services = new List<CBService>();
-        public ReadOnlyCollection<CBService> services { get; }
+        public ReadOnlyCollection<CBService> Services { get; }
 
         INativePeripheral _nativePeripheral;
 
         internal CBPeripheral(string id, string name, INativePeripheral nativePeripheral)
         {
-            this.identifier = id;
-            this.name = name;
+            this.Identifier = id;
+            this.Name = name;
             this._nativePeripheral = nativePeripheral;
-            this.services = _services.AsReadOnly();
+            this.Services = _services.AsReadOnly();
         }
 
         /// <summary>
@@ -59,12 +59,12 @@ namespace CoreBluetooth
         {
             _services.Clear();
             _services.AddRange(services);
-            peripheralDelegate?.DidDiscoverServices(this, error);
+            Delegate?.DidDiscoverServices(this, error);
         }
 
         public override string ToString()
         {
-            return $"CBPeripheral: identifier = {identifier}, name = {name}, state = {state}";
+            return $"CBPeripheral: identifier = {Identifier}, name = {Name}, state = {state}";
         }
     }
 }

@@ -21,7 +21,7 @@ namespace CoreBluetoothSample
         public void DidDiscoverPeripheral(CBCentralManager central, CBPeripheral peripheral, int rssi)
         {
             Debug.Log($"[DidDiscoverPeripheral] peripheral: {peripheral}  rssi: {rssi}");
-            peripheral.peripheralDelegate = this;
+            peripheral.Delegate = this;
             central.StopScan();
             central.Connect(peripheral);
         }
