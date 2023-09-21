@@ -8,7 +8,7 @@ namespace CoreBluetooth
     /// An interface that provides updates for the discovery and management of peripheral devices.
     /// https://developer.apple.com/documentation/corebluetooth/cbcentralmanagerdelegate
     /// </summary>
-    public interface CBCentralManagerDelegate
+    public interface ICBCentralManagerDelegate
     {
         void DidConnect(CBCentralManager central, CBPeripheral peripheral);
         void DidDisconnectPeripheral(CBCentralManager central, CBPeripheral peripheral, CBError error);
@@ -29,8 +29,8 @@ namespace CoreBluetooth
         // key: peripheralId
         Dictionary<string, CBPeripheral> _peripherals = new Dictionary<string, CBPeripheral>();
 
-        CBCentralManagerDelegate _centralManagerDelegate;
-        public CBCentralManagerDelegate centralManagerDelegate
+        ICBCentralManagerDelegate _centralManagerDelegate;
+        public ICBCentralManagerDelegate centralManagerDelegate
         {
             get => _centralManagerDelegate;
             set
@@ -48,7 +48,7 @@ namespace CoreBluetooth
 
         ~CBCentralManager() => Dispose(false);
 
-        public static CBCentralManager Create(CBCentralManagerDelegate centralManagerDelegate = null)
+        public static CBCentralManager Create(ICBCentralManagerDelegate centralManagerDelegate = null)
         {
             var instance = new CBCentralManager();
             instance._handle = SafeNativeCentralManagerHandle.Create(instance);

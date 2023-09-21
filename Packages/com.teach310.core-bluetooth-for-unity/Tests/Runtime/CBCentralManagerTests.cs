@@ -7,7 +7,7 @@ using UnityEngine.TestTools;
 
 namespace CoreBluetoothTests
 {
-    public class CBCentralManagerDelegateMock : CBCentralManagerDelegate
+    public class CBCentralManagerDelegateMock : ICBCentralManagerDelegate
     {
         public CBManagerState state { get; private set; } = CBManagerState.unknown;
 

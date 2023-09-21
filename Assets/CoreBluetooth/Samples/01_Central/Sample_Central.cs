@@ -5,7 +5,7 @@ using CoreBluetooth;
 
 namespace CoreBluetoothSample
 {
-    public class Sample_Central : MonoBehaviour, CBCentralManagerDelegate, CBPeripheralDelegate
+    public class Sample_Central : MonoBehaviour, ICBCentralManagerDelegate, CBPeripheralDelegate
     {
         CBCentralManager centralManager;
 
