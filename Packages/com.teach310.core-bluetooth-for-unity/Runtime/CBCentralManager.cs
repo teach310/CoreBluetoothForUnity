@@ -10,10 +10,10 @@ namespace CoreBluetooth
     /// </summary>
     public interface ICBCentralManagerDelegate
     {
-        void ConnectedPeripheral(CBCentralManager central, CBPeripheral peripheral);
-        void DisconnectedPeripheral(CBCentralManager central, CBPeripheral peripheral, CBError error);
-        void FailedToConnect(CBCentralManager central, CBPeripheral peripheral, CBError error);
-        void DiscoveredPeripheral(CBCentralManager central, CBPeripheral peripheral, int rssi);
+        void ConnectedPeripheral(CBCentralManager central, CBPeripheral peripheral) { }
+        void DisconnectedPeripheral(CBCentralManager central, CBPeripheral peripheral, CBError error) { }
+        void FailedToConnect(CBCentralManager central, CBPeripheral peripheral, CBError error) { }
+        void DiscoveredPeripheral(CBCentralManager central, CBPeripheral peripheral, int rssi) { }
         void UpdatedState(CBCentralManager central);
     }
 

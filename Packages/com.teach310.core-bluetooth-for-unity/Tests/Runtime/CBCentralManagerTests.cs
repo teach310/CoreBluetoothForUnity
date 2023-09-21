@@ -11,28 +11,7 @@ namespace CoreBluetoothTests
     {
         public CBManagerState state { get; private set; } = CBManagerState.Unknown;
 
-        public void ConnectedPeripheral(CBCentralManager central, CBPeripheral peripheral)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void DisconnectedPeripheral(CBCentralManager central, CBPeripheral peripheral, CBError error)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void DiscoveredPeripheral(CBCentralManager central, CBPeripheral peripheral, int rssi)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void FailedToConnect(CBCentralManager central, CBPeripheral peripheral, CBError error)
-        {
-            throw new NotImplementedException();
-        }
-
         public void UpdatedState(CBCentralManager central) => state = central.State;
-
     }
 
     public class CBCentralManagerTests

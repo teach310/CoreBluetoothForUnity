@@ -19,7 +19,7 @@ namespace CoreBluetooth
 
     public interface ICBPeripheralDelegate
     {
-        void DiscoveredService(CBPeripheral peripheral, CBError error);
+        void DiscoveredService(CBPeripheral peripheral, CBError error) { }
     }
 
     /// <summary>
