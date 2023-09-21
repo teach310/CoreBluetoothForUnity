@@ -6,11 +6,11 @@ namespace CoreBluetooth
     /// </summary>
     public enum CBManagerState
     {
-        unknown = 0,
-        resetting,
-        unsupported,
-        unauthorized,
-        poweredOff,
-        poweredOn
+        Unknown = 0,
+        Resetting,
+        Unsupported,
+        Unauthorized,
+        PoweredOff,
+        PoweredOn
     }
 }

@@ -40,7 +40,7 @@ namespace CoreBluetooth
             }
         }
 
-        public CBManagerState State { get; private set; } = CBManagerState.unknown;
+        public CBManagerState State { get; private set; } = CBManagerState.Unknown;
 
         NativeCentralManagerProxy _nativeCentralManagerProxy;
 
