@@ -19,7 +19,7 @@ namespace CoreBluetooth
 
     public interface CBPeripheralDelegate
     {
-        void DidDiscoverServices(CBPeripheral peripheral, CBError error);
+        void DiscoveredService(CBPeripheral peripheral, CBError error);
     }
 
     /// <summary>
@@ -59,7 +59,7 @@ namespace CoreBluetooth
         {
             _services.Clear();
             _services.AddRange(services);
-            Delegate?.DidDiscoverServices(this, error);
+            Delegate?.DiscoveredService(this, error);
         }
 
         public override string ToString()

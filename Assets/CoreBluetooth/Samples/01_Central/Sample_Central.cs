@@ -52,7 +52,7 @@ namespace CoreBluetoothSample
             Debug.Log($"[FailedToConnect] peripheral: {peripheral}  error: {error}");
         }
 
-        public void DidDiscoverServices(CBPeripheral peripheral, CBError error)
+        public void DiscoveredService(CBPeripheral peripheral, CBError error)
         {
             Debug.Log($"[DidDiscoverServices] peripheral: {peripheral}  error: {error}");
         }
