@@ -8,19 +8,19 @@ namespace CoreBluetooth
     /// </summary>
     public class CBService
     {
-        public string uuid { get; }
+        public string UUID { get; }
 
         /// <summary>
         /// The peripheral to which this service belongs.
         /// </summary>
-        public CBPeripheral peripheral { get; }
+        public CBPeripheral Peripheral { get; }
 
         public CBService(string uuid, CBPeripheral peripheral)
         {
-            this.uuid = uuid;
-            this.peripheral = peripheral;
+            this.UUID = uuid;
+            this.Peripheral = peripheral;
         }
 
-        public override string ToString() => $"CBService: uuid={uuid}";
+        public override string ToString() => $"CBService: uuid={UUID}";
     }
 }
