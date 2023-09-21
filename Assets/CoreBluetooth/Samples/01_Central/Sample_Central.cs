@@ -54,7 +54,7 @@ namespace CoreBluetoothSample
 
         public void DiscoveredService(CBPeripheral peripheral, CBError error)
         {
-            Debug.Log($"[DidDiscoverServices] peripheral: {peripheral}  error: {error}");
+            Debug.Log($"[DiscoveredService] peripheral: {peripheral}  error: {error}");
         }
 
         void OnDestroy()
