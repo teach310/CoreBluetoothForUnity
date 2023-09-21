@@ -17,7 +17,7 @@ namespace CoreBluetooth
         CBPeripheralState State { get; }
     }
 
-    public interface CBPeripheralDelegate
+    public interface ICBPeripheralDelegate
     {
         void DiscoveredService(CBPeripheral peripheral, CBError error);
     }
@@ -30,7 +30,7 @@ namespace CoreBluetooth
     {
         public string Identifier { get; }
         public string Name { get; }
-        public CBPeripheralDelegate Delegate { get; set; }
+        public ICBPeripheralDelegate Delegate { get; set; }
         List<CBService> _services = new List<CBService>();
         public ReadOnlyCollection<CBService> Services { get; }
 
