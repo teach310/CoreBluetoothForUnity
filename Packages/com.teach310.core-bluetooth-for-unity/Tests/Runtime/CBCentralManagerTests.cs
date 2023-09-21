@@ -52,7 +52,7 @@ namespace CoreBluetoothTests
             CBCentralManager centralManager;
             using (centralManager = CBCentralManager.Create()) { }
             var delegateMock = new CBCentralManagerDelegateMock();
-            Assert.That(() => centralManager.CentralDelegate = delegateMock, Throws.TypeOf<System.ObjectDisposedException>());
+            Assert.That(() => centralManager.Delegate = delegateMock, Throws.TypeOf<System.ObjectDisposedException>());
         }
 
         [UnityTest]
