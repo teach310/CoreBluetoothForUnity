@@ -18,38 +18,38 @@ namespace CoreBluetoothSample
             centralManager = CBCentralManager.Create(this);
         }
 
-        public void DidDiscoverPeripheral(CBCentralManager central, CBPeripheral peripheral, int rssi)
+        public void DiscoveredPeripheral(CBCentralManager central, CBPeripheral peripheral, int rssi)
         {
-            Debug.Log($"[DidDiscoverPeripheral] peripheral: {peripheral}  rssi: {rssi}");
+            Debug.Log($"[DiscoveredPeripheral] peripheral: {peripheral}  rssi: {rssi}");
             peripheral.Delegate = this;
             central.StopScan();
             central.Connect(peripheral);
         }
 
-        public void DidUpdateState(CBCentralManager central)
+        public void UpdatedState(CBCentralManager central)
         {
-            Debug.Log($"[DidUpdateState] {central.State}");
+            Debug.Log($"[UpdatedState] {central.State}");
             if (central.State == CBManagerState.PoweredOn)
             {
-                Debug.Log($"[DidUpdateState] Start scanning for peripherals...");
+                Debug.Log($"[UpdatedState] Start scanning for peripherals...");
                 central.ScanForPeripherals(new string[] { serviceUUID });
             }
         }
 
-        public void DidConnect(CBCentralManager central, CBPeripheral peripheral)
+        public void ConnectedPeripheral(CBCentralManager central, CBPeripheral peripheral)
         {
-            Debug.Log($"[DidConnect] peripheral: {peripheral}");
+            Debug.Log($"[ConnectedPeripheral] peripheral: {peripheral}");
             peripheral.DiscoverServices(new string[] { serviceUUID });
         }
 
-        public void DidDisconnectPeripheral(CBCentralManager central, CBPeripheral peripheral, CBError error)
+        public void DisconnectedPeripheral(CBCentralManager central, CBPeripheral peripheral, CBError error)
         {
-            Debug.Log($"[DidDisconnectPeripheral] peripheral: {peripheral}  error: {error}");
+            Debug.Log($"[DisconnectedPeripheral] peripheral: {peripheral}  error: {error}");
         }
 
-        public void DidFailToConnect(CBCentralManager central, CBPeripheral peripheral, CBError error)
+        public void FailedToConnect(CBCentralManager central, CBPeripheral peripheral, CBError error)
         {
-            Debug.Log($"[DidFailToConnect] peripheral: {peripheral}  error: {error}");
+            Debug.Log($"[FailedToConnect] peripheral: {peripheral}  error: {error}");
         }
 
         public void DidDiscoverServices(CBPeripheral peripheral, CBError error)
