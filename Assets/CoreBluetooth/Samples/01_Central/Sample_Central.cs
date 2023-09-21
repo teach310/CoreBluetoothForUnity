@@ -28,8 +28,8 @@ namespace CoreBluetoothSample
 
         public void DidUpdateState(CBCentralManager central)
         {
-            Debug.Log($"[DidUpdateState] {central.state}");
-            if (central.state == CBManagerState.poweredOn)
+            Debug.Log($"[DidUpdateState] {central.State}");
+            if (central.State == CBManagerState.poweredOn)
             {
                 Debug.Log($"[DidUpdateState] Start scanning for peripherals...");
                 central.ScanForPeripherals(new string[] { serviceUUID });

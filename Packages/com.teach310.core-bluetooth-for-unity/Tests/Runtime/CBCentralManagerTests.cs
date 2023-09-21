@@ -31,7 +31,7 @@ namespace CoreBluetoothTests
             throw new NotImplementedException();
         }
 
-        public void DidUpdateState(CBCentralManager central) => state = central.state;
+        public void DidUpdateState(CBCentralManager central) => state = central.State;
 
     }
 
@@ -52,7 +52,7 @@ namespace CoreBluetoothTests
             CBCentralManager centralManager;
             using (centralManager = CBCentralManager.Create()) { }
             var delegateMock = new CBCentralManagerDelegateMock();
-            Assert.That(() => centralManager.centralDelegate = delegateMock, Throws.TypeOf<System.ObjectDisposedException>());
+            Assert.That(() => centralManager.CentralDelegate = delegateMock, Throws.TypeOf<System.ObjectDisposedException>());
         }
 
         [UnityTest]
@@ -70,8 +70,8 @@ namespace CoreBluetoothTests
         public IEnumerator ScanForPeripherals_InvalidServiceUUID_Throw()
         {
             using var centralManager = CBCentralManager.Create();
-            yield return WaitUntilWithTimeout(() => centralManager.state != CBManagerState.unknown, 1f);
-            if (centralManager.state != CBManagerState.poweredOn) yield break;
+            yield return WaitUntilWithTimeout(() => centralManager.State != CBManagerState.unknown, 1f);
+            if (centralManager.State != CBManagerState.poweredOn) yield break;
 
             Assert.That(() => centralManager.ScanForPeripherals(new string[] { "invalid" }), Throws.TypeOf<ArgumentException>());
         }
@@ -80,16 +80,16 @@ namespace CoreBluetoothTests
         public IEnumerator ScanStartStop()
         {
             using var centralManager = CBCentralManager.Create();
-            yield return WaitUntilWithTimeout(() => centralManager.state != CBManagerState.unknown, 1f);
-            if (centralManager.state != CBManagerState.poweredOn) yield break;
+            yield return WaitUntilWithTimeout(() => centralManager.State != CBManagerState.unknown, 1f);
+            if (centralManager.State != CBManagerState.poweredOn) yield break;
 
-            Assert.That(centralManager.isScanning, Is.False);
+            Assert.That(centralManager.IsScanning, Is.False);
 
             centralManager.ScanForPeripherals(new string[] { validUUID1 });
-            Assert.That(centralManager.isScanning, Is.True);
+            Assert.That(centralManager.IsScanning, Is.True);
 
             centralManager.StopScan();
-            Assert.That(centralManager.isScanning, Is.False);
+            Assert.That(centralManager.IsScanning, Is.False);
         }
 
         IEnumerator WaitUntilWithTimeout(Func<bool> predicate, float timeout)

@@ -30,7 +30,7 @@ namespace CoreBluetooth
         Dictionary<string, CBPeripheral> _peripherals = new Dictionary<string, CBPeripheral>();
 
         ICBCentralManagerDelegate _centralDelegate;
-        public ICBCentralManagerDelegate centralDelegate
+        public ICBCentralManagerDelegate CentralDelegate
         {
             get => _centralDelegate;
             set
@@ -40,7 +40,7 @@ namespace CoreBluetooth
             }
         }
 
-        public CBManagerState state { get; private set; } = CBManagerState.unknown;
+        public CBManagerState State { get; private set; } = CBManagerState.unknown;
 
         NativeCentralManagerProxy _nativeCentralManagerProxy;
 
@@ -52,7 +52,7 @@ namespace CoreBluetooth
         {
             var instance = new CBCentralManager();
             instance._handle = SafeNativeCentralManagerHandle.Create(instance);
-            instance.centralDelegate = centralDelegate;
+            instance.CentralDelegate = centralDelegate;
             instance._nativeCentralManagerProxy = new NativeCentralManagerProxy(instance._handle);
             return instance;
         }
@@ -102,7 +102,7 @@ namespace CoreBluetooth
             _nativeCentralManagerProxy.StopScan();
         }
 
-        public bool isScanning
+        public bool IsScanning
         {
             get
             {
@@ -116,7 +116,7 @@ namespace CoreBluetooth
             if (_disposed) return;
             var peripheral = GetPeripheral(peripheralId);
             if (peripheral == null) return;
-            centralDelegate?.DidConnect(this, peripheral);
+            CentralDelegate?.DidConnect(this, peripheral);
         }
 
         internal void OnDidDisconnectPeripheral(string peripheralId, CBError error)
@@ -124,7 +124,7 @@ namespace CoreBluetooth
             if (_disposed) return;
             var peripheral = GetPeripheral(peripheralId);
             if (peripheral == null) return;
-            centralDelegate?.DidDisconnectPeripheral(this, peripheral, error);
+            CentralDelegate?.DidDisconnectPeripheral(this, peripheral, error);
         }
 
         internal void OnDidFailToConnect(string peripheralId, CBError error)
@@ -132,7 +132,7 @@ namespace CoreBluetooth
             if (_disposed) return;
             var peripheral = GetPeripheral(peripheralId);
             if (peripheral == null) return;
-            centralDelegate?.DidFailToConnect(this, peripheral, error);
+            CentralDelegate?.DidFailToConnect(this, peripheral, error);
         }
 
         internal void OnDidDiscoverPeripheral(string peripheralId, string peripheralName, int rssi)
@@ -145,14 +145,14 @@ namespace CoreBluetooth
                 peripheral = new CBPeripheral(peripheralId, peripheralName, nativePeriphalProxy);
                 _peripherals.Add(peripheralId, peripheral);
             }
-            centralDelegate?.DidDiscoverPeripheral(this, peripheral, rssi);
+            CentralDelegate?.DidDiscoverPeripheral(this, peripheral, rssi);
         }
 
         internal void OnDidUpdateState(CBManagerState state)
         {
             if (_disposed) return;
-            this.state = state;
-            centralDelegate?.DidUpdateState(this);
+            this.State = state;
+            CentralDelegate?.DidUpdateState(this);
         }
 
         internal void OnPeripheralDidDiscoverServices(string peripheralId, string[] serviceUUIDs, CBError error)
