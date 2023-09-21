@@ -32,12 +32,12 @@ namespace CoreBluetooth
         {
             NativeMethods.cb4u_central_manager_register_handlers(
                 handle,
-                OnDidConnect,
-                OnDidDisconnectPeripheral,
-                OnDidFailToConnect,
-                OnDidDiscoverPeripheral,
-                OnDidUpdateState,
-                OnPeripheralDidDiscoverServices
+                DidConnect,
+                DidDisconnectPeripheral,
+                DidFailToConnect,
+                DidDiscoverPeripheral,
+                DidUpdateState,
+                PeripheralDidDiscoverServices
             );
         }
 
@@ -51,33 +51,33 @@ namespace CoreBluetooth
         }
 
         [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UCentralManagerDidConnectHandler))]
-        internal static void OnDidConnect(IntPtr centralPtr, IntPtr peripheralIdPtr)
+        internal static void DidConnect(IntPtr centralPtr, IntPtr peripheralIdPtr)
         {
-            GetCentralManager(centralPtr)?.OnDidConnect(Marshal.PtrToStringUTF8(peripheralIdPtr));
+            GetCentralManager(centralPtr)?.DidConnect(Marshal.PtrToStringUTF8(peripheralIdPtr));
         }
 
         [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UCentralManagerDidDisconnectPeripheralHandler))]
-        internal static void OnDidDisconnectPeripheral(IntPtr centralPtr, IntPtr peripheralIdPtr, int errorCode)
+        internal static void DidDisconnectPeripheral(IntPtr centralPtr, IntPtr peripheralIdPtr, int errorCode)
         {
-            GetCentralManager(centralPtr)?.OnDidDisconnectPeripheral(
+            GetCentralManager(centralPtr)?.DidDisconnectPeripheral(
                 Marshal.PtrToStringUTF8(peripheralIdPtr),
                 CBError.CreateOrNullFromCode(errorCode)
             );
         }
 
         [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UCentralManagerDidFailToConnectHandler))]
-        internal static void OnDidFailToConnect(IntPtr centralPtr, IntPtr peripheralIdPtr, int errorCode)
+        internal static void DidFailToConnect(IntPtr centralPtr, IntPtr peripheralIdPtr, int errorCode)
         {
-            GetCentralManager(centralPtr)?.OnDidFailToConnect(
+            GetCentralManager(centralPtr)?.DidFailToConnect(
                 Marshal.PtrToStringUTF8(peripheralIdPtr),
                 CBError.CreateOrNullFromCode(errorCode)
             );
         }
 
         [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UCentralManagerDidDiscoverPeripheralHandler))]
-        internal static void OnDidDiscoverPeripheral(IntPtr centralPtr, IntPtr peripheralIdPtr, IntPtr peripheralNamePtr, int rssi)
+        internal static void DidDiscoverPeripheral(IntPtr centralPtr, IntPtr peripheralIdPtr, IntPtr peripheralNamePtr, int rssi)
         {
-            GetCentralManager(centralPtr)?.OnDidDiscoverPeripheral(
+            GetCentralManager(centralPtr)?.DidDiscoverPeripheral(
                 Marshal.PtrToStringUTF8(peripheralIdPtr),
                 Marshal.PtrToStringUTF8(peripheralNamePtr),
                 rssi
@@ -85,13 +85,13 @@ namespace CoreBluetooth
         }
 
         [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UCentralManagerDidUpdateStateHandler))]
-        internal static void OnDidUpdateState(IntPtr centralPtr, CBManagerState state)
+        internal static void DidUpdateState(IntPtr centralPtr, CBManagerState state)
         {
-            GetCentralManager(centralPtr)?.OnDidUpdateState(state);
+            GetCentralManager(centralPtr)?.DidUpdateState(state);
         }
 
         [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralDidDiscoverServicesHandler))]
-        internal static void OnPeripheralDidDiscoverServices(IntPtr centralPtr, IntPtr peripheralIdPtr, IntPtr commaSeparatedServiceUUIDsPtr, int errorCode)
+        internal static void PeripheralDidDiscoverServices(IntPtr centralPtr, IntPtr peripheralIdPtr, IntPtr commaSeparatedServiceUUIDsPtr, int errorCode)
         {
             string commaSeparatedServiceUUIDs = Marshal.PtrToStringUTF8(commaSeparatedServiceUUIDsPtr);
             if (string.IsNullOrEmpty(commaSeparatedServiceUUIDs))
@@ -99,7 +99,7 @@ namespace CoreBluetooth
                 throw new ArgumentException("commaSeparatedServiceUUIDs is null or empty.");
             }
 
-            GetCentralManager(centralPtr)?.OnPeripheralDidDiscoverServices(
+            GetCentralManager(centralPtr)?.PeripheralDidDiscoverServices(
                 Marshal.PtrToStringUTF8(peripheralIdPtr),
                 commaSeparatedServiceUUIDs.Split(','),
                 CBError.CreateOrNullFromCode(errorCode)

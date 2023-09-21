@@ -55,7 +55,7 @@ namespace CoreBluetooth
         /// </summary>
         public CBPeripheralState state => _nativePeripheral.State;
 
-        internal void OnDidDiscoverServices(CBService[] services, CBError error)
+        internal void DidDiscoverServices(CBService[] services, CBError error)
         {
             _services.Clear();
             _services.AddRange(services);

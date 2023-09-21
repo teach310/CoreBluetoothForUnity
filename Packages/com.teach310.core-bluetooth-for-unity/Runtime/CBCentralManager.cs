@@ -111,7 +111,7 @@ namespace CoreBluetooth
             }
         }
 
-        internal void OnDidConnect(string peripheralId)
+        internal void DidConnect(string peripheralId)
         {
             if (_disposed) return;
             var peripheral = GetPeripheral(peripheralId);
@@ -119,7 +119,7 @@ namespace CoreBluetooth
             Delegate?.ConnectedPeripheral(this, peripheral);
         }
 
-        internal void OnDidDisconnectPeripheral(string peripheralId, CBError error)
+        internal void DidDisconnectPeripheral(string peripheralId, CBError error)
         {
             if (_disposed) return;
             var peripheral = GetPeripheral(peripheralId);
@@ -127,7 +127,7 @@ namespace CoreBluetooth
             Delegate?.DisconnectedPeripheral(this, peripheral, error);
         }
 
-        internal void OnDidFailToConnect(string peripheralId, CBError error)
+        internal void DidFailToConnect(string peripheralId, CBError error)
         {
             if (_disposed) return;
             var peripheral = GetPeripheral(peripheralId);
@@ -135,7 +135,7 @@ namespace CoreBluetooth
             Delegate?.FailedToConnect(this, peripheral, error);
         }
 
-        internal void OnDidDiscoverPeripheral(string peripheralId, string peripheralName, int rssi)
+        internal void DidDiscoverPeripheral(string peripheralId, string peripheralName, int rssi)
         {
             if (_disposed) return;
 
@@ -148,21 +148,21 @@ namespace CoreBluetooth
             Delegate?.DiscoveredPeripheral(this, peripheral, rssi);
         }
 
-        internal void OnDidUpdateState(CBManagerState state)
+        internal void DidUpdateState(CBManagerState state)
         {
             if (_disposed) return;
             this.State = state;
             Delegate?.UpdatedState(this);
         }
 
-        internal void OnPeripheralDidDiscoverServices(string peripheralId, string[] serviceUUIDs, CBError error)
+        internal void PeripheralDidDiscoverServices(string peripheralId, string[] serviceUUIDs, CBError error)
         {
             if (_disposed) return;
             var peripheral = GetPeripheral(peripheralId);
             if (peripheral == null) return;
 
             var services = serviceUUIDs.Select(uuid => new CBService(uuid, peripheral)).ToArray();
-            peripheral.OnDidDiscoverServices(services, error);
+            peripheral.DidDiscoverServices(services, error);
         }
 
         public void Dispose()
