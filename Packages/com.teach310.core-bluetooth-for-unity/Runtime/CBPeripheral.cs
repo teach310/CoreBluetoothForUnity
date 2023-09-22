@@ -53,7 +53,7 @@ namespace CoreBluetooth
         /// <summary>
         /// The connection state of the peripheral.
         /// </summary>
-        public CBPeripheralState state => _nativePeripheral.State;
+        public CBPeripheralState State => _nativePeripheral.State;
 
         internal void DidDiscoverServices(CBService[] services, CBError error)
         {
@@ -64,7 +64,7 @@ namespace CoreBluetooth
 
         public override string ToString()
         {
-            return $"CBPeripheral: identifier = {Identifier}, name = {Name}, state = {state}";
+            return $"CBPeripheral: identifier = {Identifier}, name = {Name}, state = {State}";
         }
     }
 }
