@@ -14,12 +14,14 @@ namespace CoreBluetooth
     internal interface INativePeripheral
     {
         void DiscoverServices(string[] serviceUUIDs);
+        void DiscoverCharacteristics(string[] characteristicUUIDs, CBService service);
         CBPeripheralState State { get; }
     }
 
     public interface ICBPeripheralDelegate
     {
         void DiscoveredService(CBPeripheral peripheral, CBError error) { }
+        void DiscoveredCharacteristic(CBPeripheral peripheral, CBService service, CBError error) { }
     }
 
     /// <summary>
@@ -51,6 +53,16 @@ namespace CoreBluetooth
         public void DiscoverServices(string[] serviceUUIDs = null) => _nativePeripheral.DiscoverServices(serviceUUIDs);
 
         /// <summary>
+        /// Discovers the specified characteristics of a service.
+        /// </summary>
+        public void DiscoverCharacteristics(string[] characteristicUUIDs, CBService service) => _nativePeripheral.DiscoverCharacteristics(characteristicUUIDs, service);
+
+        /// <summary>
+        /// Discover all characteristics in a service (slow).
+        /// </summary>
+        public void DiscoverCharacteristics(CBService service) => DiscoverCharacteristics(null, service);
+
+        /// <summary>
         /// The connection state of the peripheral.
         /// </summary>
         public CBPeripheralState State => _nativePeripheral.State;
@@ -60,6 +72,12 @@ namespace CoreBluetooth
             _services.Clear();
             _services.AddRange(services);
             Delegate?.DiscoveredService(this, error);
+        }
+
+        internal void DidDiscoverCharacteristics(CBCharacteristic[] characteristics, CBService service, CBError error)
+        {
+            service.UpdateCharacteristics(characteristics);
+            Delegate?.DiscoveredCharacteristic(this, service, error);
         }
 
         public override string ToString()

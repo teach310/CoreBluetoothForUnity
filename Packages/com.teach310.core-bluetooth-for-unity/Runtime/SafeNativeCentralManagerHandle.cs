@@ -37,7 +37,8 @@ namespace CoreBluetooth
                 DidFailToConnect,
                 DidDiscoverPeripheral,
                 DidUpdateState,
-                PeripheralDidDiscoverServices
+                PeripheralDidDiscoverServices,
+                PeripheralDidDiscoverCharacteristics
             );
         }
 
@@ -102,6 +103,24 @@ namespace CoreBluetooth
             GetCentralManager(centralPtr)?.PeripheralDidDiscoverServices(
                 Marshal.PtrToStringUTF8(peripheralIdPtr),
                 commaSeparatedServiceUUIDs.Split(','),
+                CBError.CreateOrNullFromCode(errorCode)
+            );
+        }
+
+        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralDidDiscoverCharacteristicsHandler))]
+        internal static void PeripheralDidDiscoverCharacteristics(IntPtr centralPtr, IntPtr peripheralIdPtr, IntPtr serviceUUIDPtr, IntPtr commaSeparatedCharacteristicUUIDsPtr, int errorCode)
+        {
+            UnityEngine.Debug.Log($"PeripheralDidDiscoverCharacteristics: {Marshal.PtrToStringUTF8(peripheralIdPtr)} {Marshal.PtrToStringUTF8(serviceUUIDPtr)} {Marshal.PtrToStringUTF8(commaSeparatedCharacteristicUUIDsPtr)} {errorCode}");
+            string commaSeparatedCharacteristicUUIDs = Marshal.PtrToStringUTF8(commaSeparatedCharacteristicUUIDsPtr);
+            if (string.IsNullOrEmpty(commaSeparatedCharacteristicUUIDs))
+            {
+                throw new ArgumentException("commaSeparatedCharacteristicUUIDs is null or empty.");
+            }
+
+            GetCentralManager(centralPtr)?.PeripheralDidDiscoverCharacteristics(
+                Marshal.PtrToStringUTF8(peripheralIdPtr),
+                Marshal.PtrToStringUTF8(serviceUUIDPtr),
+                commaSeparatedCharacteristicUUIDs.Split(','),
                 CBError.CreateOrNullFromCode(errorCode)
             );
         }

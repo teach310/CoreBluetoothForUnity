@@ -1,7 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace CoreBluetooth
 {
@@ -32,11 +29,29 @@ namespace CoreBluetooth
                 serviceUUIDs,
                 serviceUUIDs?.Length ?? 0
             );
+            ExceptionUtils.ThrowIfPeripheralNotFound(result, _peripheralId);
+        }
 
-            if (result == -1)
+        void INativePeripheral.DiscoverCharacteristics(string[] characteristicUUIDs, CBService service)
+        {
+            if (characteristicUUIDs != null)
             {
-                throw new Exception($"Peripheral not found: {_peripheralId}");
+                foreach (string uuidString in characteristicUUIDs)
+                {
+                    ExceptionUtils.ThrowArgumentExceptionIfInvalidCBUUID(uuidString, nameof(characteristicUUIDs));
+                }
             }
+
+            int result = NativeMethods.cb4u_central_manager_peripheral_discover_characteristics(
+                _handle,
+                _peripheralId,
+                service.UUID,
+                characteristicUUIDs,
+                characteristicUUIDs?.Length ?? 0
+            );
+
+            ExceptionUtils.ThrowIfPeripheralNotFound(result, _peripheralId);
+            ExceptionUtils.ThrowIfServiceNotFound(result, service.UUID);
         }
 
         CBPeripheralState INativePeripheral.State

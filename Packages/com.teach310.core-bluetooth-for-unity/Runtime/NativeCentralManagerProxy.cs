@@ -14,19 +14,13 @@ namespace CoreBluetooth
         internal void Connect(string peripheralId)
         {
             int result = NativeMethods.cb4u_central_manager_connect(_handle, peripheralId);
-            if (result == -1)
-            {
-                throw new Exception($"Peripheral not found: {peripheralId}");
-            }
+            ExceptionUtils.ThrowIfPeripheralNotFound(result, peripheralId);
         }
 
         internal void CancelPeripheralConnection(string peripheralId)
         {
             int result = NativeMethods.cb4u_central_manager_cancel_peripheral_connection(_handle, peripheralId);
-            if (result == -1)
-            {
-                throw new Exception($"Peripheral not found: {peripheralId}");
-            }
+            ExceptionUtils.ThrowIfPeripheralNotFound(result, peripheralId);
         }
 
         internal void ScanForPeripherals(string[] serviceUUIDs = null)

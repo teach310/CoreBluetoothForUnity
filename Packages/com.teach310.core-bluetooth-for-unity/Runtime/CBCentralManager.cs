@@ -165,6 +165,27 @@ namespace CoreBluetooth
             peripheral.DidDiscoverServices(services, error);
         }
 
+        internal void PeripheralDidDiscoverCharacteristics(string peripheralId, string serviceUUID, string[] characteristicUUIDs, CBError error)
+        {
+            if (_disposed) return;
+            var peripheral = GetPeripheral(peripheralId);
+            if (peripheral == null) return;
+
+            var service = peripheral.Services.FirstOrDefault(s => s.UUID == serviceUUID);
+            if (service == null)
+            {
+                UnityEngine.Debug.LogError($"Service {serviceUUID} not found.");
+                return;
+            }
+
+            var characteristics = characteristicUUIDs.Select(uuid =>
+            {
+                var nativeCharacteristicProxy = new NativeCharacteristicProxy(peripheralId, serviceUUID, uuid, _handle);
+                return new CBCharacteristic(uuid, service, nativeCharacteristicProxy);
+            }).ToArray();
+            peripheral.DidDiscoverCharacteristics(characteristics, service, error);
+        }
+
         public void Dispose()
         {
             Dispose(true);
