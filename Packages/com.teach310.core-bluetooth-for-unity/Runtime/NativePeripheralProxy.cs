@@ -18,9 +18,12 @@ namespace CoreBluetooth
 
         void INativePeripheral.DiscoverServices(string[] serviceUUIDs)
         {
-            foreach (string uuidString in serviceUUIDs)
+            if (serviceUUIDs != null)
             {
-                ExceptionUtils.ThrowArgumentExceptionIfInvalidCBUUID(uuidString, nameof(serviceUUIDs));
+                foreach (string uuidString in serviceUUIDs)
+                {
+                    ExceptionUtils.ThrowArgumentExceptionIfInvalidCBUUID(uuidString, nameof(serviceUUIDs));
+                }
             }
 
             int result = NativeMethods.cb4u_central_manager_peripheral_discover_services(
