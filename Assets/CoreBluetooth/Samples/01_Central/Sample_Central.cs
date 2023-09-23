@@ -12,6 +12,7 @@ namespace CoreBluetoothSample
         // See the following for generating UUIDs:
         // https://www.uuidgenerator.net/
         string serviceUUID = "068C47B7-FC04-4D47-975A-7952BE1A576F";
+        string characteristicUUID = "E3737B3F-A08D-405B-B32D-35A8F6C64C5D";
 
         void Start()
         {
@@ -59,6 +60,15 @@ namespace CoreBluetoothSample
             {
                 Debug.Log($"[DiscoveredService] service: {service}, start discovering characteristics...");
                 peripheral.DiscoverCharacteristics(new string[] { characteristicUUID }, service);
+            }
+        }
+
+        public void DiscoveredCharacteristic(CBPeripheral peripheral, CBService service, CBError error)
+        {
+            Debug.Log($"[DiscoveredCharacteristic] peripheral: {peripheral}  service: {service}  error: {error}");
+            foreach (var characteristic in service.Characteristics)
+            {
+                Debug.Log($"[DiscoveredCharacteristic] characteristic: {characteristic}");
             }
         }
 
