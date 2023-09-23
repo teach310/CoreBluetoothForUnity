@@ -110,7 +110,6 @@ namespace CoreBluetooth
         [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralDidDiscoverCharacteristicsHandler))]
         internal static void PeripheralDidDiscoverCharacteristics(IntPtr centralPtr, IntPtr peripheralIdPtr, IntPtr serviceUUIDPtr, IntPtr commaSeparatedCharacteristicUUIDsPtr, int errorCode)
         {
-            UnityEngine.Debug.Log($"PeripheralDidDiscoverCharacteristics: {Marshal.PtrToStringUTF8(peripheralIdPtr)} {Marshal.PtrToStringUTF8(serviceUUIDPtr)} {Marshal.PtrToStringUTF8(commaSeparatedCharacteristicUUIDsPtr)} {errorCode}");
             string commaSeparatedCharacteristicUUIDs = Marshal.PtrToStringUTF8(commaSeparatedCharacteristicUUIDsPtr);
             if (string.IsNullOrEmpty(commaSeparatedCharacteristicUUIDs))
             {
