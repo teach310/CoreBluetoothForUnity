@@ -21,6 +21,17 @@ extension CB4UCentralManager {
         }
     }
     
+    public func peripheralDiscoverCharacteristics(_ peripheralId: String, _ serviceUUID: CBUUID, _ characteristicUUIDs: [CBUUID]?) -> Int32 {
+        return delegatePeripheral(peripheralId) { (peripheral) -> Int32 in
+            guard let service = peripheral.services?.first(where: { $0.uuid == serviceUUID }) else {
+                return serviceNotFound
+            }
+            
+            peripheral.discoverCharacteristics(characteristicUUIDs, for: service)
+            return success
+        }
+    }
+    
     public func peripheralState(_ peripheralId: String) -> Int32 {
         return delegatePeripheral(peripheralId) { (peripheral) -> Int32 in
             return Int32(peripheral.state.rawValue)

@@ -14,8 +14,11 @@ public class CB4UCentralManager : NSObject {
     public var didUpdateStateHandler: CB4UCentralManagerDidUpdateStateHandler?
     
     public var peripheralDidDiscoverServicesHandler: CB4UPeripheralDidDiscoverServicesHandler?
+    public var peripheralDidDiscoverCharacteristicsHandler: CB4UPeripheralDidDiscoverCharacteristicsHandler?
     
     let peripheralNotFound: Int32 = -1
+    let serviceNotFound: Int32 = -2
+    let characteristicNotFound: Int32 = -3
     let success: Int32 = 0
     
     public override init() {
@@ -122,6 +125,20 @@ extension CB4UCentralManager : CBPeripheralDelegate {
         peripheralId.withCString { (uuidCString) in
             commaSeparatedServiceIds.withCString { (commaSeparatedServiceIdsCString) in
                 peripheralDidDiscoverServicesHandler?(selfPointer(), uuidCString, commaSeparatedServiceIdsCString, errorToCode(error))
+            }
+        }
+    }
+
+    public func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
+        let peripheralId = peripheral.identifier.uuidString
+        let serviceId = service.uuid.uuidString
+        let commaSeparatedCharacteristicIds = service.characteristics?.map { $0.uuid.uuidString }.joined(separator: ",") ?? ""
+        
+        peripheralId.withCString { (peripheralIdCString) in
+            serviceId.withCString { (serviceIdCString) in
+                commaSeparatedCharacteristicIds.withCString { (commaSeparatedCharacteristicIdsCString) in
+                    peripheralDidDiscoverCharacteristicsHandler?(selfPointer(), peripheralIdCString, serviceIdCString, commaSeparatedCharacteristicIdsCString, errorToCode(error))
+                }
             }
         }
     }

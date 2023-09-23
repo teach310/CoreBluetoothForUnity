@@ -1,5 +1,8 @@
 
 
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+
 namespace CoreBluetooth
 {
     /// <summary>
@@ -15,10 +18,20 @@ namespace CoreBluetooth
         /// </summary>
         public CBPeripheral Peripheral { get; }
 
+        List<CBCharacteristic> _characteristics = new List<CBCharacteristic>();
+        public ReadOnlyCollection<CBCharacteristic> Characteristics { get; }
+
         public CBService(string uuid, CBPeripheral peripheral)
         {
             this.UUID = uuid;
             this.Peripheral = peripheral;
+            Characteristics = _characteristics.AsReadOnly();
+        }
+
+        internal void UpdateCharacteristics(CBCharacteristic[] characteristics)
+        {
+            _characteristics.Clear();
+            _characteristics.AddRange(characteristics);
         }
 
         public override string ToString() => $"CBService: uuid={UUID}";

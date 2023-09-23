@@ -23,5 +23,32 @@ namespace CoreBluetooth
                 throw new ArgumentException($"Invalid UUID: {uuidString}", paramName);
             }
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static void ThrowIfPeripheralNotFound(int result, string peripheralId)
+        {
+            if (result == -1)
+            {
+                throw new Exception($"Peripheral not found: {peripheralId}");
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static void ThrowIfServiceNotFound(int result, string serviceUUID)
+        {
+            if (result == -2)
+            {
+                throw new Exception($"Service not found: {serviceUUID}");
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static void ThrowIfCharacteristicNotFound(int result, string characteristicUUID)
+        {
+            if (result == -3)
+            {
+                throw new Exception($"Characteristic not found: {characteristicUUID}");
+            }
+        }
     }
 }
