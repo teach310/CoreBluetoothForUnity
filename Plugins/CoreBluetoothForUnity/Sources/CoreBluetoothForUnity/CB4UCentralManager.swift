@@ -15,6 +15,7 @@ public class CB4UCentralManager : NSObject {
     
     public var peripheralDidDiscoverServicesHandler: CB4UPeripheralDidDiscoverServicesHandler?
     public var peripheralDidDiscoverCharacteristicsHandler: CB4UPeripheralDidDiscoverCharacteristicsHandler?
+    public var peripheralDidUpdateValueForCharacteristicHandler: CB4UPeripheralDidUpdateValueForCharacteristicHandler?
     
     let peripheralNotFound: Int32 = -1
     let serviceNotFound: Int32 = -2
@@ -128,7 +129,7 @@ extension CB4UCentralManager : CBPeripheralDelegate {
             }
         }
     }
-
+    
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
         let peripheralId = peripheral.identifier.uuidString
         let serviceId = service.uuid.uuidString
@@ -138,6 +139,24 @@ extension CB4UCentralManager : CBPeripheralDelegate {
             serviceId.withCString { (serviceIdCString) in
                 commaSeparatedCharacteristicIds.withCString { (commaSeparatedCharacteristicIdsCString) in
                     peripheralDidDiscoverCharacteristicsHandler?(selfPointer(), peripheralIdCString, serviceIdCString, commaSeparatedCharacteristicIdsCString, errorToCode(error))
+                }
+            }
+        }
+    }
+    
+    public func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
+        let peripheralId = peripheral.identifier.uuidString
+        let serviceId = characteristic.service?.uuid.uuidString ?? ""
+        let characteristicId = characteristic.uuid.uuidString
+        let value = characteristic.value ?? Data()
+        
+        peripheralId.withCString { (peripheralIdCString) in
+            serviceId.withCString { (serviceIdCString) in
+                characteristicId.withCString { (characteristicIdCString) in
+                    value.withUnsafeBytes { (valueBytes: UnsafeRawBufferPointer) in
+                        let bytes = valueBytes.bindMemory(to: UInt8.self).baseAddress!
+                        peripheralDidUpdateValueForCharacteristicHandler?(selfPointer(), peripheralIdCString, serviceIdCString, characteristicIdCString, bytes, Int32(value.count), errorToCode(error))
+                    }
                 }
             }
         }

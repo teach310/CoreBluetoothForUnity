@@ -15,6 +15,21 @@ extension CB4UCentralManager {
         }
     }
     
+    private func delegatePeripheralForCharacteristic(_ peripheralId: String, _ serviceUUID: CBUUID, _ characteristicUUID: CBUUID, _ action: (CBPeripheral, CBService, CBCharacteristic) -> Void) -> Int32 {
+        return delegatePeripheral(peripheralId) { (peripheral) -> Int32 in
+            guard let service = peripheral.services?.first(where: { $0.uuid == serviceUUID }) else {
+                return serviceNotFound
+            }
+            
+            guard let characteristic = service.characteristics?.first(where: { $0.uuid == characteristicUUID }) else {
+                return characteristicNotFound
+            }
+            
+            action(peripheral, service, characteristic)
+            return success
+        }
+    }
+    
     public func peripheralDiscoverServices(_ peripheralId: String, _ serviceUUIDs: [CBUUID]?) -> Int32 {
         return delegatePeripheral(peripheralId) { (peripheral) -> Void in
             peripheral.discoverServices(serviceUUIDs)
@@ -29,6 +44,12 @@ extension CB4UCentralManager {
             
             peripheral.discoverCharacteristics(characteristicUUIDs, for: service)
             return success
+        }
+    }
+    
+    public func peripheralReadCharacteristicValue(_ peripheralId: String, _ serviceUUID: CBUUID, _ characteristicUUID: CBUUID) -> Int32 {
+        return delegatePeripheralForCharacteristic(peripheralId, serviceUUID, characteristicUUID) { (peripheral, service, characteristic) -> Void in
+            peripheral.readValue(for: characteristic)
         }
     }
     

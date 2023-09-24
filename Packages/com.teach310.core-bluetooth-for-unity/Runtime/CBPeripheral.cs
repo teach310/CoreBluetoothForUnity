@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace CoreBluetooth
 {
@@ -15,6 +16,7 @@ namespace CoreBluetooth
     {
         void DiscoverServices(string[] serviceUUIDs);
         void DiscoverCharacteristics(string[] characteristicUUIDs, CBService service);
+        void ReadValue(CBCharacteristic characteristic);
         CBPeripheralState State { get; }
     }
 
@@ -22,6 +24,7 @@ namespace CoreBluetooth
     {
         void DiscoveredService(CBPeripheral peripheral, CBError error) { }
         void DiscoveredCharacteristic(CBPeripheral peripheral, CBService service, CBError error) { }
+        void UpdatedCharacteristicValue(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error) { }
     }
 
     /// <summary>
@@ -63,9 +66,28 @@ namespace CoreBluetooth
         public void DiscoverCharacteristics(CBService service) => DiscoverCharacteristics(null, service);
 
         /// <summary>
+        /// Retrieves the value of a specified characteristic.
+        /// When you call this method to read the value of a characteristic, the peripheral calls the peripheral(_:didUpdateValueFor:error:) method of its delegate object.
+        /// If the peripheral successfully reads the value of the characteristic, you can access it through the characteristic’s value property.
+        /// </summary>
+        public void ReadValue(CBCharacteristic characteristic) => _nativePeripheral.ReadValue(characteristic);
+
+        /// <summary>
         /// The connection state of the peripheral.
         /// </summary>
         public CBPeripheralState State => _nativePeripheral.State;
+
+        internal CBCharacteristic FindCharacteristic(string serviceUUID, string characteristicUUID)
+        {
+            if (string.IsNullOrEmpty(serviceUUID))
+            {
+                return Services.SelectMany(s => s.Characteristics).FirstOrDefault(c => c.UUID == characteristicUUID);
+            }
+
+            var service = Services.FirstOrDefault(s => s.UUID == serviceUUID);
+            if (service == null) return null;
+            return service.Characteristics.FirstOrDefault(c => c.UUID == characteristicUUID);
+        }
 
         internal void DidDiscoverServices(CBService[] services, CBError error)
         {
@@ -78,6 +100,12 @@ namespace CoreBluetooth
         {
             service.UpdateCharacteristics(characteristics);
             Delegate?.DiscoveredCharacteristic(this, service, error);
+        }
+
+        internal void DidUpdateValueForCharacteristic(CBCharacteristic characteristic, byte[] data, CBError error)
+        {
+            characteristic.UpdateValue(data);
+            Delegate?.UpdatedCharacteristicValue(this, characteristic, error);
         }
 
         public override string ToString()
