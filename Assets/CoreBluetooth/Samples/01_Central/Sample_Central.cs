@@ -1,5 +1,6 @@
 using UnityEngine;
 using CoreBluetooth;
+using System.Text;
 
 namespace CoreBluetoothSample
 {
@@ -79,7 +80,24 @@ namespace CoreBluetoothSample
             foreach (var characteristic in service.Characteristics)
             {
                 Debug.Log($"[DiscoveredCharacteristic] characteristic: {characteristic}");
+                if (characteristic.Properties.HasFlag(CBCharacteristicProperties.Read))
+                {
+                    peripheral.ReadValue(characteristic);
+                }
             }
+        }
+
+        public void UpdatedCharacteristicValue(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error)
+        {
+            Debug.Log($"[UpdatedCharacteristicValue] characteristic: {characteristic}");
+            if (error != null)
+            {
+                Debug.LogError($"[UpdatedCharacteristicValue] error: {error}");
+                return;
+            }
+
+            var str = Encoding.UTF8.GetString(characteristic.Value);
+            Debug.Log($"Data: {str}");
         }
 
         void OnDestroy()
