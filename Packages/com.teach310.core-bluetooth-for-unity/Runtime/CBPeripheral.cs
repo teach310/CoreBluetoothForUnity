@@ -15,6 +15,7 @@ namespace CoreBluetooth
     {
         void DiscoverServices(string[] serviceUUIDs);
         void DiscoverCharacteristics(string[] characteristicUUIDs, CBService service);
+        void ReadValue(CBCharacteristic characteristic);
         CBPeripheralState State { get; }
     }
 
@@ -61,6 +62,13 @@ namespace CoreBluetooth
         /// Discover all characteristics in a service (slow).
         /// </summary>
         public void DiscoverCharacteristics(CBService service) => DiscoverCharacteristics(null, service);
+
+        /// <summary>
+        /// Retrieves the value of a specified characteristic.
+        /// When you call this method to read the value of a characteristic, the peripheral calls the peripheral(_:didUpdateValueFor:error:) method of its delegate object.
+        /// If the peripheral successfully reads the value of the characteristic, you can access it through the characteristic’s value property.
+        /// </summary>
+        public void ReadValue(CBCharacteristic characteristic) => _nativePeripheral.ReadValue(characteristic);
 
         /// <summary>
         /// The connection state of the peripheral.
