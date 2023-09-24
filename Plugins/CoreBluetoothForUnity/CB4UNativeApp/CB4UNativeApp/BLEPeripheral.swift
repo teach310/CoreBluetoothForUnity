@@ -41,6 +41,11 @@ class BLEPeripheral: NSObject, CBPeripheralManagerDelegate {
         }
     }
     
+    private func sampleData() -> Data {
+        let value = "data is " + String(format: "%03d", Int.random(in: 100..<1000))
+        return value.data(using: .utf8)!
+    }
+    
     // MARK: - CBPeripheralManagerDelegate
     
     public func peripheralManagerDidUpdateState(_ peripheral: CBPeripheralManager) {
@@ -79,6 +84,23 @@ class BLEPeripheral: NSObject, CBPeripheralManagerDelegate {
             print("error: \(error.localizedDescription)")
             return
         }
+    }
+    
+    public func peripheralManager(_ peripheral: CBPeripheralManager, didReceiveRead request: CBATTRequest) {
+        print("didReceiveRead")
+        
+        if !request.characteristic.uuid.isEqual(characteristicUUID) {
+            peripheral.respond(to: request, withResult: .attributeNotFound)
+            return
+        }
+        
+        if request.offset > characteristicUUID.data.count {
+            peripheral.respond(to: request, withResult: .invalidOffset)
+            return
+        }
+        
+        request.value = sampleData()
+        peripheral.respond(to: request, withResult: .success)
     }
 }
 
