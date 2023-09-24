@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using CoreBluetooth;
 
@@ -55,7 +53,13 @@ namespace CoreBluetoothSample
 
         public void DiscoveredService(CBPeripheral peripheral, CBError error)
         {
-            Debug.Log($"[DiscoveredService] peripheral: {peripheral}  error: {error}");
+            Debug.Log($"[DiscoveredService] peripheral: {peripheral}");
+            if (error != null)
+            {
+                Debug.LogError($"[DiscoveredService] error: {error}");
+                return;
+            }
+
             foreach (var service in peripheral.Services)
             {
                 Debug.Log($"[DiscoveredService] service: {service}, start discovering characteristics...");
@@ -65,7 +69,13 @@ namespace CoreBluetoothSample
 
         public void DiscoveredCharacteristic(CBPeripheral peripheral, CBService service, CBError error)
         {
-            Debug.Log($"[DiscoveredCharacteristic] peripheral: {peripheral}  service: {service}  error: {error}");
+            Debug.Log($"[DiscoveredCharacteristic] peripheral: {peripheral}  service: {service}");
+            if (error != null)
+            {
+                Debug.LogError($"[DiscoveredCharacteristic] error: {error}");
+                return;
+            }
+
             foreach (var characteristic in service.Characteristics)
             {
                 Debug.Log($"[DiscoveredCharacteristic] characteristic: {characteristic}");
