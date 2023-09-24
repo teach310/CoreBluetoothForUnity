@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace CoreBluetooth
 {
@@ -23,6 +24,7 @@ namespace CoreBluetooth
     {
         void DiscoveredService(CBPeripheral peripheral, CBError error) { }
         void DiscoveredCharacteristic(CBPeripheral peripheral, CBService service, CBError error) { }
+        void UpdatedCharacteristicValue(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error) { }
     }
 
     /// <summary>
@@ -75,6 +77,18 @@ namespace CoreBluetooth
         /// </summary>
         public CBPeripheralState State => _nativePeripheral.State;
 
+        internal CBCharacteristic FindCharacteristic(string serviceUUID, string characteristicUUID)
+        {
+            if (string.IsNullOrEmpty(serviceUUID))
+            {
+                return Services.SelectMany(s => s.Characteristics).FirstOrDefault(c => c.UUID == characteristicUUID);
+            }
+
+            var service = Services.FirstOrDefault(s => s.UUID == serviceUUID);
+            if (service == null) return null;
+            return service.Characteristics.FirstOrDefault(c => c.UUID == characteristicUUID);
+        }
+
         internal void DidDiscoverServices(CBService[] services, CBError error)
         {
             _services.Clear();
@@ -86,6 +100,12 @@ namespace CoreBluetooth
         {
             service.UpdateCharacteristics(characteristics);
             Delegate?.DiscoveredCharacteristic(this, service, error);
+        }
+
+        internal void DidUpdateValueForCharacteristic(CBCharacteristic characteristic, byte[] data, CBError error)
+        {
+            characteristic.UpdateValue(data);
+            Delegate?.UpdatedCharacteristicValue(this, characteristic, error);
         }
 
         public override string ToString()

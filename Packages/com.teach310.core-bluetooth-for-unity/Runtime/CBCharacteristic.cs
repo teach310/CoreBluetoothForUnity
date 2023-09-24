@@ -35,7 +35,10 @@ namespace CoreBluetooth
         /// </summary>
         public CBService Service { get; }
 
-        CBCharacteristicProperties Properties => _nativeCharacteristic.Properties;
+        public byte[] Value { get; private set; }
+        internal void UpdateValue(byte[] value) => Value = value;
+
+        public CBCharacteristicProperties Properties => _nativeCharacteristic.Properties;
 
         INativeCharacteristic _nativeCharacteristic;
 
@@ -48,7 +51,8 @@ namespace CoreBluetooth
 
         public override string ToString()
         {
-            return $"CBCharacteristic: UUID = {UUID}, properties = {Properties}";
+            var valueText = Value == null ? "null" : $"{{length = {Value.Length}, bytes = {BitConverter.ToString(Value).Replace("-", "")}}}";
+            return $"CBCharacteristic: UUID = {UUID}, properties = {Properties}, value = {valueText}";
         }
     }
 }

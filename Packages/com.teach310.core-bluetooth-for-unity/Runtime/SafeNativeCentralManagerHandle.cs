@@ -38,7 +38,8 @@ namespace CoreBluetooth
                 DidDiscoverPeripheral,
                 DidUpdateState,
                 PeripheralDidDiscoverServices,
-                PeripheralDidDiscoverCharacteristics
+                PeripheralDidDiscoverCharacteristics,
+                PeripheralDidUpdateValueForCharacteristic
             );
         }
 
@@ -120,6 +121,21 @@ namespace CoreBluetooth
                 Marshal.PtrToStringUTF8(peripheralIdPtr),
                 Marshal.PtrToStringUTF8(serviceUUIDPtr),
                 commaSeparatedCharacteristicUUIDs.Split(','),
+                CBError.CreateOrNullFromCode(errorCode)
+            );
+        }
+
+        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralDidUpdateValueForCharacteristicHandler))]
+        internal static void PeripheralDidUpdateValueForCharacteristic(IntPtr centralPtr, IntPtr peripheralIdPtr, IntPtr serviceUUIDPtr, IntPtr characteristicUUIDPtr, IntPtr dataPtr, int dataLength, int errorCode)
+        {
+            var dataBytes = new byte[dataLength];
+            Marshal.Copy(dataPtr, dataBytes, 0, dataLength);
+
+            GetCentralManager(centralPtr)?.PeripheralDidUpdateValueForCharacteristic(
+                Marshal.PtrToStringUTF8(peripheralIdPtr),
+                Marshal.PtrToStringUTF8(serviceUUIDPtr),
+                Marshal.PtrToStringUTF8(characteristicUUIDPtr),
+                dataBytes,
                 CBError.CreateOrNullFromCode(errorCode)
             );
         }
