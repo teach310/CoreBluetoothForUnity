@@ -64,6 +64,7 @@ namespace CoreBluetooth
             );
 
             ExceptionUtils.ThrowIfPeripheralNotFound(result, _peripheralId);
+            ExceptionUtils.ThrowIfServiceNotFound(result, characteristic.Service.UUID);
             ExceptionUtils.ThrowIfCharacteristicNotFound(result, characteristic.UUID);
         }
 
