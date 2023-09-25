@@ -17,6 +17,7 @@ namespace CoreBluetooth
         void DiscoverServices(string[] serviceUUIDs);
         void DiscoverCharacteristics(string[] characteristicUUIDs, CBService service);
         void ReadValue(CBCharacteristic characteristic);
+        void WriteValue(byte[] data, CBCharacteristic characteristic, CBCharacteristicWriteType type);
         CBPeripheralState State { get; }
     }
 
@@ -71,6 +72,11 @@ namespace CoreBluetooth
         /// If the peripheral successfully reads the value of the characteristic, you can access it through the characteristic’s value property.
         /// </summary>
         public void ReadValue(CBCharacteristic characteristic) => _nativePeripheral.ReadValue(characteristic);
+
+        public void WriteValue(byte[] data, CBCharacteristic characteristic, CBCharacteristicWriteType type)
+        {
+            _nativePeripheral.WriteValue(data, characteristic, type);
+        }
 
         /// <summary>
         /// The connection state of the peripheral.

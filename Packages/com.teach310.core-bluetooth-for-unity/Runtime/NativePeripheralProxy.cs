@@ -68,6 +68,23 @@ namespace CoreBluetooth
             ExceptionUtils.ThrowIfCharacteristicNotFound(result, characteristic.UUID);
         }
 
+        void INativePeripheral.WriteValue(byte[] data, CBCharacteristic characteristic, CBCharacteristicWriteType writeType)
+        {
+            int result = NativeMethods.cb4u_central_manager_peripheral_write_characteristic_value(
+                _handle,
+                _peripheralId,
+                characteristic.Service.UUID,
+                characteristic.UUID,
+                data,
+                data.Length,
+                (int)writeType
+            );
+
+            ExceptionUtils.ThrowIfPeripheralNotFound(result, _peripheralId);
+            ExceptionUtils.ThrowIfServiceNotFound(result, characteristic.Service.UUID);
+            ExceptionUtils.ThrowIfCharacteristicNotFound(result, characteristic.UUID);
+        }
+
         CBPeripheralState INativePeripheral.State
         {
             get

@@ -17,6 +17,12 @@ namespace CoreBluetooth
         IndicateEncryptionRequired = 512
     }
 
+    public enum CBCharacteristicWriteType
+    {
+        WithResponse = 0,
+        WithoutResponse
+    }
+
     internal interface INativeCharacteristic
     {
         CBCharacteristicProperties Properties { get; }
