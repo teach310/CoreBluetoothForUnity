@@ -209,6 +209,18 @@ namespace CoreBluetooth
             peripheral.DidUpdateValueForCharacteristic(characteristic, data, error);
         }
 
+        internal void PeripheralDidWriteValueForCharacteristic(string peripheralId, string serviceUUID, string characteristicUUID, CBError error)
+        {
+            if (_disposed) return;
+            var peripheral = GetPeripheral(peripheralId);
+            if (peripheral == null) return;
+
+            var characteristic = GetCharacteristic(peripheral, serviceUUID, characteristicUUID);
+            if (characteristic == null) return;
+
+            peripheral.DidWriteValueForCharacteristic(characteristic, error);
+        }
+
         public void Dispose()
         {
             Dispose(true);
