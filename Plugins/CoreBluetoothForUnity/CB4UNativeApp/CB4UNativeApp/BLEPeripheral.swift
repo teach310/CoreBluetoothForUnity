@@ -99,8 +99,35 @@ class BLEPeripheral: NSObject, CBPeripheralManagerDelegate {
             return
         }
         
-        request.value = sampleData()
+        if characteristic?.value == nil {
+            characteristic?.value = sampleData()
+        }
+        
+        request.value = characteristic?.value
         peripheral.respond(to: request, withResult: .success)
     }
+    
+    public func peripheralManager(_ peripheral: CBPeripheralManager, didReceiveWrite requests: [CBATTRequest]) {
+        print("didReceiveWrite")
+        
+        for request in requests {
+            if !request.characteristic.uuid.isEqual(characteristicUUID) {
+                peripheral.respond(to: request, withResult: .attributeNotFound)
+                return
+            }
+            
+            if request.offset > characteristicUUID.data.count {
+                peripheral.respond(to: request, withResult: .invalidOffset)
+                return
+            }
+            
+            if let data = request.value {
+                print("data: \(String(data: data, encoding: .utf8) ?? "")")
+                
+                characteristic?.value = data
+            }
+            
+            peripheral.respond(to: request, withResult: .success)
+        }
+    }
 }
-
