@@ -12,6 +12,8 @@ namespace CoreBluetoothSample
         // https://www.uuidgenerator.net/
         string serviceUUID = "068C47B7-FC04-4D47-975A-7952BE1A576F";
         string characteristicUUID = "E3737B3F-A08D-405B-B32D-35A8F6C64C5D";
+        CBPeripheral peripheral;
+        CBCharacteristic remoteCharacteristic;
 
         void Start()
         {
@@ -21,6 +23,7 @@ namespace CoreBluetoothSample
         public void DiscoveredPeripheral(CBCentralManager central, CBPeripheral peripheral, int rssi)
         {
             Debug.Log($"[DiscoveredPeripheral] peripheral: {peripheral}  rssi: {rssi}");
+            this.peripheral = peripheral;
             peripheral.Delegate = this;
             central.StopScan();
             central.Connect(peripheral);
@@ -80,6 +83,12 @@ namespace CoreBluetoothSample
             foreach (var characteristic in service.Characteristics)
             {
                 Debug.Log($"[DiscoveredCharacteristic] characteristic: {characteristic}");
+
+                if (characteristic.UUID == characteristicUUID)
+                {
+                    remoteCharacteristic = characteristic;
+                }
+
                 if (characteristic.Properties.HasFlag(CBCharacteristicProperties.Read))
                 {
                     peripheral.ReadValue(characteristic);
@@ -98,6 +107,42 @@ namespace CoreBluetoothSample
 
             var str = Encoding.UTF8.GetString(characteristic.Value);
             Debug.Log($"Data: {str}");
+        }
+
+        public void OnClickWrite()
+        {
+            if (peripheral == null)
+            {
+                Debug.Log("peripheral is null.");
+                return;
+            }
+
+            if (remoteCharacteristic == null)
+            {
+                Debug.Log("remoteCharacteristic is null.");
+                return;
+            }
+
+            var value = UnityEngine.Random.Range(100, 1000).ToString();
+            var data = Encoding.UTF8.GetBytes(value);
+            peripheral.WriteValue(data, remoteCharacteristic, CBCharacteristicWriteType.WithResponse);
+        }
+
+        public void OnClickRead()
+        {
+            if (peripheral == null)
+            {
+                Debug.Log("peripheral is null.");
+                return;
+            }
+
+            if (remoteCharacteristic == null)
+            {
+                Debug.Log("remoteCharacteristic is null.");
+                return;
+            }
+
+            peripheral.ReadValue(remoteCharacteristic);
         }
 
         void OnDestroy()

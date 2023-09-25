@@ -2271,6 +2271,321 @@
           },
           {
             "kind": "Var",
+            "name": "peripheralDidWriteValueForCharacteristicHandler",
+            "printedName": "peripheralDidWriteValueForCharacteristicHandler",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "((Swift.UnsafeRawPointer, Swift.UnsafePointer<Swift.Int8>, Swift.UnsafePointer<Swift.Int8>, Swift.UnsafePointer<Swift.Int8>, Swift.Int32) -> ())?",
+                "children": [
+                  {
+                    "kind": "TypeFunc",
+                    "name": "Function",
+                    "printedName": "(Swift.UnsafeRawPointer, Swift.UnsafePointer<Swift.Int8>, Swift.UnsafePointer<Swift.Int8>, Swift.UnsafePointer<Swift.Int8>, Swift.Int32) -> ()",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Void",
+                        "printedName": "()"
+                      },
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Tuple",
+                        "printedName": "(Swift.UnsafeRawPointer, Swift.UnsafePointer<Swift.Int8>, Swift.UnsafePointer<Swift.Int8>, Swift.UnsafePointer<Swift.Int8>, Swift.Int32)",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "UnsafeRawPointer",
+                            "printedName": "Swift.UnsafeRawPointer",
+                            "usr": "s:SV"
+                          },
+                          {
+                            "kind": "TypeNominal",
+                            "name": "UnsafePointer",
+                            "printedName": "Swift.UnsafePointer<Swift.Int8>",
+                            "children": [
+                              {
+                                "kind": "TypeNominal",
+                                "name": "Int8",
+                                "printedName": "Swift.Int8",
+                                "usr": "s:s4Int8V"
+                              }
+                            ],
+                            "usr": "s:SP"
+                          },
+                          {
+                            "kind": "TypeNominal",
+                            "name": "UnsafePointer",
+                            "printedName": "Swift.UnsafePointer<Swift.Int8>",
+                            "children": [
+                              {
+                                "kind": "TypeNominal",
+                                "name": "Int8",
+                                "printedName": "Swift.Int8",
+                                "usr": "s:s4Int8V"
+                              }
+                            ],
+                            "usr": "s:SP"
+                          },
+                          {
+                            "kind": "TypeNominal",
+                            "name": "UnsafePointer",
+                            "printedName": "Swift.UnsafePointer<Swift.Int8>",
+                            "children": [
+                              {
+                                "kind": "TypeNominal",
+                                "name": "Int8",
+                                "printedName": "Swift.Int8",
+                                "usr": "s:s4Int8V"
+                              }
+                            ],
+                            "usr": "s:SP"
+                          },
+                          {
+                            "kind": "TypeNominal",
+                            "name": "Int32",
+                            "printedName": "Swift.Int32",
+                            "usr": "s:s5Int32V"
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:21CoreBluetoothForUnity18CB4UCentralManagerC023peripheralDidWriteValueC21CharacteristicHandlerySV_SPys4Int8VGA2Gs5Int32VtXCSgvp",
+            "mangledName": "$s21CoreBluetoothForUnity18CB4UCentralManagerC023peripheralDidWriteValueC21CharacteristicHandlerySV_SPys4Int8VGA2Gs5Int32VtXCSgvp",
+            "moduleName": "CoreBluetoothForUnity",
+            "isOpen": true,
+            "declAttributes": [
+              "HasInitialValue",
+              "HasStorage",
+              "AccessControl"
+            ],
+            "hasStorage": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "((Swift.UnsafeRawPointer, Swift.UnsafePointer<Swift.Int8>, Swift.UnsafePointer<Swift.Int8>, Swift.UnsafePointer<Swift.Int8>, Swift.Int32) -> ())?",
+                    "children": [
+                      {
+                        "kind": "TypeFunc",
+                        "name": "Function",
+                        "printedName": "(Swift.UnsafeRawPointer, Swift.UnsafePointer<Swift.Int8>, Swift.UnsafePointer<Swift.Int8>, Swift.UnsafePointer<Swift.Int8>, Swift.Int32) -> ()",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "Void",
+                            "printedName": "()"
+                          },
+                          {
+                            "kind": "TypeNominal",
+                            "name": "Tuple",
+                            "printedName": "(Swift.UnsafeRawPointer, Swift.UnsafePointer<Swift.Int8>, Swift.UnsafePointer<Swift.Int8>, Swift.UnsafePointer<Swift.Int8>, Swift.Int32)",
+                            "children": [
+                              {
+                                "kind": "TypeNominal",
+                                "name": "UnsafeRawPointer",
+                                "printedName": "Swift.UnsafeRawPointer",
+                                "usr": "s:SV"
+                              },
+                              {
+                                "kind": "TypeNominal",
+                                "name": "UnsafePointer",
+                                "printedName": "Swift.UnsafePointer<Swift.Int8>",
+                                "children": [
+                                  {
+                                    "kind": "TypeNominal",
+                                    "name": "Int8",
+                                    "printedName": "Swift.Int8",
+                                    "usr": "s:s4Int8V"
+                                  }
+                                ],
+                                "usr": "s:SP"
+                              },
+                              {
+                                "kind": "TypeNominal",
+                                "name": "UnsafePointer",
+                                "printedName": "Swift.UnsafePointer<Swift.Int8>",
+                                "children": [
+                                  {
+                                    "kind": "TypeNominal",
+                                    "name": "Int8",
+                                    "printedName": "Swift.Int8",
+                                    "usr": "s:s4Int8V"
+                                  }
+                                ],
+                                "usr": "s:SP"
+                              },
+                              {
+                                "kind": "TypeNominal",
+                                "name": "UnsafePointer",
+                                "printedName": "Swift.UnsafePointer<Swift.Int8>",
+                                "children": [
+                                  {
+                                    "kind": "TypeNominal",
+                                    "name": "Int8",
+                                    "printedName": "Swift.Int8",
+                                    "usr": "s:s4Int8V"
+                                  }
+                                ],
+                                "usr": "s:SP"
+                              },
+                              {
+                                "kind": "TypeNominal",
+                                "name": "Int32",
+                                "printedName": "Swift.Int32",
+                                "usr": "s:s5Int32V"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:21CoreBluetoothForUnity18CB4UCentralManagerC023peripheralDidWriteValueC21CharacteristicHandlerySV_SPys4Int8VGA2Gs5Int32VtXCSgvg",
+                "mangledName": "$s21CoreBluetoothForUnity18CB4UCentralManagerC023peripheralDidWriteValueC21CharacteristicHandlerySV_SPys4Int8VGA2Gs5Int32VtXCSgvg",
+                "moduleName": "CoreBluetoothForUnity",
+                "implicit": true,
+                "isOpen": true,
+                "accessorKind": "get"
+              },
+              {
+                "kind": "Accessor",
+                "name": "Set",
+                "printedName": "Set()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "((Swift.UnsafeRawPointer, Swift.UnsafePointer<Swift.Int8>, Swift.UnsafePointer<Swift.Int8>, Swift.UnsafePointer<Swift.Int8>, Swift.Int32) -> ())?",
+                    "children": [
+                      {
+                        "kind": "TypeFunc",
+                        "name": "Function",
+                        "printedName": "(Swift.UnsafeRawPointer, Swift.UnsafePointer<Swift.Int8>, Swift.UnsafePointer<Swift.Int8>, Swift.UnsafePointer<Swift.Int8>, Swift.Int32) -> ()",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "Void",
+                            "printedName": "()"
+                          },
+                          {
+                            "kind": "TypeNominal",
+                            "name": "Tuple",
+                            "printedName": "(Swift.UnsafeRawPointer, Swift.UnsafePointer<Swift.Int8>, Swift.UnsafePointer<Swift.Int8>, Swift.UnsafePointer<Swift.Int8>, Swift.Int32)",
+                            "children": [
+                              {
+                                "kind": "TypeNominal",
+                                "name": "UnsafeRawPointer",
+                                "printedName": "Swift.UnsafeRawPointer",
+                                "usr": "s:SV"
+                              },
+                              {
+                                "kind": "TypeNominal",
+                                "name": "UnsafePointer",
+                                "printedName": "Swift.UnsafePointer<Swift.Int8>",
+                                "children": [
+                                  {
+                                    "kind": "TypeNominal",
+                                    "name": "Int8",
+                                    "printedName": "Swift.Int8",
+                                    "usr": "s:s4Int8V"
+                                  }
+                                ],
+                                "usr": "s:SP"
+                              },
+                              {
+                                "kind": "TypeNominal",
+                                "name": "UnsafePointer",
+                                "printedName": "Swift.UnsafePointer<Swift.Int8>",
+                                "children": [
+                                  {
+                                    "kind": "TypeNominal",
+                                    "name": "Int8",
+                                    "printedName": "Swift.Int8",
+                                    "usr": "s:s4Int8V"
+                                  }
+                                ],
+                                "usr": "s:SP"
+                              },
+                              {
+                                "kind": "TypeNominal",
+                                "name": "UnsafePointer",
+                                "printedName": "Swift.UnsafePointer<Swift.Int8>",
+                                "children": [
+                                  {
+                                    "kind": "TypeNominal",
+                                    "name": "Int8",
+                                    "printedName": "Swift.Int8",
+                                    "usr": "s:s4Int8V"
+                                  }
+                                ],
+                                "usr": "s:SP"
+                              },
+                              {
+                                "kind": "TypeNominal",
+                                "name": "Int32",
+                                "printedName": "Swift.Int32",
+                                "usr": "s:s5Int32V"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:21CoreBluetoothForUnity18CB4UCentralManagerC023peripheralDidWriteValueC21CharacteristicHandlerySV_SPys4Int8VGA2Gs5Int32VtXCSgvs",
+                "mangledName": "$s21CoreBluetoothForUnity18CB4UCentralManagerC023peripheralDidWriteValueC21CharacteristicHandlerySV_SPys4Int8VGA2Gs5Int32VtXCSgvs",
+                "moduleName": "CoreBluetoothForUnity",
+                "implicit": true,
+                "isOpen": true,
+                "accessorKind": "set"
+              },
+              {
+                "kind": "Accessor",
+                "name": "Modify",
+                "printedName": "Modify()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Void",
+                    "printedName": "()"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:21CoreBluetoothForUnity18CB4UCentralManagerC023peripheralDidWriteValueC21CharacteristicHandlerySV_SPys4Int8VGA2Gs5Int32VtXCSgvM",
+                "mangledName": "$s21CoreBluetoothForUnity18CB4UCentralManagerC023peripheralDidWriteValueC21CharacteristicHandlerySV_SPys4Int8VGA2Gs5Int32VtXCSgvM",
+                "moduleName": "CoreBluetoothForUnity",
+                "implicit": true,
+                "isOpen": true,
+                "accessorKind": "_modify"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
             "name": "peripheralNotFound",
             "printedName": "peripheralNotFound",
             "children": [
@@ -2896,6 +3211,59 @@
           },
           {
             "kind": "Function",
+            "name": "peripheralWriteCharacteristicValue",
+            "printedName": "peripheralWriteCharacteristicValue(_:_:_:_:_:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Int32",
+                "printedName": "Swift.Int32",
+                "usr": "s:s5Int32V"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "CBUUID",
+                "printedName": "CoreBluetooth.CBUUID",
+                "usr": "c:objc(cs)CBUUID"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "CBUUID",
+                "printedName": "CoreBluetooth.CBUUID",
+                "usr": "c:objc(cs)CBUUID"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Data",
+                "printedName": "Foundation.Data",
+                "usr": "s:10Foundation4DataV"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "CBCharacteristicWriteType",
+                "printedName": "CoreBluetooth.CBCharacteristicWriteType",
+                "usr": "c:@E@CBCharacteristicWriteType"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:21CoreBluetoothForUnity18CB4UCentralManagerC34peripheralWriteCharacteristicValueys5Int32VSS_So6CBUUIDCAH10Foundation4DataVSo016CBCharacteristicI4TypeVtF",
+            "mangledName": "$s21CoreBluetoothForUnity18CB4UCentralManagerC34peripheralWriteCharacteristicValueys5Int32VSS_So6CBUUIDCAH10Foundation4DataVSo016CBCharacteristicI4TypeVtF",
+            "moduleName": "CoreBluetoothForUnity",
+            "isOpen": true,
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
             "name": "peripheralState",
             "printedName": "peripheralState(_:)",
             "children": [
@@ -3303,6 +3671,57 @@
             ],
             "isFromExtension": true,
             "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "peripheral",
+            "printedName": "peripheral(_:didWriteValueFor:error:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "CBPeripheral",
+                "printedName": "CoreBluetooth.CBPeripheral",
+                "usr": "c:objc(cs)CBPeripheral"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "CBCharacteristic",
+                "printedName": "CoreBluetooth.CBCharacteristic",
+                "usr": "c:objc(cs)CBCharacteristic"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Swift.Error?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Error",
+                    "printedName": "Swift.Error",
+                    "usr": "s:s5ErrorP"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@CM@CoreBluetoothForUnity@objc(cs)CB4UCentralManager(im)peripheral:didWriteValueForCharacteristic:error:",
+            "mangledName": "$s21CoreBluetoothForUnity18CB4UCentralManagerC10peripheral_013didWriteValueC05errorySo12CBPeripheralC_So16CBCharacteristicCs5Error_pSgtF",
+            "moduleName": "CoreBluetoothForUnity",
+            "isOpen": true,
+            "objc_name": "peripheral:didWriteValueForCharacteristic:error:",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "AccessControl"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
           }
         ],
         "declKind": "Class",
@@ -3431,7 +3850,7 @@
       {
         "kind": "Function",
         "name": "cb4u_central_manager_register_handlers",
-        "printedName": "cb4u_central_manager_register_handlers(_:_:_:_:_:_:_:_:_:)",
+        "printedName": "cb4u_central_manager_register_handlers(_:_:_:_:_:_:_:_:_:_:)",
         "children": [
           {
             "kind": "TypeNominal",
@@ -3887,11 +4306,84 @@
                 ]
               }
             ]
+          },
+          {
+            "kind": "TypeFunc",
+            "name": "Function",
+            "printedName": "(Swift.UnsafeRawPointer, Swift.UnsafePointer<Swift.Int8>, Swift.UnsafePointer<Swift.Int8>, Swift.UnsafePointer<Swift.Int8>, Swift.Int32) -> ()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Tuple",
+                "printedName": "(Swift.UnsafeRawPointer, Swift.UnsafePointer<Swift.Int8>, Swift.UnsafePointer<Swift.Int8>, Swift.UnsafePointer<Swift.Int8>, Swift.Int32)",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "UnsafeRawPointer",
+                    "printedName": "Swift.UnsafeRawPointer",
+                    "usr": "s:SV"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "UnsafePointer",
+                    "printedName": "Swift.UnsafePointer<Swift.Int8>",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Int8",
+                        "printedName": "Swift.Int8",
+                        "usr": "s:s4Int8V"
+                      }
+                    ],
+                    "usr": "s:SP"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "UnsafePointer",
+                    "printedName": "Swift.UnsafePointer<Swift.Int8>",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Int8",
+                        "printedName": "Swift.Int8",
+                        "usr": "s:s4Int8V"
+                      }
+                    ],
+                    "usr": "s:SP"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "UnsafePointer",
+                    "printedName": "Swift.UnsafePointer<Swift.Int8>",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Int8",
+                        "printedName": "Swift.Int8",
+                        "usr": "s:s4Int8V"
+                      }
+                    ],
+                    "usr": "s:SP"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Int32",
+                    "printedName": "Swift.Int32",
+                    "usr": "s:s5Int32V"
+                  }
+                ]
+              }
+            ]
           }
         ],
         "declKind": "Func",
-        "usr": "c:(cm)cb4u_central_manager_register_handlers:::::::::",
-        "mangledName": "$s21CoreBluetoothForUnity38cb4u_central_manager_register_handlersyySV_ySV_SPys4Int8VGtXCySV_AEs5Int32VtXCySV_AeGtXCySV_A2eGtXCySV_AGtXCySV_A2eGtXCySV_A3eGtXCySV_A3ESPys5UInt8VGA2GtXCtF",
+        "usr": "c:(cm)cb4u_central_manager_register_handlers::::::::::",
+        "mangledName": "$s21CoreBluetoothForUnity38cb4u_central_manager_register_handlersyySV_ySV_SPys4Int8VGtXCySV_AEs5Int32VtXCySV_AeGtXCySV_A2eGtXCySV_AGtXCySV_A2eGtXCySV_A3eGtXCySV_A3ESPys5UInt8VGA2GtXCySV_A3eGtXCtF",
         "moduleName": "CoreBluetoothForUnity",
         "declAttributes": [
           "AccessControl",
@@ -4343,6 +4835,102 @@
       },
       {
         "kind": "Function",
+        "name": "cb4u_central_manager_peripheral_write_characteristic_value",
+        "printedName": "cb4u_central_manager_peripheral_write_characteristic_value(_:_:_:_:_:_:_:)",
+        "children": [
+          {
+            "kind": "TypeNominal",
+            "name": "Int32",
+            "printedName": "Swift.Int32",
+            "usr": "s:s5Int32V"
+          },
+          {
+            "kind": "TypeNominal",
+            "name": "UnsafeRawPointer",
+            "printedName": "Swift.UnsafeRawPointer",
+            "usr": "s:SV"
+          },
+          {
+            "kind": "TypeNominal",
+            "name": "UnsafePointer",
+            "printedName": "Swift.UnsafePointer<Swift.Int8>",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Int8",
+                "printedName": "Swift.Int8",
+                "usr": "s:s4Int8V"
+              }
+            ],
+            "usr": "s:SP"
+          },
+          {
+            "kind": "TypeNominal",
+            "name": "UnsafePointer",
+            "printedName": "Swift.UnsafePointer<Swift.Int8>",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Int8",
+                "printedName": "Swift.Int8",
+                "usr": "s:s4Int8V"
+              }
+            ],
+            "usr": "s:SP"
+          },
+          {
+            "kind": "TypeNominal",
+            "name": "UnsafePointer",
+            "printedName": "Swift.UnsafePointer<Swift.Int8>",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Int8",
+                "printedName": "Swift.Int8",
+                "usr": "s:s4Int8V"
+              }
+            ],
+            "usr": "s:SP"
+          },
+          {
+            "kind": "TypeNominal",
+            "name": "UnsafePointer",
+            "printedName": "Swift.UnsafePointer<Swift.UInt8>",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "UInt8",
+                "printedName": "Swift.UInt8",
+                "usr": "s:s5UInt8V"
+              }
+            ],
+            "usr": "s:SP"
+          },
+          {
+            "kind": "TypeNominal",
+            "name": "Int32",
+            "printedName": "Swift.Int32",
+            "usr": "s:s5Int32V"
+          },
+          {
+            "kind": "TypeNominal",
+            "name": "Int32",
+            "printedName": "Swift.Int32",
+            "usr": "s:s5Int32V"
+          }
+        ],
+        "declKind": "Func",
+        "usr": "c:(cm)cb4u_central_manager_peripheral_write_characteristic_value:::::::",
+        "mangledName": "$s21CoreBluetoothForUnity58cb4u_central_manager_peripheral_write_characteristic_valueys5Int32VSV_SPys4Int8VGA2GSPys5UInt8VGA2DtF",
+        "moduleName": "CoreBluetoothForUnity",
+        "declAttributes": [
+          "AccessControl",
+          "CDecl"
+        ],
+        "funcSelfKind": "NonMutating"
+      },
+      {
+        "kind": "Function",
         "name": "cb4u_central_manager_peripheral_state",
         "printedName": "cb4u_central_manager_peripheral_state(_:_:)",
         "children": [
@@ -4467,98 +5055,105 @@
     {
       "filePath": "\/Users\/teach310\/UnityProjects\/CoreBluetoothForUnity\/Plugins\/CoreBluetoothForUnity\/Sources\/CoreBluetoothForUnity\/CB4UCentralManager.swift",
       "kind": "IntegerLiteral",
-      "offset": 1084,
+      "offset": 1201,
       "length": 2,
       "value": "-1"
     },
     {
       "filePath": "\/Users\/teach310\/UnityProjects\/CoreBluetoothForUnity\/Plugins\/CoreBluetoothForUnity\/Sources\/CoreBluetoothForUnity\/CB4UCentralManager.swift",
       "kind": "IntegerLiteral",
-      "offset": 1120,
+      "offset": 1237,
       "length": 2,
       "value": "-2"
     },
     {
       "filePath": "\/Users\/teach310\/UnityProjects\/CoreBluetoothForUnity\/Plugins\/CoreBluetoothForUnity\/Sources\/CoreBluetoothForUnity\/CB4UCentralManager.swift",
       "kind": "IntegerLiteral",
-      "offset": 1163,
+      "offset": 1280,
       "length": 2,
       "value": "-3"
     },
     {
       "filePath": "\/Users\/teach310\/UnityProjects\/CoreBluetoothForUnity\/Plugins\/CoreBluetoothForUnity\/Sources\/CoreBluetoothForUnity\/CB4UCentralManager.swift",
       "kind": "IntegerLiteral",
-      "offset": 1191,
+      "offset": 1308,
       "length": 1,
       "value": "0"
     },
     {
       "filePath": "\/Users\/teach310\/UnityProjects\/CoreBluetoothForUnity\/Plugins\/CoreBluetoothForUnity\/Sources\/CoreBluetoothForUnity\/CB4UCentralManager.swift",
       "kind": "IntegerLiteral",
-      "offset": 1621,
+      "offset": 1738,
       "length": 2,
       "value": "-1"
     },
     {
       "filePath": "\/Users\/teach310\/UnityProjects\/CoreBluetoothForUnity\/Plugins\/CoreBluetoothForUnity\/Sources\/CoreBluetoothForUnity\/CB4UCentralManager.swift",
       "kind": "StringLiteral",
-      "offset": 4108,
+      "offset": 4225,
       "length": 2,
       "value": "\"\""
     },
     {
       "filePath": "\/Users\/teach310\/UnityProjects\/CoreBluetoothForUnity\/Plugins\/CoreBluetoothForUnity\/Sources\/CoreBluetoothForUnity\/CB4UCentralManager.swift",
       "kind": "StringLiteral",
-      "offset": 4808,
+      "offset": 4925,
       "length": 3,
       "value": "\",\""
     },
     {
       "filePath": "\/Users\/teach310\/UnityProjects\/CoreBluetoothForUnity\/Plugins\/CoreBluetoothForUnity\/Sources\/CoreBluetoothForUnity\/CB4UCentralManager.swift",
       "kind": "StringLiteral",
-      "offset": 4816,
+      "offset": 4933,
       "length": 2,
       "value": "\"\""
     },
     {
       "filePath": "\/Users\/teach310\/UnityProjects\/CoreBluetoothForUnity\/Plugins\/CoreBluetoothForUnity\/Sources\/CoreBluetoothForUnity\/CB4UCentralManager.swift",
       "kind": "StringLiteral",
-      "offset": 5480,
+      "offset": 5601,
       "length": 3,
       "value": "\",\""
     },
     {
       "filePath": "\/Users\/teach310\/UnityProjects\/CoreBluetoothForUnity\/Plugins\/CoreBluetoothForUnity\/Sources\/CoreBluetoothForUnity\/CB4UCentralManager.swift",
       "kind": "StringLiteral",
-      "offset": 5488,
+      "offset": 5609,
       "length": 2,
       "value": "\"\""
     },
     {
       "filePath": "\/Users\/teach310\/UnityProjects\/CoreBluetoothForUnity\/Plugins\/CoreBluetoothForUnity\/Sources\/CoreBluetoothForUnity\/CB4UCentralManager.swift",
       "kind": "StringLiteral",
-      "offset": 6203,
+      "offset": 6328,
+      "length": 2,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/teach310\/UnityProjects\/CoreBluetoothForUnity\/Plugins\/CoreBluetoothForUnity\/Sources\/CoreBluetoothForUnity\/CB4UCentralManager.swift",
+      "kind": "StringLiteral",
+      "offset": 7343,
       "length": 2,
       "value": "\"\""
     },
     {
       "filePath": "\/Users\/teach310\/UnityProjects\/CoreBluetoothForUnity\/Plugins\/CoreBluetoothForUnity\/Sources\/CoreBluetoothForUnity\/CoreBluetoothForUnity.swift",
       "kind": "IntegerLiteral",
-      "offset": 4335,
+      "offset": 4755,
       "length": 1,
       "value": "0"
     },
     {
       "filePath": "\/Users\/teach310\/UnityProjects\/CoreBluetoothForUnity\/Plugins\/CoreBluetoothForUnity\/Sources\/CoreBluetoothForUnity\/CoreBluetoothForUnity.swift",
       "kind": "IntegerLiteral",
-      "offset": 5513,
+      "offset": 5933,
       "length": 1,
       "value": "0"
     },
     {
       "filePath": "\/Users\/teach310\/UnityProjects\/CoreBluetoothForUnity\/Plugins\/CoreBluetoothForUnity\/Sources\/CoreBluetoothForUnity\/CoreBluetoothForUnity.swift",
       "kind": "IntegerLiteral",
-      "offset": 6290,
+      "offset": 6710,
       "length": 1,
       "value": "0"
     }

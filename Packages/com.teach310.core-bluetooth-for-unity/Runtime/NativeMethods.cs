@@ -26,6 +26,7 @@ namespace CoreBluetooth
         internal delegate void CB4UPeripheralDidDiscoverServicesHandler(IntPtr centralPtr, IntPtr peripheralIdPtr, IntPtr commaSeparatedServiceUUIDsPtr, int errorCode);
         internal delegate void CB4UPeripheralDidDiscoverCharacteristicsHandler(IntPtr centralPtr, IntPtr peripheralIdPtr, IntPtr serviceUUIDPtr, IntPtr commaSeparatedCharacteristicUUIDsPtr, int errorCode);
         internal delegate void CB4UPeripheralDidUpdateValueForCharacteristicHandler(IntPtr centralPtr, IntPtr peripheralIdPtr, IntPtr serviceUUIDPtr, IntPtr characteristicUUIDPtr, IntPtr dataPtr, int dataLength, int errorCode);
+        internal delegate void CB4UPeripheralDidWriteValueForCharacteristicHandler(IntPtr centralPtr, IntPtr peripheralIdPtr, IntPtr serviceUUIDPtr, IntPtr characteristicUUIDPtr, int errorCode);
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void cb4u_central_manager_register_handlers(
@@ -37,7 +38,8 @@ namespace CoreBluetooth
             CB4UCentralManagerDidUpdateStateHandler didUpdateStateHandler,
             CB4UPeripheralDidDiscoverServicesHandler peripheralDidDiscoverServicesHandler,
             CB4UPeripheralDidDiscoverCharacteristicsHandler peripheralDidDiscoverCharacteristicsHandler,
-            CB4UPeripheralDidUpdateValueForCharacteristicHandler peripheralDidUpdateValueForCharacteristicHandler
+            CB4UPeripheralDidUpdateValueForCharacteristicHandler peripheralDidUpdateValueForCharacteristicHandler,
+            CB4UPeripheralDidWriteValueForCharacteristicHandler peripheralDidWriteValueForCharacteristicHandler
         );
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
@@ -83,6 +85,17 @@ namespace CoreBluetooth
             [MarshalAs(UnmanagedType.LPStr), In] string peripheralId,
             [MarshalAs(UnmanagedType.LPStr), In] string serviceUUID,
             [MarshalAs(UnmanagedType.LPStr), In] string characteristicUUID
+        );
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int cb4u_central_manager_peripheral_write_characteristic_value(
+            SafeNativeCentralManagerHandle handle,
+            [MarshalAs(UnmanagedType.LPStr), In] string peripheralId,
+            [MarshalAs(UnmanagedType.LPStr), In] string serviceUUID,
+            [MarshalAs(UnmanagedType.LPStr), In] string characteristicUUID,
+            [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.U1, SizeParamIndex = 5)] byte[] dataBytes,
+            int dataLength,
+            int writeType
         );
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]

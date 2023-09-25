@@ -17,6 +17,7 @@ namespace CoreBluetooth
         void DiscoverServices(string[] serviceUUIDs);
         void DiscoverCharacteristics(string[] characteristicUUIDs, CBService service);
         void ReadValue(CBCharacteristic characteristic);
+        void WriteValue(byte[] data, CBCharacteristic characteristic, CBCharacteristicWriteType type);
         CBPeripheralState State { get; }
     }
 
@@ -25,6 +26,7 @@ namespace CoreBluetooth
         void DiscoveredService(CBPeripheral peripheral, CBError error) { }
         void DiscoveredCharacteristic(CBPeripheral peripheral, CBService service, CBError error) { }
         void UpdatedCharacteristicValue(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error) { }
+        void WroteCharacteristicValue(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error) { }
     }
 
     /// <summary>
@@ -72,6 +74,11 @@ namespace CoreBluetooth
         /// </summary>
         public void ReadValue(CBCharacteristic characteristic) => _nativePeripheral.ReadValue(characteristic);
 
+        public void WriteValue(byte[] data, CBCharacteristic characteristic, CBCharacteristicWriteType type)
+        {
+            _nativePeripheral.WriteValue(data, characteristic, type);
+        }
+
         /// <summary>
         /// The connection state of the peripheral.
         /// </summary>
@@ -106,6 +113,11 @@ namespace CoreBluetooth
         {
             characteristic.UpdateValue(data);
             Delegate?.UpdatedCharacteristicValue(this, characteristic, error);
+        }
+
+        internal void DidWriteValueForCharacteristic(CBCharacteristic characteristic, CBError error)
+        {
+            Delegate?.WroteCharacteristicValue(this, characteristic, error);
         }
 
         public override string ToString()

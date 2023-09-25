@@ -53,6 +53,12 @@ extension CB4UCentralManager {
         }
     }
     
+    public func peripheralWriteCharacteristicValue(_ peripheralId: String, _ serviceUUID: CBUUID, _ characteristicUUID: CBUUID, _ value: Data, _ type: CBCharacteristicWriteType) -> Int32 {
+        return delegatePeripheralForCharacteristic(peripheralId, serviceUUID, characteristicUUID) { (peripheral, service, characteristic) -> Void in
+            peripheral.writeValue(value, for: characteristic, type: type)
+        }
+    }
+    
     public func peripheralState(_ peripheralId: String) -> Int32 {
         return delegatePeripheral(peripheralId) { (peripheral) -> Int32 in
             return Int32(peripheral.state.rawValue)
