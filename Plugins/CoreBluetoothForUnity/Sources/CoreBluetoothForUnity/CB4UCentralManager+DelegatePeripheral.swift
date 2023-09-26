@@ -59,6 +59,12 @@ extension CB4UCentralManager {
         }
     }
     
+    public func peripheralSetNotifyValue(_ peripheralId: String, _ serviceUUID: CBUUID, _ characteristicUUID: CBUUID, _ enabled: Bool) -> Int32 {
+        return delegatePeripheralForCharacteristic(peripheralId, serviceUUID, characteristicUUID) { (peripheral, service, characteristic) -> Void in
+            peripheral.setNotifyValue(enabled, for: characteristic)
+        }
+    }
+    
     public func peripheralState(_ peripheralId: String) -> Int32 {
         return delegatePeripheral(peripheralId) { (peripheral) -> Int32 in
             return Int32(peripheral.state.rawValue)

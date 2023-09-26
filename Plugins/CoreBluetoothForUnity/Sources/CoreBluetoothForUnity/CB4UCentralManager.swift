@@ -17,6 +17,7 @@ public class CB4UCentralManager : NSObject {
     public var peripheralDidDiscoverCharacteristicsHandler: CB4UPeripheralDidDiscoverCharacteristicsHandler?
     public var peripheralDidUpdateValueForCharacteristicHandler: CB4UPeripheralDidUpdateValueForCharacteristicHandler?
     public var peripheralDidWriteValueForCharacteristicHandler: CB4UPeripheralDidWriteValueForCharacteristicHandler?
+    public var peripheralDidUpdateNotificationStateForCharacteristicHandler: CB4UPeripheralDidUpdateNotificationStateForCharacteristicHandler?
     
     let peripheralNotFound: Int32 = -1
     let serviceNotFound: Int32 = -2
@@ -172,6 +173,21 @@ extension CB4UCentralManager : CBPeripheralDelegate {
             serviceId.withCString { (serviceIdCString) in
                 characteristicId.withCString { (characteristicIdCString) in
                     peripheralDidWriteValueForCharacteristicHandler?(selfPointer(), peripheralIdCString, serviceIdCString, characteristicIdCString, errorToCode(error))
+                }
+            }
+        }
+    }
+    
+    public func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
+        let peripheralId = peripheral.identifier.uuidString
+        let serviceId = characteristic.service?.uuid.uuidString ?? ""
+        let characteristicId = characteristic.uuid.uuidString
+        let notificationState = characteristic.isNotifying ? 1 : 0
+        
+        peripheralId.withCString { (peripheralIdCString) in
+            serviceId.withCString { (serviceIdCString) in
+                characteristicId.withCString { (characteristicIdCString) in
+                    peripheralDidUpdateNotificationStateForCharacteristicHandler?(selfPointer(), peripheralIdCString, serviceIdCString, characteristicIdCString, Int32(notificationState), errorToCode(error))
                 }
             }
         }
