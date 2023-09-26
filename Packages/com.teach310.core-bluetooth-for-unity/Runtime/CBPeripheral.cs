@@ -28,6 +28,7 @@ namespace CoreBluetooth
         void DiscoveredCharacteristic(CBPeripheral peripheral, CBService service, CBError error) { }
         void UpdatedCharacteristicValue(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error) { }
         void WroteCharacteristicValue(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error) { }
+        void UpdatedNotificationState(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error) { }
     }
 
     /// <summary>
@@ -127,6 +128,12 @@ namespace CoreBluetooth
         internal void DidWriteValueForCharacteristic(CBCharacteristic characteristic, CBError error)
         {
             Delegate?.WroteCharacteristicValue(this, characteristic, error);
+        }
+
+        internal void DidUpdateNotificationStateForCharacteristic(CBCharacteristic characteristic, bool isNotifying, CBError error)
+        {
+            characteristic.UpdateIsNotifying(isNotifying);
+            Delegate?.UpdatedNotificationState(this, characteristic, error);
         }
 
         public override string ToString()

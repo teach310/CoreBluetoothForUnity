@@ -46,6 +46,9 @@ namespace CoreBluetooth
 
         public CBCharacteristicProperties Properties => _nativeCharacteristic.Properties;
 
+        public bool IsNotifying { get; private set; }
+        internal void UpdateIsNotifying(bool isNotifying) => IsNotifying = isNotifying;
+
         INativeCharacteristic _nativeCharacteristic;
 
         internal CBCharacteristic(string uuid, CBService service, INativeCharacteristic nativeCharacteristic)
@@ -58,7 +61,8 @@ namespace CoreBluetooth
         public override string ToString()
         {
             var valueText = Value == null ? "null" : $"{{length = {Value.Length}, bytes = {BitConverter.ToString(Value).Replace("-", "")}}}";
-            return $"CBCharacteristic: UUID = {UUID}, properties = {Properties}, value = {valueText}";
+            var notifyingText = IsNotifying ? "YES" : "NO";
+            return $"CBCharacteristic: UUID = {UUID}, properties = {Properties}, value = {valueText}, notifying = {notifyingText}";
         }
     }
 }

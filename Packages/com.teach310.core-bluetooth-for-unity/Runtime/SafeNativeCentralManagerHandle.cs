@@ -40,7 +40,8 @@ namespace CoreBluetooth
                 PeripheralDidDiscoverServices,
                 PeripheralDidDiscoverCharacteristics,
                 PeripheralDidUpdateValueForCharacteristic,
-                PeripheralDidWriteValueForCharacteristic
+                PeripheralDidWriteValueForCharacteristic,
+                PeripheralDidUpdateNotificationStateForCharacteristic
             );
         }
 
@@ -148,6 +149,18 @@ namespace CoreBluetooth
                 Marshal.PtrToStringUTF8(peripheralIdPtr),
                 Marshal.PtrToStringUTF8(serviceUUIDPtr),
                 Marshal.PtrToStringUTF8(characteristicUUIDPtr),
+                CBError.CreateOrNullFromCode(errorCode)
+            );
+        }
+
+        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralDidUpdateNotificationStateForCharacteristicHandler))]
+        internal static void PeripheralDidUpdateNotificationStateForCharacteristic(IntPtr centralPtr, IntPtr peripheralIdPtr, IntPtr serviceUUIDPtr, IntPtr characteristicUUIDPtr, int notificationState, int errorCode)
+        {
+            GetCentralManager(centralPtr)?.PeripheralDidUpdateNotificationStateForCharacteristic(
+                Marshal.PtrToStringUTF8(peripheralIdPtr),
+                Marshal.PtrToStringUTF8(serviceUUIDPtr),
+                Marshal.PtrToStringUTF8(characteristicUUIDPtr),
+                notificationState == 1,
                 CBError.CreateOrNullFromCode(errorCode)
             );
         }
