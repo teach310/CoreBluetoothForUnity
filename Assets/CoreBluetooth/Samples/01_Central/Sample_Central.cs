@@ -89,6 +89,11 @@ namespace CoreBluetoothSample
                     remoteCharacteristic = characteristic;
                 }
 
+                if (characteristic.Properties.HasFlag(CBCharacteristicProperties.Notify))
+                {
+                    peripheral.SetNotifyValue(true, characteristic);
+                }
+
                 if (characteristic.Properties.HasFlag(CBCharacteristicProperties.Read))
                 {
                     peripheral.ReadValue(characteristic);
@@ -115,6 +120,16 @@ namespace CoreBluetoothSample
             if (error != null)
             {
                 Debug.LogError($"[WroteCharacteristicValue] error: {error}");
+                return;
+            }
+        }
+
+        public void UpdatedNotificationState(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error)
+        {
+            Debug.Log($"[UpdatedNotificationState] characteristic: {characteristic}");
+            if (error != null)
+            {
+                Debug.LogError($"[UpdatedNotificationState] error: {error}");
                 return;
             }
         }

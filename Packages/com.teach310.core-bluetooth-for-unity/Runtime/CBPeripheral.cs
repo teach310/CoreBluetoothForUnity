@@ -18,6 +18,7 @@ namespace CoreBluetooth
         void DiscoverCharacteristics(string[] characteristicUUIDs, CBService service);
         void ReadValue(CBCharacteristic characteristic);
         void WriteValue(byte[] data, CBCharacteristic characteristic, CBCharacteristicWriteType type);
+        void SetNotifyValue(bool enabled, CBCharacteristic characteristic);
         CBPeripheralState State { get; }
     }
 
@@ -27,6 +28,7 @@ namespace CoreBluetooth
         void DiscoveredCharacteristic(CBPeripheral peripheral, CBService service, CBError error) { }
         void UpdatedCharacteristicValue(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error) { }
         void WroteCharacteristicValue(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error) { }
+        void UpdatedNotificationState(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error) { }
     }
 
     /// <summary>
@@ -80,6 +82,14 @@ namespace CoreBluetooth
         }
 
         /// <summary>
+        /// Sets notifications or indications for the value of a specified characteristic.
+        /// </summary>
+        public void SetNotifyValue(bool enabled, CBCharacteristic characteristic)
+        {
+            _nativePeripheral.SetNotifyValue(enabled, characteristic);
+        }
+
+        /// <summary>
         /// The connection state of the peripheral.
         /// </summary>
         public CBPeripheralState State => _nativePeripheral.State;
@@ -118,6 +128,12 @@ namespace CoreBluetooth
         internal void DidWriteValueForCharacteristic(CBCharacteristic characteristic, CBError error)
         {
             Delegate?.WroteCharacteristicValue(this, characteristic, error);
+        }
+
+        internal void DidUpdateNotificationStateForCharacteristic(CBCharacteristic characteristic, bool isNotifying, CBError error)
+        {
+            characteristic.UpdateIsNotifying(isNotifying);
+            Delegate?.UpdatedNotificationState(this, characteristic, error);
         }
 
         public override string ToString()

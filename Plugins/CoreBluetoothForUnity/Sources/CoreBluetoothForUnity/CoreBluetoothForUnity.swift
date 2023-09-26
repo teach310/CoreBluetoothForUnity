@@ -20,6 +20,7 @@ public typealias CB4UPeripheralDidDiscoverServicesHandler = @convention(c) (Unsa
 public typealias CB4UPeripheralDidDiscoverCharacteristicsHandler = @convention(c) (UnsafeRawPointer, UnsafePointer<CChar>, UnsafePointer<CChar>, UnsafePointer<CChar>, Int32) -> Void
 public typealias CB4UPeripheralDidUpdateValueForCharacteristicHandler = @convention(c) (UnsafeRawPointer, UnsafePointer<CChar>, UnsafePointer<CChar>, UnsafePointer<CChar>, UnsafePointer<UInt8>, Int32, Int32) -> Void
 public typealias CB4UPeripheralDidWriteValueForCharacteristicHandler = @convention(c) (UnsafeRawPointer, UnsafePointer<CChar>, UnsafePointer<CChar>, UnsafePointer<CChar>, Int32) -> Void
+public typealias CB4UPeripheralDidUpdateNotificationStateForCharacteristicHandler = @convention(c) (UnsafeRawPointer, UnsafePointer<CChar>, UnsafePointer<CChar>, UnsafePointer<CChar>, Int32, Int32) -> Void
 
 @_cdecl("cb4u_central_manager_register_handlers")
 public func cb4u_central_manager_register_handlers(
@@ -32,8 +33,8 @@ public func cb4u_central_manager_register_handlers(
     _ peripheralDidDiscoverServicesHandler: @escaping CB4UPeripheralDidDiscoverServicesHandler,
     _ peripheralDidDiscoverCharacteristicsHandler: @escaping CB4UPeripheralDidDiscoverCharacteristicsHandler,
     _ peripheralDidUpdateValueForCharacteristicHandler: @escaping CB4UPeripheralDidUpdateValueForCharacteristicHandler,
-    _ peripheralDidWriteValueForCharacteristicHandler: @escaping CB4UPeripheralDidWriteValueForCharacteristicHandler
-    
+    _ peripheralDidWriteValueForCharacteristicHandler: @escaping CB4UPeripheralDidWriteValueForCharacteristicHandler,
+    _ peripheralDidUpdateNotificationStateForCharacteristicHandler: @escaping CB4UPeripheralDidUpdateNotificationStateForCharacteristicHandler
 ) {
     let instance = Unmanaged<CB4UCentralManager>.fromOpaque(centralPtr).takeUnretainedValue()
     
@@ -47,6 +48,7 @@ public func cb4u_central_manager_register_handlers(
     instance.peripheralDidDiscoverCharacteristicsHandler = peripheralDidDiscoverCharacteristicsHandler
     instance.peripheralDidUpdateValueForCharacteristicHandler = peripheralDidUpdateValueForCharacteristicHandler
     instance.peripheralDidWriteValueForCharacteristicHandler = peripheralDidWriteValueForCharacteristicHandler
+    instance.peripheralDidUpdateNotificationStateForCharacteristicHandler = peripheralDidUpdateNotificationStateForCharacteristicHandler
 }
 
 @_cdecl("cb4u_central_manager_connect")
@@ -154,6 +156,19 @@ public func cb4u_central_manager_peripheral_write_characteristic_value(
     
     let data = Data(bytes: dataBytes, count: Int(dataLength))
     return instance.peripheralWriteCharacteristicValue(String(cString: peripheralId), CBUUID(string: String(cString: serviceUUID)), CBUUID(string: String(cString: characteristicUUID)), data, CBCharacteristicWriteType(rawValue: Int(writeType))!)
+}
+
+@_cdecl("cb4u_central_manager_peripheral_set_notify_value")
+public func cb4u_central_manager_peripheral_set_notify_value(
+    _ centralPtr: UnsafeRawPointer,
+    _ peripheralId: UnsafePointer<CChar>,
+    _ serviceUUID: UnsafePointer<CChar>,
+    _ characteristicUUID: UnsafePointer<CChar>,
+    _ enabled: Bool
+) -> Int32 {
+    let instance = Unmanaged<CB4UCentralManager>.fromOpaque(centralPtr).takeUnretainedValue()
+    
+    return instance.peripheralSetNotifyValue(String(cString: peripheralId), CBUUID(string: String(cString: serviceUUID)), CBUUID(string: String(cString: characteristicUUID)), enabled)
 }
 
 @_cdecl("cb4u_central_manager_peripheral_state")

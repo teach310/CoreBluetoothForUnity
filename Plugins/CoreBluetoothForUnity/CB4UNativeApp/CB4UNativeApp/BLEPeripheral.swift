@@ -125,6 +125,7 @@ class BLEPeripheral: NSObject, CBPeripheralManagerDelegate {
                 print("data: \(String(data: data, encoding: .utf8) ?? "")")
                 
                 characteristic?.value = data
+                peripheral.updateValue(data, for: characteristic!, onSubscribedCentrals: nil)
             }
             
             peripheral.respond(to: request, withResult: .success)

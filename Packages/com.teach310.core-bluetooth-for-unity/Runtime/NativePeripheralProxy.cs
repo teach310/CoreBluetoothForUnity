@@ -85,6 +85,21 @@ namespace CoreBluetooth
             ExceptionUtils.ThrowIfCharacteristicNotFound(result, characteristic.UUID);
         }
 
+        void INativePeripheral.SetNotifyValue(bool enabled, CBCharacteristic characteristic)
+        {
+            int result = NativeMethods.cb4u_central_manager_peripheral_set_notify_value(
+                _handle,
+                _peripheralId,
+                characteristic.Service.UUID,
+                characteristic.UUID,
+                enabled
+            );
+
+            ExceptionUtils.ThrowIfPeripheralNotFound(result, _peripheralId);
+            ExceptionUtils.ThrowIfServiceNotFound(result, characteristic.Service.UUID);
+            ExceptionUtils.ThrowIfCharacteristicNotFound(result, characteristic.UUID);
+        }
+
         CBPeripheralState INativePeripheral.State
         {
             get
