@@ -109,6 +109,16 @@ namespace CoreBluetoothSample
             Debug.Log($"Data: {str}");
         }
 
+        public void WroteCharacteristicValue(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error)
+        {
+            Debug.Log($"[WroteCharacteristicValue] characteristic: {characteristic}");
+            if (error != null)
+            {
+                Debug.LogError($"[WroteCharacteristicValue] error: {error}");
+                return;
+            }
+        }
+
         public void OnClickWrite()
         {
             if (peripheral == null)
