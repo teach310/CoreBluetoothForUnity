@@ -13,7 +13,12 @@ help:
 format:
 	dotnet format CoreBluetoothForUnity.sln
 
-# .PHONY: package/build
+.PHONY: package/build
 package/build:
 	mv -f ./Assets/CoreBluetooth/Samples/ ./${PACKAGE_DIR}/Samples~/
 	mv -f README.md ./${PACKAGE_DIR}/README.md
+
+.PHONY: plugins/build
+plugins/build:
+	make -C Plugins/CoreBluetoothForUnity bundle
+	make -C Plugins/CoreBluetoothForUnity framework

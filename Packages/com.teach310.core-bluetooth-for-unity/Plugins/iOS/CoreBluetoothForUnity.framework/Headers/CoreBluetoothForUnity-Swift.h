@@ -260,6 +260,9 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 #if __has_warning("-Watimport-in-framework-header")
 #pragma clang diagnostic ignored "-Watimport-in-framework-header"
 #endif
+@import CoreBluetooth;
+@import Foundation;
+@import ObjectiveC;
 #endif
 
 #endif
@@ -281,7 +284,81 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 
 #if defined(__OBJC__)
 
-SWIFT_EXTERN int32_t cb4u_hello(void) SWIFT_WARN_UNUSED_RESULT;
+SWIFT_CLASS("_TtC21CoreBluetoothForUnity18CB4UCentralManager")
+@interface CB4UCentralManager : NSObject
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+@end
+
+
+@class CBCentralManager;
+@class CBPeripheral;
+@class NSString;
+@class NSNumber;
+
+@interface CB4UCentralManager (SWIFT_EXTENSION(CoreBluetoothForUnity)) <CBCentralManagerDelegate>
+- (void)centralManager:(CBCentralManager * _Nonnull)central didConnectPeripheral:(CBPeripheral * _Nonnull)peripheral;
+- (void)centralManager:(CBCentralManager * _Nonnull)central didDisconnectPeripheral:(CBPeripheral * _Nonnull)peripheral error:(NSError * _Nullable)error;
+- (void)centralManager:(CBCentralManager * _Nonnull)central didFailToConnectPeripheral:(CBPeripheral * _Nonnull)peripheral error:(NSError * _Nullable)error;
+- (void)centralManager:(CBCentralManager * _Nonnull)central didDiscoverPeripheral:(CBPeripheral * _Nonnull)peripheral advertisementData:(NSDictionary<NSString *, id> * _Nonnull)advertisementData RSSI:(NSNumber * _Nonnull)RSSI;
+- (void)centralManagerDidUpdateState:(CBCentralManager * _Nonnull)central;
+@end
+
+@class CBService;
+@class CBCharacteristic;
+
+@interface CB4UCentralManager (SWIFT_EXTENSION(CoreBluetoothForUnity)) <CBPeripheralDelegate>
+- (void)peripheral:(CBPeripheral * _Nonnull)peripheral didDiscoverServices:(NSError * _Nullable)error;
+- (void)peripheral:(CBPeripheral * _Nonnull)peripheral didDiscoverCharacteristicsForService:(CBService * _Nonnull)service error:(NSError * _Nullable)error;
+- (void)peripheral:(CBPeripheral * _Nonnull)peripheral didUpdateValueForCharacteristic:(CBCharacteristic * _Nonnull)characteristic error:(NSError * _Nullable)error;
+- (void)peripheral:(CBPeripheral * _Nonnull)peripheral didWriteValueForCharacteristic:(CBCharacteristic * _Nonnull)characteristic error:(NSError * _Nullable)error;
+- (void)peripheral:(CBPeripheral * _Nonnull)peripheral didUpdateNotificationStateForCharacteristic:(CBCharacteristic * _Nonnull)characteristic error:(NSError * _Nullable)error;
+@end
+
+
+
+SWIFT_EXTERN int32_t cb4u_central_manager_cancel_peripheral_connection(void const * _Nonnull centralPtr, char const * _Nonnull peripheralId) SWIFT_WARN_UNUSED_RESULT;
+
+
+SWIFT_EXTERN int32_t cb4u_central_manager_characteristic_properties(void const * _Nonnull centralPtr, char const * _Nonnull peripheralId, char const * _Nonnull serviceUUID, char const * _Nonnull characteristicUUID) SWIFT_WARN_UNUSED_RESULT;
+
+
+SWIFT_EXTERN int32_t cb4u_central_manager_connect(void const * _Nonnull centralPtr, char const * _Nonnull peripheralId) SWIFT_WARN_UNUSED_RESULT;
+
+
+SWIFT_EXTERN BOOL cb4u_central_manager_is_scanning(void const * _Nonnull centralPtr) SWIFT_WARN_UNUSED_RESULT;
+
+
+SWIFT_EXTERN void * _Nonnull cb4u_central_manager_new(void) SWIFT_WARN_UNUSED_RESULT;
+
+
+SWIFT_EXTERN int32_t cb4u_central_manager_peripheral_discover_characteristics(void const * _Nonnull centralPtr, char const * _Nonnull peripheralId, char const * _Nonnull serviceUUID, char const * _Nullable const * _Nonnull characteristicUUIDs, int32_t characteristicUUIDsCount) SWIFT_WARN_UNUSED_RESULT;
+
+
+SWIFT_EXTERN int32_t cb4u_central_manager_peripheral_discover_services(void const * _Nonnull centralPtr, char const * _Nonnull peripheralId, char const * _Nullable const * _Nonnull serviceUUIDs, int32_t serviceUUIDsCount) SWIFT_WARN_UNUSED_RESULT;
+
+
+SWIFT_EXTERN int32_t cb4u_central_manager_peripheral_read_characteristic_value(void const * _Nonnull centralPtr, char const * _Nonnull peripheralId, char const * _Nonnull serviceUUID, char const * _Nonnull characteristicUUID) SWIFT_WARN_UNUSED_RESULT;
+
+
+SWIFT_EXTERN int32_t cb4u_central_manager_peripheral_set_notify_value(void const * _Nonnull centralPtr, char const * _Nonnull peripheralId, char const * _Nonnull serviceUUID, char const * _Nonnull characteristicUUID, BOOL enabled) SWIFT_WARN_UNUSED_RESULT;
+
+
+SWIFT_EXTERN int32_t cb4u_central_manager_peripheral_state(void const * _Nonnull centralPtr, char const * _Nonnull peripheralId) SWIFT_WARN_UNUSED_RESULT;
+
+
+SWIFT_EXTERN int32_t cb4u_central_manager_peripheral_write_characteristic_value(void const * _Nonnull centralPtr, char const * _Nonnull peripheralId, char const * _Nonnull serviceUUID, char const * _Nonnull characteristicUUID, uint8_t const * _Nonnull dataBytes, int32_t dataLength, int32_t writeType) SWIFT_WARN_UNUSED_RESULT;
+
+
+SWIFT_EXTERN void cb4u_central_manager_register_handlers(void const * _Nonnull centralPtr, void (* _Nonnull didConnectHandler)(void const * _Nonnull, char const * _Nonnull), void (* _Nonnull didDisconnectPeripheralHandler)(void const * _Nonnull, char const * _Nonnull, int32_t), void (* _Nonnull didFailToConnectHandler)(void const * _Nonnull, char const * _Nonnull, int32_t), void (* _Nonnull didDiscoverPeripheralHandler)(void const * _Nonnull, char const * _Nonnull, char const * _Nonnull, int32_t), void (* _Nonnull didUpdateStateHandler)(void const * _Nonnull, int32_t), void (* _Nonnull peripheralDidDiscoverServicesHandler)(void const * _Nonnull, char const * _Nonnull, char const * _Nonnull, int32_t), void (* _Nonnull peripheralDidDiscoverCharacteristicsHandler)(void const * _Nonnull, char const * _Nonnull, char const * _Nonnull, char const * _Nonnull, int32_t), void (* _Nonnull peripheralDidUpdateValueForCharacteristicHandler)(void const * _Nonnull, char const * _Nonnull, char const * _Nonnull, char const * _Nonnull, uint8_t const * _Nonnull, int32_t, int32_t), void (* _Nonnull peripheralDidWriteValueForCharacteristicHandler)(void const * _Nonnull, char const * _Nonnull, char const * _Nonnull, char const * _Nonnull, int32_t), void (* _Nonnull peripheralDidUpdateNotificationStateForCharacteristicHandler)(void const * _Nonnull, char const * _Nonnull, char const * _Nonnull, char const * _Nonnull, int32_t, int32_t));
+
+
+SWIFT_EXTERN void cb4u_central_manager_release(void const * _Nonnull centralManagerPtr);
+
+
+SWIFT_EXTERN void cb4u_central_manager_scan_for_peripherals(void const * _Nonnull centralPtr, char const * _Nullable const * _Nonnull serviceUUIDs, int32_t serviceUUIDsCount);
+
+
+SWIFT_EXTERN void cb4u_central_manager_stop_scan(void const * _Nonnull centralPtr);
 
 #endif
 #if defined(__cplusplus)
