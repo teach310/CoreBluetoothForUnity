@@ -24,11 +24,11 @@ namespace CoreBluetooth
 
     public interface ICBPeripheralDelegate
     {
-        void DiscoveredService(CBPeripheral peripheral, CBError error) { }
-        void DiscoveredCharacteristic(CBPeripheral peripheral, CBService service, CBError error) { }
-        void UpdatedCharacteristicValue(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error) { }
-        void WroteCharacteristicValue(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error) { }
-        void UpdatedNotificationState(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error) { }
+        void DidDiscoverServices(CBPeripheral peripheral, CBError error) { }
+        void DidDiscoverCharacteristics(CBPeripheral peripheral, CBService service, CBError error) { }
+        void DidUpdateValueForCharacteristic(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error) { }
+        void DidWriteValueForCharacteristic(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error) { }
+        void DidUpdateNotificationStateForCharacteristic(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error) { }
     }
 
     /// <summary>
@@ -110,30 +110,30 @@ namespace CoreBluetooth
         {
             _services.Clear();
             _services.AddRange(services);
-            Delegate?.DiscoveredService(this, error);
+            Delegate?.DidDiscoverServices(this, error);
         }
 
         internal void DidDiscoverCharacteristics(CBCharacteristic[] characteristics, CBService service, CBError error)
         {
             service.UpdateCharacteristics(characteristics);
-            Delegate?.DiscoveredCharacteristic(this, service, error);
+            Delegate?.DidDiscoverCharacteristics(this, service, error);
         }
 
         internal void DidUpdateValueForCharacteristic(CBCharacteristic characteristic, byte[] data, CBError error)
         {
             characteristic.UpdateValue(data);
-            Delegate?.UpdatedCharacteristicValue(this, characteristic, error);
+            Delegate?.DidUpdateValueForCharacteristic(this, characteristic, error);
         }
 
         internal void DidWriteValueForCharacteristic(CBCharacteristic characteristic, CBError error)
         {
-            Delegate?.WroteCharacteristicValue(this, characteristic, error);
+            Delegate?.DidWriteValueForCharacteristic(this, characteristic, error);
         }
 
         internal void DidUpdateNotificationStateForCharacteristic(CBCharacteristic characteristic, bool isNotifying, CBError error)
         {
             characteristic.UpdateIsNotifying(isNotifying);
-            Delegate?.UpdatedNotificationState(this, characteristic, error);
+            Delegate?.DidUpdateNotificationStateForCharacteristic(this, characteristic, error);
         }
 
         public override string ToString()

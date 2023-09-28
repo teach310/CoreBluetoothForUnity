@@ -20,69 +20,69 @@ namespace CoreBluetoothSample
             centralManager = CBCentralManager.Create(this);
         }
 
-        public void DiscoveredPeripheral(CBCentralManager central, CBPeripheral peripheral, int rssi)
+        public void DidDiscoverPeripheral(CBCentralManager central, CBPeripheral peripheral, int rssi)
         {
-            Debug.Log($"[DiscoveredPeripheral] peripheral: {peripheral}  rssi: {rssi}");
+            Debug.Log($"[DidDiscoverPeripheral] peripheral: {peripheral}  rssi: {rssi}");
             this.peripheral = peripheral;
             peripheral.Delegate = this;
             central.StopScan();
             central.Connect(peripheral);
         }
 
-        public void UpdatedState(CBCentralManager central)
+        public void DidUpdateState(CBCentralManager central)
         {
-            Debug.Log($"[UpdatedState] {central.State}");
+            Debug.Log($"[DidUpdateState] {central.State}");
             if (central.State == CBManagerState.PoweredOn)
             {
-                Debug.Log($"[UpdatedState] Start scanning for peripherals...");
+                Debug.Log($"[DidUpdateState] Start scanning for peripherals...");
                 central.ScanForPeripherals(new string[] { serviceUUID });
             }
         }
 
-        public void ConnectedPeripheral(CBCentralManager central, CBPeripheral peripheral)
+        public void DidConnectPeripheral(CBCentralManager central, CBPeripheral peripheral)
         {
-            Debug.Log($"[ConnectedPeripheral] peripheral: {peripheral}");
+            Debug.Log($"[DidConnectPeripheral] peripheral: {peripheral}");
             peripheral.DiscoverServices(new string[] { serviceUUID });
         }
 
-        public void DisconnectedPeripheral(CBCentralManager central, CBPeripheral peripheral, CBError error)
+        public void DidDisconnectPeripheral(CBCentralManager central, CBPeripheral peripheral, CBError error)
         {
-            Debug.Log($"[DisconnectedPeripheral] peripheral: {peripheral}  error: {error}");
+            Debug.Log($"[DidDisconnectPeripheral] peripheral: {peripheral}  error: {error}");
         }
 
-        public void FailedToConnect(CBCentralManager central, CBPeripheral peripheral, CBError error)
+        public void DidFailToConnectPeripheral(CBCentralManager central, CBPeripheral peripheral, CBError error)
         {
-            Debug.Log($"[FailedToConnect] peripheral: {peripheral}  error: {error}");
+            Debug.Log($"[DidFailToConnectPeripheral] peripheral: {peripheral}  error: {error}");
         }
 
-        public void DiscoveredService(CBPeripheral peripheral, CBError error)
+        public void DidDiscoverServices(CBPeripheral peripheral, CBError error)
         {
-            Debug.Log($"[DiscoveredService] peripheral: {peripheral}");
+            Debug.Log($"[DidDiscoverServices] peripheral: {peripheral}");
             if (error != null)
             {
-                Debug.LogError($"[DiscoveredService] error: {error}");
+                Debug.LogError($"[DidDiscoverServices] error: {error}");
                 return;
             }
 
             foreach (var service in peripheral.Services)
             {
-                Debug.Log($"[DiscoveredService] service: {service}, start discovering characteristics...");
+                Debug.Log($"[DidDiscoverServices] service: {service}, start discovering characteristics...");
                 peripheral.DiscoverCharacteristics(new string[] { characteristicUUID }, service);
             }
         }
 
-        public void DiscoveredCharacteristic(CBPeripheral peripheral, CBService service, CBError error)
+        public void DidDiscoverCharacteristics(CBPeripheral peripheral, CBService service, CBError error)
         {
-            Debug.Log($"[DiscoveredCharacteristic] peripheral: {peripheral}  service: {service}");
+            Debug.Log($"[DidDiscoverCharacteristics] peripheral: {peripheral}  service: {service}");
             if (error != null)
             {
-                Debug.LogError($"[DiscoveredCharacteristic] error: {error}");
+                Debug.LogError($"[DidDiscoverCharacteristics] error: {error}");
                 return;
             }
 
             foreach (var characteristic in service.Characteristics)
             {
-                Debug.Log($"[DiscoveredCharacteristic] characteristic: {characteristic}");
+                Debug.Log($"[DidDiscoverCharacteristics] characteristic: {characteristic}");
 
                 if (characteristic.UUID == characteristicUUID)
                 {
@@ -101,12 +101,12 @@ namespace CoreBluetoothSample
             }
         }
 
-        public void UpdatedCharacteristicValue(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error)
+        public void DidUpdateValueForCharacteristic(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error)
         {
-            Debug.Log($"[UpdatedCharacteristicValue] characteristic: {characteristic}");
+            Debug.Log($"[DidUpdateValueForCharacteristic] characteristic: {characteristic}");
             if (error != null)
             {
-                Debug.LogError($"[UpdatedCharacteristicValue] error: {error}");
+                Debug.LogError($"[DidUpdateValueForCharacteristic] error: {error}");
                 return;
             }
 
@@ -114,22 +114,22 @@ namespace CoreBluetoothSample
             Debug.Log($"Data: {str}");
         }
 
-        public void WroteCharacteristicValue(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error)
+        public void DidWriteValueForCharacteristic(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error)
         {
-            Debug.Log($"[WroteCharacteristicValue] characteristic: {characteristic}");
+            Debug.Log($"[DidWriteValueForCharacteristic] characteristic: {characteristic}");
             if (error != null)
             {
-                Debug.LogError($"[WroteCharacteristicValue] error: {error}");
+                Debug.LogError($"[DidWriteValueForCharacteristic] error: {error}");
                 return;
             }
         }
 
-        public void UpdatedNotificationState(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error)
+        public void DidUpdateNotificationStateForCharacteristic(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error)
         {
-            Debug.Log($"[UpdatedNotificationState] characteristic: {characteristic}");
+            Debug.Log($"[DidUpdateNotificationStateForCharacteristic] characteristic: {characteristic}");
             if (error != null)
             {
-                Debug.LogError($"[UpdatedNotificationState] error: {error}");
+                Debug.LogError($"[DidUpdateNotificationStateForCharacteristic] error: {error}");
                 return;
             }
         }
