@@ -316,6 +316,18 @@ SWIFT_CLASS("_TtC21CoreBluetoothForUnity18CB4UCentralManager")
 
 
 
+SWIFT_CLASS("_TtC21CoreBluetoothForUnity21CB4UPeripheralManager")
+@interface CB4UPeripheralManager : NSObject
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+@end
+
+@class CBPeripheralManager;
+
+@interface CB4UPeripheralManager (SWIFT_EXTENSION(CoreBluetoothForUnity)) <CBPeripheralManagerDelegate>
+- (void)peripheralManagerDidUpdateState:(CBPeripheralManager * _Nonnull)peripheral;
+@end
+
+
 SWIFT_EXTERN int32_t cb4u_central_manager_cancel_peripheral_connection(void const * _Nonnull centralPtr, char const * _Nonnull peripheralId) SWIFT_WARN_UNUSED_RESULT;
 
 
@@ -359,6 +371,15 @@ SWIFT_EXTERN void cb4u_central_manager_scan_for_peripherals(void const * _Nonnul
 
 
 SWIFT_EXTERN void cb4u_central_manager_stop_scan(void const * _Nonnull centralPtr);
+
+
+SWIFT_EXTERN void * _Nonnull cb4u_peripheral_manager_new(void) SWIFT_WARN_UNUSED_RESULT;
+
+
+SWIFT_EXTERN void cb4u_peripheral_manager_register_handlers(void const * _Nonnull peripheralManagerPtr, void (* _Nonnull didUpdateStateHandler)(void const * _Nonnull, int32_t));
+
+
+SWIFT_EXTERN void cb4u_peripheral_manager_release(void const * _Nonnull peripheralManagerPtr);
 
 #endif
 #if defined(__cplusplus)
