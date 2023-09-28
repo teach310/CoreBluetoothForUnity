@@ -46,8 +46,6 @@ namespace CoreBluetooth
 
         CBCentralManager() { }
 
-        ~CBCentralManager() => Dispose(false);
-
         public static CBCentralManager Create(ICBCentralManagerDelegate centralDelegate = null)
         {
             var instance = new CBCentralManager();
@@ -235,18 +233,9 @@ namespace CoreBluetooth
 
         public void Dispose()
         {
-            Dispose(true);
-            System.GC.SuppressFinalize(this);
-        }
-
-        void Dispose(bool disposing)
-        {
             if (_disposed) return;
 
-            if (_handle != null && !_handle.IsInvalid)
-            {
-                _handle.Dispose();
-            }
+            _handle?.Dispose();
 
             _disposed = true;
         }
