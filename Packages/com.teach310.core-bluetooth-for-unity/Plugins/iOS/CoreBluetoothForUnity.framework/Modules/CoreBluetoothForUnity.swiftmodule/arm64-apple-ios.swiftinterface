@@ -53,6 +53,14 @@ extension CoreBluetoothForUnity.CB4UCentralManager : CoreBluetooth.CBPeripheralD
   @objc dynamic public func peripheral(_ peripheral: CoreBluetooth.CBPeripheral, didWriteValueFor characteristic: CoreBluetooth.CBCharacteristic, error: (any Swift.Error)?)
   @objc dynamic public func peripheral(_ peripheral: CoreBluetooth.CBPeripheral, didUpdateNotificationStateFor characteristic: CoreBluetooth.CBCharacteristic, error: (any Swift.Error)?)
 }
+@objc @_inheritsConvenienceInitializers public class CB4UPeripheralManager : ObjectiveC.NSObject {
+  public var didUpdateStateHandler: CoreBluetoothForUnity.CB4UCentralManagerDidUpdateStateHandler?
+  @objc override dynamic public init()
+  @objc deinit
+}
+extension CoreBluetoothForUnity.CB4UPeripheralManager : CoreBluetooth.CBPeripheralManagerDelegate {
+  @objc dynamic public func peripheralManagerDidUpdateState(_ peripheral: CoreBluetooth.CBPeripheralManager)
+}
 @_cdecl("cb4u_central_manager_new")
 public func cb4u_central_manager_new() -> Swift.UnsafeMutableRawPointer
 @_cdecl("cb4u_central_manager_release")
@@ -93,3 +101,10 @@ public func cb4u_central_manager_peripheral_set_notify_value(_ centralPtr: Swift
 public func cb4u_central_manager_peripheral_state(_ centralPtr: Swift.UnsafeRawPointer, _ peripheralId: Swift.UnsafePointer<Swift.CChar>) -> Swift.Int32
 @_cdecl("cb4u_central_manager_characteristic_properties")
 public func cb4u_central_manager_characteristic_properties(_ centralPtr: Swift.UnsafeRawPointer, _ peripheralId: Swift.UnsafePointer<Swift.CChar>, _ serviceUUID: Swift.UnsafePointer<Swift.CChar>, _ characteristicUUID: Swift.UnsafePointer<Swift.CChar>) -> Swift.Int32
+@_cdecl("cb4u_peripheral_manager_new")
+public func cb4u_peripheral_manager_new() -> Swift.UnsafeMutableRawPointer
+@_cdecl("cb4u_peripheral_manager_release")
+public func cb4u_peripheral_manager_release(_ peripheralManagerPtr: Swift.UnsafeRawPointer)
+public typealias CB4UPeripheralManagerDidUpdateStateHandler = @convention(c) (Swift.UnsafeRawPointer, Swift.Int32) -> Swift.Void
+@_cdecl("cb4u_peripheral_manager_register_handlers")
+public func cb4u_peripheral_manager_register_handlers(_ peripheralManagerPtr: Swift.UnsafeRawPointer, _ didUpdateStateHandler: CoreBluetoothForUnity.CB4UPeripheralManagerDidUpdateStateHandler)
