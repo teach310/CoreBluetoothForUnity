@@ -185,3 +185,24 @@ public func cb4u_central_manager_characteristic_properties(_ centralPtr: UnsafeR
     return instance.characteristicProperties(String(cString: peripheralId), CBUUID(string: String(cString: serviceUUID)), CBUUID(string: String(cString: characteristicUUID)))
 }
 
+@_cdecl("cb4u_peripheral_manager_new")
+public func cb4u_peripheral_manager_new() -> UnsafeMutableRawPointer {
+    return Unmanaged.passRetained(CB4UPeripheralManager()).toOpaque()
+}
+
+@_cdecl("cb4u_peripheral_manager_release")
+public func cb4u_peripheral_manager_release(_ peripheralManagerPtr: UnsafeRawPointer) {
+    Unmanaged<CB4UPeripheralManager>.fromOpaque(peripheralManagerPtr).release()
+}
+
+public typealias CB4UPeripheralManagerDidUpdateStateHandler = @convention(c) (UnsafeRawPointer, Int32) -> Void
+
+@_cdecl("cb4u_peripheral_manager_register_handlers")
+public func cb4u_peripheral_manager_register_handlers(
+    _ peripheralManagerPtr: UnsafeRawPointer,
+    _ didUpdateStateHandler: @escaping CB4UPeripheralManagerDidUpdateStateHandler
+) {
+    let instance = Unmanaged<CB4UPeripheralManager>.fromOpaque(peripheralManagerPtr).takeUnretainedValue()
+    
+    instance.didUpdateStateHandler = didUpdateStateHandler
+}
