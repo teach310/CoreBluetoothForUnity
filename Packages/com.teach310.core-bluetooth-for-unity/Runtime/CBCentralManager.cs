@@ -21,7 +21,7 @@ namespace CoreBluetooth
     /// An object that scans for, discovers, connects to, and manages peripherals.
     /// https://developer.apple.com/documentation/corebluetooth/cbcentralmanager
     /// </summary>
-    public class CBCentralManager : IDisposable
+    public class CBCentralManager : CBManager, IDisposable
     {
         bool _disposed = false;
         SafeNativeCentralManagerHandle _handle;
@@ -39,8 +39,6 @@ namespace CoreBluetooth
                 _delegate = value;
             }
         }
-
-        public CBManagerState State { get; private set; } = CBManagerState.Unknown;
 
         NativeCentralManagerProxy _nativeCentralManagerProxy;
 
