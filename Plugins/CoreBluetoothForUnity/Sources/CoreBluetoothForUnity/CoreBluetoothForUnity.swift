@@ -206,3 +206,26 @@ public func cb4u_peripheral_manager_register_handlers(
     
     instance.didUpdateStateHandler = didUpdateStateHandler
 }
+
+@_cdecl("cb4u_mutable_characteristic_new")
+public func cb4u_mutable_characteristic_new(
+    _ characteristicUUID: UnsafePointer<CChar>,
+    _ properties: Int32,
+    _ dataBytes: UnsafePointer<UInt8>,
+    _ dataLength: Int32,
+    _ permissions: Int32
+) -> UnsafeMutableRawPointer {
+    let data = dataLength > 0 ? Data(bytes: dataBytes, count: Int(dataLength)) : nil
+    let characteristic = CBMutableCharacteristic(
+        type: CBUUID(string: String(cString: characteristicUUID)),
+        properties: CBCharacteristicProperties(rawValue: UInt(properties)),
+        value: data,
+        permissions: CBAttributePermissions(rawValue: UInt(permissions))
+    )
+    return Unmanaged.passRetained(CB4UMutableCharacteristic(characteristic: characteristic)).toOpaque()
+}
+
+@_cdecl("cb4u_mutable_characteristic_release")
+public func cb4u_mutable_characteristic_release(_ characteristicPtr: UnsafeRawPointer) {
+    Unmanaged<CB4UMutableCharacteristic>.fromOpaque(characteristicPtr).release()
+}
