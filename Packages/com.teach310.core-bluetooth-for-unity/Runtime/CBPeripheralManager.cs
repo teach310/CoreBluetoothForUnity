@@ -23,14 +23,10 @@ namespace CoreBluetooth
             }
         }
 
-        CBPeripheralManager() : base() { }
-
-        public static CBPeripheralManager Create(ICBPeripheralManagerDelegate peripheralDelegate = null)
+        public CBPeripheralManager(ICBPeripheralManagerDelegate peripheralDelegate = null)
         {
-            var instance = new CBPeripheralManager();
-            instance._handle = SafeNativePeripheralManagerHandle.Create(instance);
-            instance.Delegate = peripheralDelegate;
-            return instance;
+            _handle = SafeNativePeripheralManagerHandle.Create(this);
+            Delegate = peripheralDelegate;
         }
 
         internal void DidUpdateState(CBManagerState state)
