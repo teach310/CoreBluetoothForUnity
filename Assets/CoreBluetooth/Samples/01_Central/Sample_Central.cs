@@ -17,7 +17,7 @@ namespace CoreBluetoothSample
 
         void Start()
         {
-            centralManager = CBCentralManager.Create(this);
+            centralManager = new CBCentralManager(this);
         }
 
         public void DidDiscoverPeripheral(CBCentralManager central, CBPeripheral peripheral, int rssi)
