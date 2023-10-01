@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 namespace CoreBluetooth
 {
-    public class SafeNativeCentralManagerHandle : SafeHandle
+    internal class SafeNativeCentralManagerHandle : SafeHandle
     {
         static Dictionary<IntPtr, CBCentralManager> s_centralManagerMap = new Dictionary<IntPtr, CBCentralManager>();
 
