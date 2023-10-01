@@ -14,10 +14,8 @@ namespace CoreBluetoothTests
         public void DidUpdateState(CBCentralManager central) => state = central.State;
     }
 
-    public class CBCentralManagerTests
+    public class CBCentralManagerTests : CBTests
     {
-        string validUUID1 = "EA521290-A651-4FA0-A958-0CE73F4DAE55";
-
         [Test]
         public void Create()
         {
@@ -69,16 +67,6 @@ namespace CoreBluetoothTests
 
             centralManager.StopScan();
             Assert.That(centralManager.IsScanning, Is.False);
-        }
-
-        IEnumerator WaitUntilWithTimeout(Func<bool> predicate, float timeout)
-        {
-            var elapsedTime = 0f;
-            while (!predicate() && elapsedTime < timeout)
-            {
-                elapsedTime += Time.deltaTime;
-                yield return null;
-            }
         }
     }
 }
