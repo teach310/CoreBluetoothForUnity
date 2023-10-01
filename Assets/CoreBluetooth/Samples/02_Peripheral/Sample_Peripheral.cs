@@ -9,7 +9,7 @@ namespace CoreBluetoothSample
 
         void Start()
         {
-            peripheralManager = CBPeripheralManager.Create(this);
+            peripheralManager = new CBPeripheralManager(this);
         }
 
         public void DidUpdateState(CBPeripheralManager peripheral)
@@ -18,7 +18,6 @@ namespace CoreBluetoothSample
             if (peripheral.State == CBManagerState.PoweredOn)
             {
                 Debug.Log($"[DidUpdateState] Start advertising...");
-                // peripheral.StartAdvertising(new string[] { "068C47B7-FC04-4D47-975A-7952BE1A576F" });
             }
         }
 
