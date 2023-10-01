@@ -373,6 +373,12 @@ SWIFT_EXTERN void cb4u_central_manager_scan_for_peripherals(void const * _Nonnul
 SWIFT_EXTERN void cb4u_central_manager_stop_scan(void const * _Nonnull centralPtr);
 
 
+SWIFT_EXTERN void * _Nonnull cb4u_mutable_characteristic_new(char const * _Nonnull characteristicUUID, int32_t properties, uint8_t const * _Nonnull dataBytes, int32_t dataLength, int32_t permissions) SWIFT_WARN_UNUSED_RESULT;
+
+
+SWIFT_EXTERN void cb4u_mutable_characteristic_release(void const * _Nonnull characteristicPtr);
+
+
 SWIFT_EXTERN void * _Nonnull cb4u_peripheral_manager_new(void) SWIFT_WARN_UNUSED_RESULT;
 
 
