@@ -128,5 +128,38 @@ namespace CoreBluetooth
             SafeNativePeripheralManagerHandle handle,
             CB4UPeripheralManagerDidUpdateStateHandler didUpdateStateHandler
         );
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern IntPtr cb4u_mutable_characteristic_new(
+            [MarshalAs(UnmanagedType.LPStr), In] string uuid,
+            int properties,
+            [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.U1, SizeParamIndex = 3)] byte[] dataBytes,
+            int dataLength,
+            int permissions
+        );
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void cb4u_mutable_characteristic_release(IntPtr handle);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int cb4u_mutable_characteristic_value_length(SafeNativeMutableCharacteristicHandle handle);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void cb4u_mutable_characteristic_value(SafeNativeMutableCharacteristicHandle handle, [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.U1, SizeParamIndex = 2), Out] byte[] dataBytes, int dataLength);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void cb4u_mutable_characteristic_set_value(SafeNativeMutableCharacteristicHandle handle, [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.U1, SizeParamIndex = 2), In] byte[] dataBytes, int dataLength);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int cb4u_mutable_characteristic_properties(SafeNativeMutableCharacteristicHandle handle);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void cb4u_mutable_characteristic_set_properties(SafeNativeMutableCharacteristicHandle handle, int properties);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int cb4u_mutable_characteristic_permissions(SafeNativeMutableCharacteristicHandle handle);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void cb4u_mutable_characteristic_set_permissions(SafeNativeMutableCharacteristicHandle handle, int permissions);
     }
 }
