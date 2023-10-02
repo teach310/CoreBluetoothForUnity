@@ -54,6 +54,18 @@ extension CoreBluetoothForUnity.CB4UCentralManager : CoreBluetooth.CBPeripheralD
   @objc dynamic public func peripheral(_ peripheral: CoreBluetooth.CBPeripheral, didUpdateNotificationStateFor characteristic: CoreBluetooth.CBCharacteristic, error: (any Swift.Error)?)
 }
 public class CB4UMutableCharacteristic {
+  public var value: Foundation.Data? {
+    get
+    set
+  }
+  public var properties: CoreBluetooth.CBCharacteristicProperties {
+    get
+    set
+  }
+  public var permissions: CoreBluetooth.CBAttributePermissions {
+    get
+    set
+  }
   public init(characteristic: CoreBluetooth.CBMutableCharacteristic)
   @objc deinit
 }
@@ -116,3 +128,13 @@ public func cb4u_peripheral_manager_register_handlers(_ peripheralManagerPtr: Sw
 public func cb4u_mutable_characteristic_new(_ characteristicUUID: Swift.UnsafePointer<Swift.CChar>, _ properties: Swift.Int32, _ dataBytes: Swift.UnsafePointer<Swift.UInt8>, _ dataLength: Swift.Int32, _ permissions: Swift.Int32) -> Swift.UnsafeMutableRawPointer
 @_cdecl("cb4u_mutable_characteristic_release")
 public func cb4u_mutable_characteristic_release(_ characteristicPtr: Swift.UnsafeRawPointer)
+@_cdecl("cb4u_mutable_characteristic_set_value")
+public func cb4u_mutable_characteristic_set_value(_ characteristicPtr: Swift.UnsafeRawPointer, _ dataBytes: Swift.UnsafePointer<Swift.UInt8>, _ dataLength: Swift.Int32)
+@_cdecl("cb4u_mutable_characteristic_properties")
+public func cb4u_mutable_characteristic_properties(_ characteristicPtr: Swift.UnsafeRawPointer) -> Swift.Int32
+@_cdecl("cb4u_mutable_characteristic_set_properties")
+public func cb4u_mutable_characteristic_set_properties(_ characteristicPtr: Swift.UnsafeRawPointer, _ properties: Swift.Int32)
+@_cdecl("cb4u_mutable_characteristic_permissions")
+public func cb4u_mutable_characteristic_permissions(_ characteristicPtr: Swift.UnsafeRawPointer) -> Swift.Int32
+@_cdecl("cb4u_mutable_characteristic_set_permissions")
+public func cb4u_mutable_characteristic_set_permissions(_ characteristicPtr: Swift.UnsafeRawPointer, _ permissions: Swift.Int32)
