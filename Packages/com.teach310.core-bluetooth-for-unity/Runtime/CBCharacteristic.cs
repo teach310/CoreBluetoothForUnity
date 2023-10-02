@@ -54,20 +54,20 @@ namespace CoreBluetooth
 
         public virtual CBCharacteristicProperties Properties
         {
-            get => _nativeCharacteristic.Properties;
+            get => nativeCharacteristic.Properties;
             set => throw new NotImplementedException(s_notImplementedExceptionMessage);
         }
 
         public bool IsNotifying { get; private set; } = false;
         internal void UpdateIsNotifying(bool isNotifying) => IsNotifying = isNotifying;
 
-        INativeCharacteristic _nativeCharacteristic;
+        private protected INativeCharacteristic nativeCharacteristic;
 
         internal CBCharacteristic(string uuid, CBService service, INativeCharacteristic nativeCharacteristic)
         {
             this.UUID = uuid;
             this.Service = service;
-            this._nativeCharacteristic = nativeCharacteristic;
+            this.nativeCharacteristic = nativeCharacteristic;
         }
 
         public override string ToString()
