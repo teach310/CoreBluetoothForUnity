@@ -229,3 +229,39 @@ public func cb4u_mutable_characteristic_new(
 public func cb4u_mutable_characteristic_release(_ characteristicPtr: UnsafeRawPointer) {
     Unmanaged<CB4UMutableCharacteristic>.fromOpaque(characteristicPtr).release()
 }
+
+@_cdecl("cb4u_mutable_characteristic_set_value")
+public func cb4u_mutable_characteristic_set_value(_ characteristicPtr: UnsafeRawPointer, _ dataBytes: UnsafePointer<UInt8>, _ dataLength: Int32) {
+    let instance = Unmanaged<CB4UMutableCharacteristic>.fromOpaque(characteristicPtr).takeUnretainedValue()
+    
+    let data = dataLength > 0 ? Data(bytes: dataBytes, count: Int(dataLength)) : nil
+    instance.value = data
+}
+
+@_cdecl("cb4u_mutable_characteristic_properties")
+public func cb4u_mutable_characteristic_properties(_ characteristicPtr: UnsafeRawPointer) -> Int32 {
+    let instance = Unmanaged<CB4UMutableCharacteristic>.fromOpaque(characteristicPtr).takeUnretainedValue()
+    
+    return Int32(instance.properties.rawValue)
+}
+
+@_cdecl("cb4u_mutable_characteristic_set_properties")
+public func cb4u_mutable_characteristic_set_properties(_ characteristicPtr: UnsafeRawPointer, _ properties: Int32) {
+    let instance = Unmanaged<CB4UMutableCharacteristic>.fromOpaque(characteristicPtr).takeUnretainedValue()
+    
+    instance.properties = CBCharacteristicProperties(rawValue: UInt(properties))
+}
+
+@_cdecl("cb4u_mutable_characteristic_permissions")
+public func cb4u_mutable_characteristic_permissions(_ characteristicPtr: UnsafeRawPointer) -> Int32 {
+    let instance = Unmanaged<CB4UMutableCharacteristic>.fromOpaque(characteristicPtr).takeUnretainedValue()
+    
+    return Int32(instance.permissions.rawValue)
+}
+
+@_cdecl("cb4u_mutable_characteristic_set_permissions")
+public func cb4u_mutable_characteristic_set_permissions(_ characteristicPtr: UnsafeRawPointer, _ permissions: Int32) {
+    let instance = Unmanaged<CB4UMutableCharacteristic>.fromOpaque(characteristicPtr).takeUnretainedValue()
+    
+    instance.permissions = CBAttributePermissions(rawValue: UInt(permissions))
+}
