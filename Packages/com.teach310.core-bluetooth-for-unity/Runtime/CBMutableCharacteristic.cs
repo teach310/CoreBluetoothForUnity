@@ -9,6 +9,7 @@ namespace CoreBluetooth
     {
         void SetValue(byte[] value);
         void SetProperties(CBCharacteristicProperties properties);
+        CBAttributePermissions Permissions { get; }
         void SetPermissions(CBAttributePermissions permissions);
     }
 
@@ -20,10 +21,15 @@ namespace CoreBluetooth
     {
         bool _disposed = false;
         internal SafeNativeMutableCharacteristicHandle Handle { get; }
+        INativeMutableCharacteristic _nativeMutableCharacteristic = null;
 
         public override byte[] Value
         {
-            get => base.Value;
+            get
+            {
+                ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
+                return base.Value;
+            }
             set
             {
                 ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
@@ -34,7 +40,11 @@ namespace CoreBluetooth
 
         public override CBCharacteristicProperties Properties
         {
-            get => base.Properties;
+            get
+            {
+                ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
+                return _nativeMutableCharacteristic.Properties;
+            }
             set
             {
                 ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
@@ -42,19 +52,19 @@ namespace CoreBluetooth
             }
         }
 
-        CBAttributePermissions _permissions;
         public CBAttributePermissions Permissions
         {
-            get => _permissions;
+            get
+            {
+                ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
+                return _nativeMutableCharacteristic.Permissions;
+            }
             set
             {
                 ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
                 _nativeMutableCharacteristic.SetPermissions(value);
-                _permissions = value;
             }
         }
-
-        INativeMutableCharacteristic _nativeMutableCharacteristic = null;
 
         public CBMutableCharacteristic(
             string uuid,
@@ -65,6 +75,15 @@ namespace CoreBluetooth
         {
             Handle = SafeNativeMutableCharacteristicHandle.Create(uuid, properties, value, permissions);
             _nativeMutableCharacteristic = new NativeMutableCharacteristicProxy(Handle);
+            nativeCharacteristic = _nativeMutableCharacteristic;
+            UpdateValue(value);
+        }
+
+        public override string ToString()
+        {
+            var valueText = Value == null ? "null" : $"{{length = {Value.Length}, bytes = {BitConverter.ToString(Value).Replace("-", "")}}}";
+            var notifyingText = IsNotifying ? "YES" : "NO";
+            return $"CBMutableCharacteristic: UUID = {UUID}, properties = {Properties}, value = {valueText}, notifying = {notifyingText}, permissions = {Permissions}";
         }
 
         public void Dispose()

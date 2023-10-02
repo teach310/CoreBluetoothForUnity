@@ -4,32 +4,42 @@ namespace CoreBluetooth
     {
         SafeNativeMutableCharacteristicHandle _handle;
 
-        internal NativeMutableCharacteristicProxy(SafeNativeMutableCharacteristicHandle handle)
+        internal NativeMutableCharacteristicProxy(SafeNativeMutableCharacteristicHandle handle, byte[] value = null)
         {
             _handle = handle;
         }
 
         void INativeMutableCharacteristic.SetValue(byte[] value)
         {
-            throw new System.NotImplementedException("TODO");
+            NativeMethods.cb4u_mutable_characteristic_set_value(_handle, value, value?.Length ?? 0);
         }
 
         CBCharacteristicProperties INativeCharacteristic.Properties
         {
             get
             {
-                throw new System.NotImplementedException("TODO");
+                int result = NativeMethods.cb4u_mutable_characteristic_properties(_handle);
+                return (CBCharacteristicProperties)result;
+            }
+        }
+
+        CBAttributePermissions INativeMutableCharacteristic.Permissions
+        {
+            get
+            {
+                int result = NativeMethods.cb4u_mutable_characteristic_permissions(_handle);
+                return (CBAttributePermissions)result;
             }
         }
 
         void INativeMutableCharacteristic.SetProperties(CBCharacteristicProperties properties)
         {
-            throw new System.NotImplementedException("TODO");
+            NativeMethods.cb4u_mutable_characteristic_set_properties(_handle, (int)properties);
         }
 
         void INativeMutableCharacteristic.SetPermissions(CBAttributePermissions permissions)
         {
-            throw new System.NotImplementedException("TODO");
+            NativeMethods.cb4u_mutable_characteristic_set_permissions(_handle, (int)permissions);
         }
     }
 }
