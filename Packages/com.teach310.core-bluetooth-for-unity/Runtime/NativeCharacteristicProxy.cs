@@ -2,7 +2,7 @@ using System;
 
 namespace CoreBluetooth
 {
-    public class NativeCharacteristicProxy : INativeCharacteristic
+    internal class NativeCharacteristicProxy : INativeCharacteristic
     {
         string _peripheralId;
         string _serviceUUID;
