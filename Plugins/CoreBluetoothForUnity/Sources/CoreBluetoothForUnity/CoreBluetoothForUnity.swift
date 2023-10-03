@@ -207,6 +207,32 @@ public func cb4u_peripheral_manager_register_handlers(
     instance.didUpdateStateHandler = didUpdateStateHandler
 }
 
+@_cdecl("cb4u_mutable_service_new")
+public func cb4u_mutable_service_new(_ serviceUUID: UnsafePointer<CChar>, _ primary: Bool) -> UnsafeMutableRawPointer {
+    let service = CBMutableService(type: CBUUID(string: String(cString: serviceUUID)), primary: primary)
+    return Unmanaged.passRetained(CB4UMutableService(service: service)).toOpaque()
+}
+
+@_cdecl("cb4u_mutable_service_release")
+public func cb4u_mutable_service_release(_ servicePtr: UnsafeRawPointer) {
+    Unmanaged<CB4UMutableService>.fromOpaque(servicePtr).release()
+}
+
+@_cdecl("cb4u_mutable_service_clear_characteristics")
+public func cb4u_mutable_service_clear_characteristics(_ servicePtr: UnsafeRawPointer) {
+    let service = Unmanaged<CB4UMutableService>.fromOpaque(servicePtr).takeUnretainedValue()
+    
+    service.clearCharacteristics()
+}
+
+@_cdecl("cb4u_mutable_service_add_characteristic")
+public func cb4u_mutable_service_add_characteristic(_ servicePtr: UnsafeRawPointer, _ characteristicPtr: UnsafeRawPointer) {
+    let service = Unmanaged<CB4UMutableService>.fromOpaque(servicePtr).takeUnretainedValue()
+    let characteristic = Unmanaged<CB4UMutableCharacteristic>.fromOpaque(characteristicPtr).takeUnretainedValue()
+    
+    service.addCharacteristic(characteristic)
+}
+
 @_cdecl("cb4u_mutable_characteristic_new")
 public func cb4u_mutable_characteristic_new(
     _ characteristicUUID: UnsafePointer<CChar>,

@@ -63,10 +63,9 @@ namespace CoreBluetooth
 
         private protected INativeCharacteristic nativeCharacteristic;
 
-        internal CBCharacteristic(string uuid, CBService service, INativeCharacteristic nativeCharacteristic)
+        internal CBCharacteristic(string uuid, INativeCharacteristic nativeCharacteristic)
         {
             this.UUID = uuid;
-            this.Service = service;
             this.nativeCharacteristic = nativeCharacteristic;
         }
 

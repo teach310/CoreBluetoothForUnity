@@ -71,7 +71,7 @@ namespace CoreBluetooth
             CBCharacteristicProperties properties,
             byte[] value,
             CBAttributePermissions permissions
-        ) : base(uuid, null, null)
+        ) : base(uuid, null)
         {
             Handle = SafeNativeMutableCharacteristicHandle.Create(uuid, properties, value, permissions);
             _nativeMutableCharacteristic = new NativeMutableCharacteristicProxy(Handle);
