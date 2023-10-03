@@ -69,6 +69,10 @@ public class CB4UMutableCharacteristic {
   public init(characteristic: CoreBluetooth.CBMutableCharacteristic)
   @objc deinit
 }
+public class CB4UMutableService {
+  public init(service: CoreBluetooth.CBMutableService)
+  @objc deinit
+}
 @objc @_inheritsConvenienceInitializers public class CB4UPeripheralManager : ObjectiveC.NSObject {
   public var didUpdateStateHandler: CoreBluetoothForUnity.CB4UCentralManagerDidUpdateStateHandler?
   @objc override dynamic public init()
@@ -124,6 +128,10 @@ public func cb4u_peripheral_manager_release(_ peripheralManagerPtr: Swift.Unsafe
 public typealias CB4UPeripheralManagerDidUpdateStateHandler = @convention(c) (Swift.UnsafeRawPointer, Swift.Int32) -> Swift.Void
 @_cdecl("cb4u_peripheral_manager_register_handlers")
 public func cb4u_peripheral_manager_register_handlers(_ peripheralManagerPtr: Swift.UnsafeRawPointer, _ didUpdateStateHandler: CoreBluetoothForUnity.CB4UPeripheralManagerDidUpdateStateHandler)
+@_cdecl("cb4u_mutable_service_new")
+public func cb4u_mutable_service_new(_ serviceUUID: Swift.UnsafePointer<Swift.CChar>, _ primary: Swift.Bool) -> Swift.UnsafeMutableRawPointer
+@_cdecl("cb4u_mutable_service_release")
+public func cb4u_mutable_service_release(_ servicePtr: Swift.UnsafeRawPointer)
 @_cdecl("cb4u_mutable_characteristic_new")
 public func cb4u_mutable_characteristic_new(_ characteristicUUID: Swift.UnsafePointer<Swift.CChar>, _ properties: Swift.Int32, _ dataBytes: Swift.UnsafePointer<Swift.UInt8>, _ dataLength: Swift.Int32, _ permissions: Swift.Int32) -> Swift.UnsafeMutableRawPointer
 @_cdecl("cb4u_mutable_characteristic_release")
