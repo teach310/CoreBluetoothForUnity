@@ -136,6 +136,12 @@ namespace CoreBluetooth
         internal static extern void cb4u_mutable_service_release(IntPtr handle);
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void cb4u_mutable_service_clear_characteristics(SafeNativeMutableServiceHandle handle);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int cb4u_mutable_service_add_characteristic(SafeNativeMutableServiceHandle serviceHandle, SafeNativeMutableCharacteristicHandle characteristicHandle);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern IntPtr cb4u_mutable_characteristic_new(
             [MarshalAs(UnmanagedType.LPStr), In] string uuid,
             int properties,
