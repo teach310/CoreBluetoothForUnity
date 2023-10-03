@@ -8,6 +8,8 @@ namespace CoreBluetoothTests
     public abstract class CBTests
     {
         protected string validUUID1 = "EA521290-A651-4FA0-A958-0CE73F4DAE55";
+        protected string validUUID2 = "EA521290-A651-4FA0-A958-0CE73F4UUID2";
+        protected string validUUID3 = "EA521290-A651-4FA0-A958-0CE73F4UUID3";
 
         protected IEnumerator WaitUntilWithTimeout(Func<bool> predicate, float timeout)
         {

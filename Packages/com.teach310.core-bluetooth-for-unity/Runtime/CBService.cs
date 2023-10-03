@@ -1,7 +1,4 @@
-
-
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace CoreBluetooth
 {
@@ -19,19 +16,53 @@ namespace CoreBluetooth
         public CBPeripheral Peripheral { get; }
 
         List<CBCharacteristic> _characteristics = new List<CBCharacteristic>();
-        public ReadOnlyCollection<CBCharacteristic> Characteristics { get; }
+        public virtual CBCharacteristic[] Characteristics
+        {
+            get
+            {
+                return _characteristics?.ToArray();
+            }
+            set
+            {
+                throw new System.NotImplementedException("Not available on 'CBService', only available on CBMutableService.");
+            }
+        }
 
-        public CBService(string uuid, CBPeripheral peripheral)
+        internal CBService(string uuid, CBPeripheral peripheral = null)
         {
             this.UUID = uuid;
             this.Peripheral = peripheral;
-            Characteristics = _characteristics.AsReadOnly();
         }
+
+        internal CBCharacteristic FindCharacteristic(string uuid) => _characteristics.Find(c => c.UUID == uuid);
 
         internal void UpdateCharacteristics(CBCharacteristic[] characteristics)
         {
+            if (_characteristics != null)
+            {
+                ClearCharacteristics();
+            }
+
+            if (characteristics == null)
+            {
+                _characteristics = null;
+                return;
+            }
+
+            foreach (var characteristic in characteristics)
+            {
+                characteristic.UpdateService(this);
+                _characteristics.Add(characteristic);
+            }
+        }
+
+        void ClearCharacteristics()
+        {
+            foreach (var characteristic in _characteristics)
+            {
+                characteristic.UpdateService(null);
+            }
             _characteristics.Clear();
-            _characteristics.AddRange(characteristics);
         }
 
         public override string ToString() => $"CBService: uuid={UUID}";

@@ -114,6 +114,17 @@ namespace CoreBluetooth
             return characteristic;
         }
 
+        CBCharacteristic FindOrInitializeCharacteristic(CBService service, string characteristicUUID)
+        {
+            var characteristic = service.FindCharacteristic(characteristicUUID);
+            if (characteristic == null)
+            {
+                var nativeCharacteristicProxy = new NativeCharacteristicProxy(service.Peripheral.Identifier, service.UUID, characteristicUUID, _handle);
+                characteristic = new CBCharacteristic(characteristicUUID, nativeCharacteristicProxy);
+            }
+            return characteristic;
+        }
+
         internal void DidConnect(string peripheralId)
         {
             if (_disposed) return;
@@ -181,11 +192,7 @@ namespace CoreBluetooth
                 return;
             }
 
-            var characteristics = characteristicUUIDs.Select(uuid =>
-            {
-                var nativeCharacteristicProxy = new NativeCharacteristicProxy(peripheralId, serviceUUID, uuid, _handle);
-                return new CBCharacteristic(uuid, service, nativeCharacteristicProxy);
-            }).ToArray();
+            var characteristics = characteristicUUIDs.Select(uuid => FindOrInitializeCharacteristic(service, uuid)).ToArray();
             peripheral.DidDiscoverCharacteristics(characteristics, service, error);
         }
 
