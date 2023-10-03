@@ -122,11 +122,19 @@ namespace CoreBluetooth
         internal static extern void cb4u_peripheral_manager_release(IntPtr handle);
 
         internal delegate void CB4UPeripheralManagerDidUpdateStateHandler(IntPtr peripheralManagerPtr, CBManagerState state);
+        internal delegate void CB4UPeripheralManagerDidAddServiceHandler(IntPtr peripheralManagerPtr, string serviceUUID, int errorCode);
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void cb4u_peripheral_manager_register_handlers(
             SafeNativePeripheralManagerHandle handle,
-            CB4UPeripheralManagerDidUpdateStateHandler didUpdateStateHandler
+            CB4UPeripheralManagerDidUpdateStateHandler didUpdateStateHandler,
+            CB4UPeripheralManagerDidAddServiceHandler didAddServiceHandler
+        );
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int cb4u_peripheral_manager_add_service(
+            SafeNativePeripheralManagerHandle peripheralHandle,
+            SafeNativeMutableServiceHandle serviceHandle
         );
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]

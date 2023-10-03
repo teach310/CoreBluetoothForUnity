@@ -325,6 +325,7 @@ SWIFT_CLASS("_TtC21CoreBluetoothForUnity21CB4UPeripheralManager")
 
 @interface CB4UPeripheralManager (SWIFT_EXTENSION(CoreBluetoothForUnity)) <CBPeripheralManagerDelegate>
 - (void)peripheralManagerDidUpdateState:(CBPeripheralManager * _Nonnull)peripheral;
+- (void)peripheralManager:(CBPeripheralManager * _Nonnull)peripheral didAddService:(CBService * _Nonnull)service error:(NSError * _Nullable)error;
 @end
 
 
@@ -406,10 +407,13 @@ SWIFT_EXTERN void * _Nonnull cb4u_mutable_service_new(char const * _Nonnull serv
 SWIFT_EXTERN void cb4u_mutable_service_release(void const * _Nonnull servicePtr);
 
 
+SWIFT_EXTERN void cb4u_peripheral_manager_add_service(void const * _Nonnull peripheralPtr, void const * _Nonnull servicePtr);
+
+
 SWIFT_EXTERN void * _Nonnull cb4u_peripheral_manager_new(void) SWIFT_WARN_UNUSED_RESULT;
 
 
-SWIFT_EXTERN void cb4u_peripheral_manager_register_handlers(void const * _Nonnull peripheralManagerPtr, void (* _Nonnull didUpdateStateHandler)(void const * _Nonnull, int32_t));
+SWIFT_EXTERN void cb4u_peripheral_manager_register_handlers(void const * _Nonnull peripheralManagerPtr, void (* _Nonnull didUpdateStateHandler)(void const * _Nonnull, int32_t), void (* _Nonnull didAddServiceHandler)(void const * _Nonnull, char const * _Nonnull, int32_t));
 
 
 SWIFT_EXTERN void cb4u_peripheral_manager_release(void const * _Nonnull peripheralManagerPtr);

@@ -196,15 +196,26 @@ public func cb4u_peripheral_manager_release(_ peripheralManagerPtr: UnsafeRawPoi
 }
 
 public typealias CB4UPeripheralManagerDidUpdateStateHandler = @convention(c) (UnsafeRawPointer, Int32) -> Void
+public typealias CB4UPeripheralManagerDidAddServiceHandler = @convention(c) (UnsafeRawPointer, UnsafePointer<CChar>, Int32) -> Void
 
 @_cdecl("cb4u_peripheral_manager_register_handlers")
 public func cb4u_peripheral_manager_register_handlers(
     _ peripheralManagerPtr: UnsafeRawPointer,
-    _ didUpdateStateHandler: @escaping CB4UPeripheralManagerDidUpdateStateHandler
+    _ didUpdateStateHandler: @escaping CB4UPeripheralManagerDidUpdateStateHandler,
+    _ didAddServiceHandler: @escaping CB4UPeripheralManagerDidAddServiceHandler
 ) {
     let instance = Unmanaged<CB4UPeripheralManager>.fromOpaque(peripheralManagerPtr).takeUnretainedValue()
     
     instance.didUpdateStateHandler = didUpdateStateHandler
+    instance.didAddServiceHandler = didAddServiceHandler
+}
+
+@_cdecl("cb4u_peripheral_manager_add_service")
+public func cb4u_peripheral_manager_add_service(_ peripheralPtr: UnsafeRawPointer, _ servicePtr: UnsafeRawPointer) {
+    let instance = Unmanaged<CB4UPeripheralManager>.fromOpaque(peripheralPtr).takeUnretainedValue()
+    let service = Unmanaged<CB4UMutableService>.fromOpaque(servicePtr).takeUnretainedValue()
+    
+    instance.add(service)
 }
 
 @_cdecl("cb4u_mutable_service_new")
