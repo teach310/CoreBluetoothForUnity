@@ -9,14 +9,14 @@ namespace CoreBluetoothTests
         [Test]
         public void Value_Set_NotImplemented()
         {
-            var characteristic = new CBCharacteristic(validUUID1, null, null);
+            var characteristic = new CBCharacteristic(validUUID1, null);
             Assert.That(() => characteristic.Value = new byte[] { 0x01 }, Throws.TypeOf<NotImplementedException>());
         }
 
         [Test]
         public void Properties_Set_NotImplemented()
         {
-            var characteristic = new CBCharacteristic(validUUID1, null, null);
+            var characteristic = new CBCharacteristic(validUUID1, null);
             Assert.That(() => characteristic.Properties = CBCharacteristicProperties.Broadcast, Throws.TypeOf<NotImplementedException>());
         }
     }
