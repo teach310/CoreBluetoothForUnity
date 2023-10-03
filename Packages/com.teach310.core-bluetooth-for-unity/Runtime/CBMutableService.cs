@@ -36,6 +36,11 @@ namespace CoreBluetooth
             _nativeMutableService = new NativeMutableServiceProxy(Handle);
         }
 
+        public override string ToString()
+        {
+            return $"CBMutableService: UUID = {UUID}";
+        }
+
         public void Dispose()
         {
             if (_disposed) return;

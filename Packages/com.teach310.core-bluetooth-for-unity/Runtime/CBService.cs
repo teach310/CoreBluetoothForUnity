@@ -65,6 +65,6 @@ namespace CoreBluetooth
             _characteristics.Clear();
         }
 
-        public override string ToString() => $"CBService: uuid={UUID}";
+        public override string ToString() => $"CBService: UUID = {UUID}";
     }
 }
