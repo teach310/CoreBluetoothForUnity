@@ -6,6 +6,7 @@ public class CB4UPeripheralManager : NSObject {
 
     public var didUpdateStateHandler: CB4UCentralManagerDidUpdateStateHandler?
     public var didAddServiceHandler: CB4UPeripheralManagerDidAddServiceHandler?
+    public var didStartAdvertisingHandler: CB4UPeripheralManagerDidStartAdvertisingHandler?
 
     public override init() {
         super.init()
@@ -53,5 +54,9 @@ extension CB4UPeripheralManager : CBPeripheralManagerDelegate {
         serviceId.withCString { (serviceIdCString) in
             didAddServiceHandler?(selfPointer(), serviceIdCString, errorToCode(error))
         }
+    }
+
+    public func peripheralManagerDidStartAdvertising(_ peripheral: CBPeripheralManager, error: Error?) {
+        didStartAdvertisingHandler?(selfPointer(), errorToCode(error))
     }
 }
