@@ -49,6 +49,27 @@ namespace CoreBluetooth
             _nativePeripheralManagerProxy.AddService(service);
         }
 
+        public void StartAdvertising(StartAdvertisingOptions options = null)
+        {
+            ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
+            _nativePeripheralManagerProxy.StartAdvertising(options);
+        }
+
+        public void StopAdvertising()
+        {
+            ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
+            _nativePeripheralManagerProxy.StopAdvertising();
+        }
+
+        public bool IsAdvertising
+        {
+            get
+            {
+                ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
+                return _nativePeripheralManagerProxy.IsAdvertising;
+            }
+        }
+
         internal void DidUpdateState(CBManagerState state)
         {
             State = state;
