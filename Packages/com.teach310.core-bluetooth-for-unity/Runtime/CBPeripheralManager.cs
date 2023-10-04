@@ -7,6 +7,7 @@ namespace CoreBluetooth
     {
         void DidUpdateState(CBPeripheralManager peripheral);
         void DidAddService(CBPeripheralManager peripheral, CBService service, CBError error) { }
+        void DidStartAdvertising(CBPeripheralManager peripheral, CBError error) { }
     }
 
     public class CBPeripheralManager : CBManager, IDisposable
@@ -86,6 +87,12 @@ namespace CoreBluetooth
             }
 
             _delegate?.DidAddService(this, _services[serviceUUID], error);
+        }
+
+        internal void DidStartAdvertising(CBError error)
+        {
+            if (_disposed) return;
+            _delegate?.DidStartAdvertising(this, error);
         }
 
         public void Dispose()
