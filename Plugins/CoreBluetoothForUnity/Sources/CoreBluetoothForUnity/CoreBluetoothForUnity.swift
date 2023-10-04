@@ -232,6 +232,20 @@ public func cb4u_peripheral_manager_start_advertising(_ peripheralPtr: UnsafeRaw
     instance.startAdvertising(options)
 }
 
+@_cdecl("cb4u_peripheral_manager_stop_advertising")
+public func cb4u_peripheral_manager_stop_advertising(_ peripheralPtr: UnsafeRawPointer) {
+    let instance = Unmanaged<CB4UPeripheralManager>.fromOpaque(peripheralPtr).takeUnretainedValue()
+    
+    instance.stopAdvertising()
+}
+
+@_cdecl("cb4u_peripheral_manager_is_advertising")
+public func cb4u_peripheral_manager_is_advertising(_ peripheralPtr: UnsafeRawPointer) -> Bool {
+    let instance = Unmanaged<CB4UPeripheralManager>.fromOpaque(peripheralPtr).takeUnretainedValue()
+    
+    return instance.isAdvertising
+}
+
 @_cdecl("cb4u_mutable_service_new")
 public func cb4u_mutable_service_new(_ serviceUUID: UnsafePointer<CChar>, _ primary: Bool) -> UnsafeMutableRawPointer {
     let service = CBMutableService(type: CBUUID(string: String(cString: serviceUUID)), primary: primary)
