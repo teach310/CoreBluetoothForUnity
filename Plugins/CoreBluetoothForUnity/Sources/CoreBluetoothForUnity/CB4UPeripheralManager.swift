@@ -31,7 +31,6 @@ public class CB4UPeripheralManager : NSObject {
     }
 
     public func add(_ service: CB4UMutableService) {
-        print("addService: \(service.service.uuid.uuidString)")
         peripheralManager.add(service.service)
     }
 
@@ -50,7 +49,6 @@ extension CB4UPeripheralManager : CBPeripheralManagerDelegate {
 
     public func peripheralManager(_ peripheral: CBPeripheralManager, didAdd service: CBService, error: Error?) {
         let serviceId = service.uuid.uuidString
-        print("didAddService: \(serviceId)")
 
         serviceId.withCString { (serviceIdCString) in
             didAddServiceHandler?(selfPointer(), serviceIdCString, errorToCode(error))
