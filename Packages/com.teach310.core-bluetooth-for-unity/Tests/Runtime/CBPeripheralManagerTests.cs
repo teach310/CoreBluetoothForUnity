@@ -95,9 +95,15 @@ namespace CoreBluetoothTests
                 ServiceUUIDs = new string[] { validUUID1 }
             };
             peripheralManager.StartAdvertising(options);
+            Assert.That(peripheralManager.IsAdvertising, Is.False);
             yield return WaitUntilWithTimeout(() => delegateMock.DidStartAdvertisingCount > 0, 1f);
+            Assert.That(peripheralManager.IsAdvertising, Is.True);
             Assert.That(delegateMock.DidStartAdvertisingCount, Is.EqualTo(1));
             Assert.That(delegateMock.Error, Is.Null);
+            peripheralManager.StopAdvertising();
+            Assert.That(peripheralManager.IsAdvertising, Is.True);
+            yield return new WaitForSeconds(0.1f);
+            Assert.That(peripheralManager.IsAdvertising, Is.False);
         }
 
         [UnityTest]
