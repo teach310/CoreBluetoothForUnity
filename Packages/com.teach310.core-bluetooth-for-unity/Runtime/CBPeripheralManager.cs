@@ -72,12 +72,14 @@ namespace CoreBluetooth
 
         internal void DidUpdateState(CBManagerState state)
         {
+            if (_disposed) return;
             State = state;
             _delegate?.DidUpdateState(this);
         }
 
         internal void DidAddService(string serviceUUID, CBError error)
         {
+            if (_disposed) return;
             if (!_addingServiceUUIDs.Remove(serviceUUID))
             {
                 return;
