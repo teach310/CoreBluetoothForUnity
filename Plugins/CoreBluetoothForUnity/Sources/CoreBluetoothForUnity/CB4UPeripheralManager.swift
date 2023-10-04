@@ -34,6 +34,10 @@ public class CB4UPeripheralManager : NSObject {
         print("addService: \(service.service.uuid.uuidString)")
         peripheralManager.add(service.service)
     }
+
+    public func startAdvertising(_ options: StartAdvertisingOptions?) {
+        peripheralManager.startAdvertising(options?.advertisementData())
+    }
 }
 
 extension CB4UPeripheralManager : CBPeripheralManagerDelegate {
