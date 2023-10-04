@@ -42,15 +42,9 @@ namespace CoreBluetooth
 
         internal void StopAdvertising()
         {
-            throw new System.NotImplementedException("TODO");
+            NativeMethods.cb4u_peripheral_manager_stop_advertising(_handle);
         }
 
-        internal bool IsAdvertising
-        {
-            get
-            {
-                throw new System.NotImplementedException("TODO");
-            }
-        }
+        internal bool IsAdvertising => NativeMethods.cb4u_peripheral_manager_is_advertising(_handle);
     }
 }
