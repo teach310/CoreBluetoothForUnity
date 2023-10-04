@@ -78,6 +78,7 @@ public class CB4UMutableService {
 @objc @_inheritsConvenienceInitializers public class CB4UPeripheralManager : ObjectiveC.NSObject {
   public var didUpdateStateHandler: CoreBluetoothForUnity.CB4UCentralManagerDidUpdateStateHandler?
   public var didAddServiceHandler: CoreBluetoothForUnity.CB4UPeripheralManagerDidAddServiceHandler?
+  public var didStartAdvertisingHandler: CoreBluetoothForUnity.CB4UPeripheralManagerDidStartAdvertisingHandler?
   @objc override dynamic public init()
   public func add(_ service: CoreBluetoothForUnity.CB4UMutableService)
   public func startAdvertising(_ options: CoreBluetoothForUnity.StartAdvertisingOptions?)
@@ -86,6 +87,7 @@ public class CB4UMutableService {
 extension CoreBluetoothForUnity.CB4UPeripheralManager : CoreBluetooth.CBPeripheralManagerDelegate {
   @objc dynamic public func peripheralManagerDidUpdateState(_ peripheral: CoreBluetooth.CBPeripheralManager)
   @objc dynamic public func peripheralManager(_ peripheral: CoreBluetooth.CBPeripheralManager, didAdd service: CoreBluetooth.CBService, error: (any Swift.Error)?)
+  @objc dynamic public func peripheralManagerDidStartAdvertising(_ peripheral: CoreBluetooth.CBPeripheralManager, error: (any Swift.Error)?)
 }
 @_cdecl("cb4u_central_manager_new")
 public func cb4u_central_manager_new() -> Swift.UnsafeMutableRawPointer
@@ -133,8 +135,9 @@ public func cb4u_peripheral_manager_new() -> Swift.UnsafeMutableRawPointer
 public func cb4u_peripheral_manager_release(_ peripheralManagerPtr: Swift.UnsafeRawPointer)
 public typealias CB4UPeripheralManagerDidUpdateStateHandler = @convention(c) (Swift.UnsafeRawPointer, Swift.Int32) -> Swift.Void
 public typealias CB4UPeripheralManagerDidAddServiceHandler = @convention(c) (Swift.UnsafeRawPointer, Swift.UnsafePointer<Swift.CChar>, Swift.Int32) -> Swift.Void
+public typealias CB4UPeripheralManagerDidStartAdvertisingHandler = @convention(c) (Swift.UnsafeRawPointer, Swift.Int32) -> Swift.Void
 @_cdecl("cb4u_peripheral_manager_register_handlers")
-public func cb4u_peripheral_manager_register_handlers(_ peripheralManagerPtr: Swift.UnsafeRawPointer, _ didUpdateStateHandler: CoreBluetoothForUnity.CB4UPeripheralManagerDidUpdateStateHandler, _ didAddServiceHandler: CoreBluetoothForUnity.CB4UPeripheralManagerDidAddServiceHandler)
+public func cb4u_peripheral_manager_register_handlers(_ peripheralManagerPtr: Swift.UnsafeRawPointer, _ didUpdateStateHandler: CoreBluetoothForUnity.CB4UPeripheralManagerDidUpdateStateHandler, _ didAddServiceHandler: CoreBluetoothForUnity.CB4UPeripheralManagerDidAddServiceHandler, _ didStartAdvertisingHandler: CoreBluetoothForUnity.CB4UPeripheralManagerDidStartAdvertisingHandler)
 @_cdecl("cb4u_peripheral_manager_add_service")
 public func cb4u_peripheral_manager_add_service(_ peripheralPtr: Swift.UnsafeRawPointer, _ servicePtr: Swift.UnsafeRawPointer)
 @_cdecl("cb4u_peripheral_manager_start_advertising")
