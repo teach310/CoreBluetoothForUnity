@@ -411,6 +411,9 @@ SWIFT_EXTERN void cb4u_mutable_service_release(void const * _Nonnull servicePtr)
 SWIFT_EXTERN void cb4u_peripheral_manager_add_service(void const * _Nonnull peripheralPtr, void const * _Nonnull servicePtr);
 
 
+SWIFT_EXTERN BOOL cb4u_peripheral_manager_is_advertising(void const * _Nonnull peripheralPtr) SWIFT_WARN_UNUSED_RESULT;
+
+
 SWIFT_EXTERN void * _Nonnull cb4u_peripheral_manager_new(void) SWIFT_WARN_UNUSED_RESULT;
 
 
@@ -421,6 +424,9 @@ SWIFT_EXTERN void cb4u_peripheral_manager_release(void const * _Nonnull peripher
 
 
 SWIFT_EXTERN void cb4u_peripheral_manager_start_advertising(void const * _Nonnull peripheralPtr, char const * _Nullable localName, char const * _Nullable const * _Nonnull serviceUUIDs, int32_t serviceUUIDsCount);
+
+
+SWIFT_EXTERN void cb4u_peripheral_manager_stop_advertising(void const * _Nonnull peripheralPtr);
 
 #endif
 #if defined(__cplusplus)

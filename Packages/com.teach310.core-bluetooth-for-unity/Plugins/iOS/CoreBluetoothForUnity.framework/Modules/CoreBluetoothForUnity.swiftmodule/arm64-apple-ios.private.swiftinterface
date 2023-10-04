@@ -82,6 +82,10 @@ public class CB4UMutableService {
   @objc override dynamic public init()
   public func add(_ service: CoreBluetoothForUnity.CB4UMutableService)
   public func startAdvertising(_ options: CoreBluetoothForUnity.StartAdvertisingOptions?)
+  public func stopAdvertising()
+  public var isAdvertising: Swift.Bool {
+    get
+  }
   @objc deinit
 }
 extension CoreBluetoothForUnity.CB4UPeripheralManager : CoreBluetooth.CBPeripheralManagerDelegate {
@@ -142,6 +146,10 @@ public func cb4u_peripheral_manager_register_handlers(_ peripheralManagerPtr: Sw
 public func cb4u_peripheral_manager_add_service(_ peripheralPtr: Swift.UnsafeRawPointer, _ servicePtr: Swift.UnsafeRawPointer)
 @_cdecl("cb4u_peripheral_manager_start_advertising")
 public func cb4u_peripheral_manager_start_advertising(_ peripheralPtr: Swift.UnsafeRawPointer, _ localName: Swift.UnsafePointer<Swift.CChar>?, _ serviceUUIDs: Swift.UnsafePointer<Swift.UnsafePointer<Swift.CChar>?>, _ serviceUUIDsCount: Swift.Int32)
+@_cdecl("cb4u_peripheral_manager_stop_advertising")
+public func cb4u_peripheral_manager_stop_advertising(_ peripheralPtr: Swift.UnsafeRawPointer)
+@_cdecl("cb4u_peripheral_manager_is_advertising")
+public func cb4u_peripheral_manager_is_advertising(_ peripheralPtr: Swift.UnsafeRawPointer) -> Swift.Bool
 @_cdecl("cb4u_mutable_service_new")
 public func cb4u_mutable_service_new(_ serviceUUID: Swift.UnsafePointer<Swift.CChar>, _ primary: Swift.Bool) -> Swift.UnsafeMutableRawPointer
 @_cdecl("cb4u_mutable_service_release")

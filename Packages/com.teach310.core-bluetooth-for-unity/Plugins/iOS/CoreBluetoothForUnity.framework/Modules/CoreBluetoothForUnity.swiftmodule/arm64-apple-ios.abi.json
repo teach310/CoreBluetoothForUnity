@@ -5646,6 +5646,69 @@
           },
           {
             "kind": "Function",
+            "name": "stopAdvertising",
+            "printedName": "stopAdvertising()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:21CoreBluetoothForUnity21CB4UPeripheralManagerC15stopAdvertisingyyF",
+            "mangledName": "$s21CoreBluetoothForUnity21CB4UPeripheralManagerC15stopAdvertisingyyF",
+            "moduleName": "CoreBluetoothForUnity",
+            "isOpen": true,
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Var",
+            "name": "isAdvertising",
+            "printedName": "isAdvertising",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:21CoreBluetoothForUnity21CB4UPeripheralManagerC13isAdvertisingSbvp",
+            "mangledName": "$s21CoreBluetoothForUnity21CB4UPeripheralManagerC13isAdvertisingSbvp",
+            "moduleName": "CoreBluetoothForUnity",
+            "isOpen": true,
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Bool",
+                    "printedName": "Swift.Bool",
+                    "usr": "s:Sb"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:21CoreBluetoothForUnity21CB4UPeripheralManagerC13isAdvertisingSbvg",
+                "mangledName": "$s21CoreBluetoothForUnity21CB4UPeripheralManagerC13isAdvertisingSbvg",
+                "moduleName": "CoreBluetoothForUnity",
+                "isOpen": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Function",
             "name": "peripheralManagerDidUpdateState",
             "printedName": "peripheralManagerDidUpdateState(_:)",
             "children": [
@@ -7547,6 +7610,61 @@
       },
       {
         "kind": "Function",
+        "name": "cb4u_peripheral_manager_stop_advertising",
+        "printedName": "cb4u_peripheral_manager_stop_advertising(_:)",
+        "children": [
+          {
+            "kind": "TypeNominal",
+            "name": "Void",
+            "printedName": "()"
+          },
+          {
+            "kind": "TypeNominal",
+            "name": "UnsafeRawPointer",
+            "printedName": "Swift.UnsafeRawPointer",
+            "usr": "s:SV"
+          }
+        ],
+        "declKind": "Func",
+        "usr": "c:(cm)cb4u_peripheral_manager_stop_advertising:",
+        "mangledName": "$s21CoreBluetoothForUnity40cb4u_peripheral_manager_stop_advertisingyySVF",
+        "moduleName": "CoreBluetoothForUnity",
+        "declAttributes": [
+          "AccessControl",
+          "CDecl"
+        ],
+        "funcSelfKind": "NonMutating"
+      },
+      {
+        "kind": "Function",
+        "name": "cb4u_peripheral_manager_is_advertising",
+        "printedName": "cb4u_peripheral_manager_is_advertising(_:)",
+        "children": [
+          {
+            "kind": "TypeNominal",
+            "name": "Bool",
+            "printedName": "Swift.Bool",
+            "usr": "s:Sb"
+          },
+          {
+            "kind": "TypeNominal",
+            "name": "UnsafeRawPointer",
+            "printedName": "Swift.UnsafeRawPointer",
+            "usr": "s:SV"
+          }
+        ],
+        "declKind": "Func",
+        "usr": "c:(cm)cb4u_peripheral_manager_is_advertising:",
+        "mangledName": "$s21CoreBluetoothForUnity38cb4u_peripheral_manager_is_advertisingySbSVF",
+        "moduleName": "CoreBluetoothForUnity",
+        "declAttributes": [
+          "AccessControl",
+          "CDecl"
+        ],
+        "funcSelfKind": "NonMutating"
+      },
+      {
+        "kind": "Function",
         "name": "cb4u_mutable_service_new",
         "printedName": "cb4u_mutable_service_new(_:_:)",
         "children": [
@@ -8452,7 +8570,7 @@
     {
       "filePath": "\/Users\/teach310\/UnityProjects\/CoreBluetoothForUnity\/Plugins\/CoreBluetoothForUnity\/Sources\/CoreBluetoothForUnity\/CB4UPeripheralManager.swift",
       "kind": "IntegerLiteral",
-      "offset": 811,
+      "offset": 835,
       "length": 2,
       "value": "-1"
     },
@@ -8487,14 +8605,14 @@
     {
       "filePath": "\/Users\/teach310\/UnityProjects\/CoreBluetoothForUnity\/Plugins\/CoreBluetoothForUnity\/Sources\/CoreBluetoothForUnity\/CoreBluetoothForUnity.swift",
       "kind": "IntegerLiteral",
-      "offset": 14627,
+      "offset": 15196,
       "length": 1,
       "value": "0"
     },
     {
       "filePath": "\/Users\/teach310\/UnityProjects\/CoreBluetoothForUnity\/Plugins\/CoreBluetoothForUnity\/Sources\/CoreBluetoothForUnity\/CoreBluetoothForUnity.swift",
       "kind": "IntegerLiteral",
-      "offset": 15641,
+      "offset": 16210,
       "length": 1,
       "value": "0"
     },
