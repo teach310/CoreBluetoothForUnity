@@ -418,6 +418,9 @@ SWIFT_EXTERN void cb4u_peripheral_manager_register_handlers(void const * _Nonnul
 
 SWIFT_EXTERN void cb4u_peripheral_manager_release(void const * _Nonnull peripheralManagerPtr);
 
+
+SWIFT_EXTERN void cb4u_peripheral_manager_start_advertising(void const * _Nonnull peripheralPtr, char const * _Nullable localName, char const * _Nullable const * _Nonnull serviceUUIDs, int32_t serviceUUIDsCount);
+
 #endif
 #if defined(__cplusplus)
 #endif

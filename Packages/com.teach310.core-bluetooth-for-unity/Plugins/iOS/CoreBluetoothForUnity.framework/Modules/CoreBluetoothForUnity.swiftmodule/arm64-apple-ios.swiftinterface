@@ -80,6 +80,7 @@ public class CB4UMutableService {
   public var didAddServiceHandler: CoreBluetoothForUnity.CB4UPeripheralManagerDidAddServiceHandler?
   @objc override dynamic public init()
   public func add(_ service: CoreBluetoothForUnity.CB4UMutableService)
+  public func startAdvertising(_ options: CoreBluetoothForUnity.StartAdvertisingOptions?)
   @objc deinit
 }
 extension CoreBluetoothForUnity.CB4UPeripheralManager : CoreBluetooth.CBPeripheralManagerDelegate {
@@ -136,6 +137,8 @@ public typealias CB4UPeripheralManagerDidAddServiceHandler = @convention(c) (Swi
 public func cb4u_peripheral_manager_register_handlers(_ peripheralManagerPtr: Swift.UnsafeRawPointer, _ didUpdateStateHandler: CoreBluetoothForUnity.CB4UPeripheralManagerDidUpdateStateHandler, _ didAddServiceHandler: CoreBluetoothForUnity.CB4UPeripheralManagerDidAddServiceHandler)
 @_cdecl("cb4u_peripheral_manager_add_service")
 public func cb4u_peripheral_manager_add_service(_ peripheralPtr: Swift.UnsafeRawPointer, _ servicePtr: Swift.UnsafeRawPointer)
+@_cdecl("cb4u_peripheral_manager_start_advertising")
+public func cb4u_peripheral_manager_start_advertising(_ peripheralPtr: Swift.UnsafeRawPointer, _ localName: Swift.UnsafePointer<Swift.CChar>?, _ serviceUUIDs: Swift.UnsafePointer<Swift.UnsafePointer<Swift.CChar>?>, _ serviceUUIDsCount: Swift.Int32)
 @_cdecl("cb4u_mutable_service_new")
 public func cb4u_mutable_service_new(_ serviceUUID: Swift.UnsafePointer<Swift.CChar>, _ primary: Swift.Bool) -> Swift.UnsafeMutableRawPointer
 @_cdecl("cb4u_mutable_service_release")
@@ -158,3 +161,11 @@ public func cb4u_mutable_characteristic_set_properties(_ characteristicPtr: Swif
 public func cb4u_mutable_characteristic_permissions(_ characteristicPtr: Swift.UnsafeRawPointer) -> Swift.Int32
 @_cdecl("cb4u_mutable_characteristic_set_permissions")
 public func cb4u_mutable_characteristic_set_permissions(_ characteristicPtr: Swift.UnsafeRawPointer, _ permissions: Swift.Int32)
+public class StartAdvertisingOptions {
+  public var localName: Swift.String?
+  public var serviceUUIDs: [CoreBluetooth.CBUUID]?
+  public init()
+  public init(localName: Swift.String?, serviceUUIDs: [CoreBluetooth.CBUUID]?)
+  public func advertisementData() -> [Swift.String : Any]?
+  @objc deinit
+}
