@@ -7,6 +7,7 @@ namespace CoreBluetooth
     {
         void DidUpdateState(CBPeripheralManager peripheral);
         void DidAddService(CBPeripheralManager peripheral, CBService service, CBError error) { }
+        void DidStartAdvertising(CBPeripheralManager peripheral, CBError error) { }
     }
 
     public class CBPeripheralManager : CBManager, IDisposable
@@ -49,20 +50,49 @@ namespace CoreBluetooth
             _nativePeripheralManagerProxy.AddService(service);
         }
 
+        public void StartAdvertising(StartAdvertisingOptions options = null)
+        {
+            ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
+            _nativePeripheralManagerProxy.StartAdvertising(options);
+        }
+
+        public void StopAdvertising()
+        {
+            ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
+            _nativePeripheralManagerProxy.StopAdvertising();
+        }
+
+        public bool IsAdvertising
+        {
+            get
+            {
+                ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
+                return _nativePeripheralManagerProxy.IsAdvertising;
+            }
+        }
+
         internal void DidUpdateState(CBManagerState state)
         {
+            if (_disposed) return;
             State = state;
             _delegate?.DidUpdateState(this);
         }
 
         internal void DidAddService(string serviceUUID, CBError error)
         {
+            if (_disposed) return;
             if (!_addingServiceUUIDs.Remove(serviceUUID))
             {
                 return;
             }
 
             _delegate?.DidAddService(this, _services[serviceUUID], error);
+        }
+
+        internal void DidStartAdvertising(CBError error)
+        {
+            if (_disposed) return;
+            _delegate?.DidStartAdvertising(this, error);
         }
 
         public void Dispose()

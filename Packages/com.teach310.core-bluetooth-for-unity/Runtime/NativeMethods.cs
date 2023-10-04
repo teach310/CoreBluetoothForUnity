@@ -123,12 +123,14 @@ namespace CoreBluetooth
 
         internal delegate void CB4UPeripheralManagerDidUpdateStateHandler(IntPtr peripheralManagerPtr, CBManagerState state);
         internal delegate void CB4UPeripheralManagerDidAddServiceHandler(IntPtr peripheralManagerPtr, string serviceUUID, int errorCode);
+        internal delegate void CB4UPeripheralManagerDidStartAdvertisingHandler(IntPtr peripheralManagerPtr, int errorCode);
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void cb4u_peripheral_manager_register_handlers(
             SafeNativePeripheralManagerHandle handle,
             CB4UPeripheralManagerDidUpdateStateHandler didUpdateStateHandler,
-            CB4UPeripheralManagerDidAddServiceHandler didAddServiceHandler
+            CB4UPeripheralManagerDidAddServiceHandler didAddServiceHandler,
+            CB4UPeripheralManagerDidStartAdvertisingHandler didStartAdvertisingHandler
         );
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
@@ -136,6 +138,21 @@ namespace CoreBluetooth
             SafeNativePeripheralManagerHandle peripheralHandle,
             SafeNativeMutableServiceHandle serviceHandle
         );
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void cb4u_peripheral_manager_start_advertising(
+            SafeNativePeripheralManagerHandle peripheralHandle,
+            [MarshalAs(UnmanagedType.LPStr), In] string localName,
+            [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPStr, SizeParamIndex = 3)] string[] serviceUUIDs,
+            int serviceUUIDsCount
+        );
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void cb4u_peripheral_manager_stop_advertising(SafeNativePeripheralManagerHandle peripheralHandle);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.I1)]
+        internal static extern bool cb4u_peripheral_manager_is_advertising(SafeNativePeripheralManagerHandle peripheralHandle);
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern IntPtr cb4u_mutable_service_new([MarshalAs(UnmanagedType.LPStr), In] string uuid, [MarshalAs(UnmanagedType.I1)] bool primary);

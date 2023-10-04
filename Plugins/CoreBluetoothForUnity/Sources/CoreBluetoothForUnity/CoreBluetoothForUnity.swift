@@ -197,17 +197,20 @@ public func cb4u_peripheral_manager_release(_ peripheralManagerPtr: UnsafeRawPoi
 
 public typealias CB4UPeripheralManagerDidUpdateStateHandler = @convention(c) (UnsafeRawPointer, Int32) -> Void
 public typealias CB4UPeripheralManagerDidAddServiceHandler = @convention(c) (UnsafeRawPointer, UnsafePointer<CChar>, Int32) -> Void
+public typealias CB4UPeripheralManagerDidStartAdvertisingHandler = @convention(c) (UnsafeRawPointer, Int32) -> Void
 
 @_cdecl("cb4u_peripheral_manager_register_handlers")
 public func cb4u_peripheral_manager_register_handlers(
     _ peripheralManagerPtr: UnsafeRawPointer,
     _ didUpdateStateHandler: @escaping CB4UPeripheralManagerDidUpdateStateHandler,
-    _ didAddServiceHandler: @escaping CB4UPeripheralManagerDidAddServiceHandler
+    _ didAddServiceHandler: @escaping CB4UPeripheralManagerDidAddServiceHandler,
+    _ didStartAdvertisingHandler: @escaping CB4UPeripheralManagerDidStartAdvertisingHandler
 ) {
     let instance = Unmanaged<CB4UPeripheralManager>.fromOpaque(peripheralManagerPtr).takeUnretainedValue()
     
     instance.didUpdateStateHandler = didUpdateStateHandler
     instance.didAddServiceHandler = didAddServiceHandler
+    instance.didStartAdvertisingHandler = didStartAdvertisingHandler
 }
 
 @_cdecl("cb4u_peripheral_manager_add_service")
@@ -216,6 +219,31 @@ public func cb4u_peripheral_manager_add_service(_ peripheralPtr: UnsafeRawPointe
     let service = Unmanaged<CB4UMutableService>.fromOpaque(servicePtr).takeUnretainedValue()
     
     instance.add(service)
+}
+
+@_cdecl("cb4u_peripheral_manager_start_advertising")
+public func cb4u_peripheral_manager_start_advertising(_ peripheralPtr: UnsafeRawPointer, _ localName: UnsafePointer<CChar>?, _ serviceUUIDs: UnsafePointer<UnsafePointer<CChar>?>, _ serviceUUIDsCount: Int32) {
+    let serviceUUIDsArray = (0..<Int(serviceUUIDsCount)).map { index -> CBUUID in
+        let uuidString = String(cString: serviceUUIDs[index]!)
+        return CBUUID(string: uuidString)
+    }
+    let options = StartAdvertisingOptions(localName: localName != nil ? String(cString: localName!) : nil, serviceUUIDs: serviceUUIDsArray)
+    let instance = Unmanaged<CB4UPeripheralManager>.fromOpaque(peripheralPtr).takeUnretainedValue()
+    instance.startAdvertising(options)
+}
+
+@_cdecl("cb4u_peripheral_manager_stop_advertising")
+public func cb4u_peripheral_manager_stop_advertising(_ peripheralPtr: UnsafeRawPointer) {
+    let instance = Unmanaged<CB4UPeripheralManager>.fromOpaque(peripheralPtr).takeUnretainedValue()
+    
+    instance.stopAdvertising()
+}
+
+@_cdecl("cb4u_peripheral_manager_is_advertising")
+public func cb4u_peripheral_manager_is_advertising(_ peripheralPtr: UnsafeRawPointer) -> Bool {
+    let instance = Unmanaged<CB4UPeripheralManager>.fromOpaque(peripheralPtr).takeUnretainedValue()
+    
+    return instance.isAdvertising
 }
 
 @_cdecl("cb4u_mutable_service_new")

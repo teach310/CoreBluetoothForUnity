@@ -33,7 +33,8 @@ namespace CoreBluetooth
             NativeMethods.cb4u_peripheral_manager_register_handlers(
                 handle,
                 DidUpdateState,
-                DidAddService
+                DidAddService,
+                DidStartAdvertising
             );
         }
 
@@ -56,6 +57,12 @@ namespace CoreBluetooth
         internal static void DidAddService(IntPtr peripheralPtr, string serviceUUID, int errorCode)
         {
             GetPeripheralManager(peripheralPtr)?.DidAddService(serviceUUID, CBError.CreateOrNullFromCode(errorCode));
+        }
+
+        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralManagerDidStartAdvertisingHandler))]
+        internal static void DidStartAdvertising(IntPtr peripheralPtr, int errorCode)
+        {
+            GetPeripheralManager(peripheralPtr)?.DidStartAdvertising(CBError.CreateOrNullFromCode(errorCode));
         }
     }
 }
