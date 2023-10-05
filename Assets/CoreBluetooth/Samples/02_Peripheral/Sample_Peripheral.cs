@@ -42,6 +42,28 @@ namespace CoreBluetoothSample
         public void DidAddService(CBPeripheralManager peripheral, CBService service, CBError error)
         {
             Debug.Log($"[DidAddService] peripheral: {peripheral}  service: {service}  error: {error}");
+            if (error == null)
+            {
+                var options = new StartAdvertisingOptions()
+                {
+                    LocalName = "Unity",
+                    ServiceUUIDs = new string[] { serviceUUID }
+                };
+                peripheral.StartAdvertising(options);
+            }
+        }
+
+        public void DidStartAdvertising(CBPeripheralManager peripheral, CBError error)
+        {
+            Debug.Log($"[DidStartAdvertising] peripheral: {peripheral}  error: {error}");
+        }
+
+        public void DidReceiveReadRequest(CBPeripheralManager peripheral, CBATTRequest request)
+        {
+            Debug.Log($"[DidReceiveReadRequest] peripheral: {peripheral}");
+            Debug.Log($"[DidReceiveReadRequest] request central: {request.Central}");
+            Debug.Log($"[DidReceiveReadRequest] request characteristic: {request.Characteristic}");
+            Debug.Log($"[DidReceiveReadRequest] request offset: {request.Offset}");
         }
 
         void OnDestroy()
