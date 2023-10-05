@@ -10,7 +10,14 @@ namespace CoreBluetooth
         void DidStartAdvertising(CBPeripheralManager peripheral, CBError error) { }
     }
 
-    public class CBPeripheralManager : CBManager, IDisposable
+    internal interface IPeripheralManagerData
+    {
+        void AddCentral(CBCentral central);
+        CBCentral FindCentral(string centralId);
+        CBCharacteristic FindCharacteristic(string serviceUUID, string characteristicUUID);
+    }
+
+    public class CBPeripheralManager : CBManager, IPeripheralManagerData, IDisposable
     {
         bool _disposed = false;
         SafeNativePeripheralManagerHandle _handle;
@@ -26,6 +33,9 @@ namespace CoreBluetooth
                 _delegate = value;
             }
         }
+
+        // key: centralId
+        Dictionary<string, CBCentral> _centrals = new Dictionary<string, CBCentral>();
 
         Dictionary<string, CBMutableService> _services = new Dictionary<string, CBMutableService>();
         HashSet<string> _addingServiceUUIDs = new HashSet<string>();
@@ -71,6 +81,29 @@ namespace CoreBluetooth
             }
         }
 
+        void IPeripheralManagerData.AddCentral(CBCentral central)
+        {
+            _centrals.Add(central.Identifier, central);
+        }
+
+        CBCentral IPeripheralManagerData.FindCentral(string centralId)
+        {
+            if (_centrals.TryGetValue(centralId, out var central))
+            {
+                return central;
+            }
+            return null;
+        }
+
+        CBCharacteristic IPeripheralManagerData.FindCharacteristic(string serviceUUID, string characteristicUUID)
+        {
+            if (_services.TryGetValue(serviceUUID, out var service))
+            {
+                return service.FindCharacteristic(characteristicUUID);
+            }
+            return null;
+        }
+
         internal void DidUpdateState(CBManagerState state)
         {
             if (_disposed) return;
@@ -100,6 +133,10 @@ namespace CoreBluetooth
             if (_disposed) return;
 
             _handle?.Dispose();
+            foreach (var central in _centrals.Values)
+            {
+                central.Dispose();
+            }
 
             _disposed = true;
         }
