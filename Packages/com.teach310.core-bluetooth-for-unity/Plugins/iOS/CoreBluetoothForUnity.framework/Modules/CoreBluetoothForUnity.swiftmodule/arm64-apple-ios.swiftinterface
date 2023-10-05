@@ -7,6 +7,30 @@ import Foundation
 import Swift
 import _Concurrency
 import _StringProcessing
+public class CB4UATTRequest {
+  public init(request: CoreBluetooth.CBATTRequest)
+  public var central: CoreBluetoothForUnity.CB4UCentral {
+    get
+  }
+  public var characteristic: CoreBluetooth.CBCharacteristic {
+    get
+  }
+  public func setValue(_ value: Foundation.Data?)
+  public var offset: Swift.Int {
+    get
+  }
+  @objc deinit
+}
+public class CB4UCentral {
+  public init(central: CoreBluetooth.CBCentral)
+  public var identifier: Swift.String {
+    get
+  }
+  public var maximumUpdateValueLength: Swift.Int {
+    get
+  }
+  @objc deinit
+}
 extension CoreBluetoothForUnity.CB4UCentralManager {
   public func characteristicProperties(_ peripheralId: Swift.String, _ serviceUUID: CoreBluetooth.CBUUID, _ characteristicUUID: CoreBluetooth.CBUUID) -> Swift.Int32
 }
@@ -79,6 +103,7 @@ public class CB4UMutableService {
   public var didUpdateStateHandler: CoreBluetoothForUnity.CB4UCentralManagerDidUpdateStateHandler?
   public var didAddServiceHandler: CoreBluetoothForUnity.CB4UPeripheralManagerDidAddServiceHandler?
   public var didStartAdvertisingHandler: CoreBluetoothForUnity.CB4UPeripheralManagerDidStartAdvertisingHandler?
+  public var didReceiveReadRequestHandler: CoreBluetoothForUnity.CB4UPeripheralManagerDidReceiveReadRequestHandler?
   @objc override dynamic public init()
   public func add(_ service: CoreBluetoothForUnity.CB4UMutableService)
   public func startAdvertising(_ options: CoreBluetoothForUnity.StartAdvertisingOptions?)
@@ -92,7 +117,14 @@ extension CoreBluetoothForUnity.CB4UPeripheralManager : CoreBluetooth.CBPeripher
   @objc dynamic public func peripheralManagerDidUpdateState(_ peripheral: CoreBluetooth.CBPeripheralManager)
   @objc dynamic public func peripheralManager(_ peripheral: CoreBluetooth.CBPeripheralManager, didAdd service: CoreBluetooth.CBService, error: (any Swift.Error)?)
   @objc dynamic public func peripheralManagerDidStartAdvertising(_ peripheral: CoreBluetooth.CBPeripheralManager, error: (any Swift.Error)?)
+  @objc dynamic public func peripheralManager(_ peripheral: CoreBluetooth.CBPeripheralManager, didReceiveRead request: CoreBluetooth.CBATTRequest)
 }
+@_cdecl("cb4u_central_release")
+public func cb4u_central_release(_ centralPtr: Swift.UnsafeRawPointer)
+@_cdecl("cb4u_central_identifier")
+public func cb4u_central_identifier(_ centralPtr: Swift.UnsafeRawPointer, _ identifier: Swift.UnsafeMutablePointer<Swift.CChar>, _ identifierSize: Swift.Int32)
+@_cdecl("cb4u_central_maximum_update_value_length")
+public func cb4u_central_maximum_update_value_length(_ centralPtr: Swift.UnsafeRawPointer) -> Swift.Int32
 @_cdecl("cb4u_central_manager_new")
 public func cb4u_central_manager_new() -> Swift.UnsafeMutableRawPointer
 @_cdecl("cb4u_central_manager_release")
@@ -140,8 +172,9 @@ public func cb4u_peripheral_manager_release(_ peripheralManagerPtr: Swift.Unsafe
 public typealias CB4UPeripheralManagerDidUpdateStateHandler = @convention(c) (Swift.UnsafeRawPointer, Swift.Int32) -> Swift.Void
 public typealias CB4UPeripheralManagerDidAddServiceHandler = @convention(c) (Swift.UnsafeRawPointer, Swift.UnsafePointer<Swift.CChar>, Swift.Int32) -> Swift.Void
 public typealias CB4UPeripheralManagerDidStartAdvertisingHandler = @convention(c) (Swift.UnsafeRawPointer, Swift.Int32) -> Swift.Void
+public typealias CB4UPeripheralManagerDidReceiveReadRequestHandler = @convention(c) (Swift.UnsafeRawPointer, Swift.UnsafeRawPointer) -> Swift.Void
 @_cdecl("cb4u_peripheral_manager_register_handlers")
-public func cb4u_peripheral_manager_register_handlers(_ peripheralManagerPtr: Swift.UnsafeRawPointer, _ didUpdateStateHandler: CoreBluetoothForUnity.CB4UPeripheralManagerDidUpdateStateHandler, _ didAddServiceHandler: CoreBluetoothForUnity.CB4UPeripheralManagerDidAddServiceHandler, _ didStartAdvertisingHandler: CoreBluetoothForUnity.CB4UPeripheralManagerDidStartAdvertisingHandler)
+public func cb4u_peripheral_manager_register_handlers(_ peripheralManagerPtr: Swift.UnsafeRawPointer, _ didUpdateStateHandler: CoreBluetoothForUnity.CB4UPeripheralManagerDidUpdateStateHandler, _ didAddServiceHandler: CoreBluetoothForUnity.CB4UPeripheralManagerDidAddServiceHandler, _ didStartAdvertisingHandler: CoreBluetoothForUnity.CB4UPeripheralManagerDidStartAdvertisingHandler, _ didReceiveReadRequestHandler: CoreBluetoothForUnity.CB4UPeripheralManagerDidReceiveReadRequestHandler)
 @_cdecl("cb4u_peripheral_manager_add_service")
 public func cb4u_peripheral_manager_add_service(_ peripheralPtr: Swift.UnsafeRawPointer, _ servicePtr: Swift.UnsafeRawPointer)
 @_cdecl("cb4u_peripheral_manager_start_advertising")
@@ -172,6 +205,16 @@ public func cb4u_mutable_characteristic_set_properties(_ characteristicPtr: Swif
 public func cb4u_mutable_characteristic_permissions(_ characteristicPtr: Swift.UnsafeRawPointer) -> Swift.Int32
 @_cdecl("cb4u_mutable_characteristic_set_permissions")
 public func cb4u_mutable_characteristic_set_permissions(_ characteristicPtr: Swift.UnsafeRawPointer, _ permissions: Swift.Int32)
+@_cdecl("cb4u_att_request_release")
+public func cb4u_att_request_release(_ requestPtr: Swift.UnsafeRawPointer)
+@_cdecl("cb4u_att_request_central")
+public func cb4u_att_request_central(_ requestPtr: Swift.UnsafeRawPointer) -> Swift.UnsafeMutableRawPointer
+@_cdecl("cb4u_att_request_characteristic_uuid")
+public func cb4u_att_request_characteristic_uuid(_ requestPtr: Swift.UnsafeRawPointer, _ serviceUUID: Swift.UnsafeMutablePointer<Swift.CChar>, _ serviceUUIDSize: Swift.Int32, _ characteristicUUID: Swift.UnsafeMutablePointer<Swift.CChar>, _ characteristicUUIDSize: Swift.Int32)
+@_cdecl("cb4u_att_request_set_value")
+public func cb4u_att_request_set_value(_ requestPtr: Swift.UnsafeRawPointer, _ dataBytes: Swift.UnsafePointer<Swift.UInt8>, _ dataLength: Swift.Int32)
+@_cdecl("cb4u_att_request_offset")
+public func cb4u_att_request_offset(_ requestPtr: Swift.UnsafeRawPointer) -> Swift.Int32
 public class StartAdvertisingOptions {
   public var localName: Swift.String?
   public var serviceUUIDs: [CoreBluetooth.CBUUID]?
