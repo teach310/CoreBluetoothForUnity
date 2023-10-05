@@ -11,6 +11,19 @@ namespace CoreBluetooth
         const string DLL_NAME = "CB4UBundle";
 #endif
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void cb4u_central_release(IntPtr handle);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern IntPtr cb4u_central_identifier(
+            SafeNativeCentralHandle handle,
+            [MarshalAs(UnmanagedType.LPStr), Out] StringBuilder identifier,
+            int identifierSize
+        );
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int cb4u_central_maximum_update_value_length(SafeNativeCentralHandle handle);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern IntPtr cb4u_central_manager_new();
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
