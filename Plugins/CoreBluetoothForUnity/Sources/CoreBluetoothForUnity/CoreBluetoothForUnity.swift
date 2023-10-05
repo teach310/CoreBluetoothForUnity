@@ -1,5 +1,32 @@
 import CoreBluetooth
 
+@_cdecl("cb4u_central_release")
+public func cb4u_central_release(_ centralPtr: UnsafeRawPointer) {
+    Unmanaged<CB4UCentral>.fromOpaque(centralPtr).release()
+}
+
+@_cdecl("cb4u_central_identifier")
+public func cb4u_central_identifier(_ centralPtr: UnsafeRawPointer, _ identifier: UnsafeMutablePointer<CChar>, _ identifierSize: Int32) {
+    let instance = Unmanaged<CB4UCentral>.fromOpaque(centralPtr).takeUnretainedValue()
+    
+    let identifierString = instance.identifier
+    let maxSize = Int(identifierSize) - 1
+    identifierString.withCString { identifierStringPtr in
+        if identifierString.count > maxSize {
+            print("cb4u_central_identifier: identifierSize is too small. identifierSize: \(identifierSize), identifier.count: \(identifierString.count)")
+        } else {
+            strcpy(identifier, identifierStringPtr)
+        }
+    }
+}
+
+@_cdecl("cb4u_central_maximum_update_value_length")
+public func cb4u_central_maximum_update_value_length(_ centralPtr: UnsafeRawPointer) -> Int32 {
+    let instance = Unmanaged<CB4UCentral>.fromOpaque(centralPtr).takeUnretainedValue()
+    
+    return Int32(instance.maximumUpdateValueLength)
+}
+
 @_cdecl("cb4u_central_manager_new")
 public func cb4u_central_manager_new() -> UnsafeMutableRawPointer {
     return Unmanaged.passRetained(CB4UCentralManager()).toOpaque()
@@ -198,19 +225,22 @@ public func cb4u_peripheral_manager_release(_ peripheralManagerPtr: UnsafeRawPoi
 public typealias CB4UPeripheralManagerDidUpdateStateHandler = @convention(c) (UnsafeRawPointer, Int32) -> Void
 public typealias CB4UPeripheralManagerDidAddServiceHandler = @convention(c) (UnsafeRawPointer, UnsafePointer<CChar>, Int32) -> Void
 public typealias CB4UPeripheralManagerDidStartAdvertisingHandler = @convention(c) (UnsafeRawPointer, Int32) -> Void
+public typealias CB4UPeripheralManagerDidReceiveReadRequestHandler = @convention(c) (UnsafeRawPointer, UnsafeRawPointer) -> Void
 
 @_cdecl("cb4u_peripheral_manager_register_handlers")
 public func cb4u_peripheral_manager_register_handlers(
     _ peripheralManagerPtr: UnsafeRawPointer,
     _ didUpdateStateHandler: @escaping CB4UPeripheralManagerDidUpdateStateHandler,
     _ didAddServiceHandler: @escaping CB4UPeripheralManagerDidAddServiceHandler,
-    _ didStartAdvertisingHandler: @escaping CB4UPeripheralManagerDidStartAdvertisingHandler
+    _ didStartAdvertisingHandler: @escaping CB4UPeripheralManagerDidStartAdvertisingHandler,
+    _ didReceiveReadRequestHandler: @escaping CB4UPeripheralManagerDidReceiveReadRequestHandler
 ) {
     let instance = Unmanaged<CB4UPeripheralManager>.fromOpaque(peripheralManagerPtr).takeUnretainedValue()
     
     instance.didUpdateStateHandler = didUpdateStateHandler
     instance.didAddServiceHandler = didAddServiceHandler
     instance.didStartAdvertisingHandler = didStartAdvertisingHandler
+    instance.didReceiveReadRequestHandler = didReceiveReadRequestHandler
 }
 
 @_cdecl("cb4u_peripheral_manager_add_service")
@@ -329,4 +359,85 @@ public func cb4u_mutable_characteristic_set_permissions(_ characteristicPtr: Uns
     let instance = Unmanaged<CB4UMutableCharacteristic>.fromOpaque(characteristicPtr).takeUnretainedValue()
     
     instance.permissions = CBAttributePermissions(rawValue: UInt(permissions))
+}
+
+// [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+//         internal static extern void cb4u_att_request_release(IntPtr handle);
+
+//         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+//         internal static extern IntPtr cb4u_att_request_central(SafeNativeATTRequestHandle handle);
+
+//         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+//         internal static extern void cb4u_att_request_characteristic_uuid(
+//             SafeNativeATTRequestHandle handle,
+//             [MarshalAs(UnmanagedType.LPStr), Out] StringBuilder serviceUUID,
+//             int serviceUUIDSize,
+//             [MarshalAs(UnmanagedType.LPStr), Out] StringBuilder characteristicUUID,
+//             int characteristicUUIDSize
+//         );
+
+//         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+//         internal static extern int cb4u_att_request_set_value(SafeNativeATTRequestHandle handle, byte[] dataBytes, int dataLength);
+
+//         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+//         internal static extern int cb4u_att_request_offset(SafeNativeATTRequestHandle handle);
+
+@_cdecl("cb4u_att_request_release")
+public func cb4u_att_request_release(_ requestPtr: UnsafeRawPointer) {
+    Unmanaged<CB4UATTRequest>.fromOpaque(requestPtr).release()
+}
+
+@_cdecl("cb4u_att_request_central")
+public func cb4u_att_request_central(_ requestPtr: UnsafeRawPointer) -> UnsafeMutableRawPointer {
+    let instance = Unmanaged<CB4UATTRequest>.fromOpaque(requestPtr).takeUnretainedValue()
+    
+    return Unmanaged.passRetained(instance.central).toOpaque()
+}
+
+@_cdecl("cb4u_att_request_characteristic_uuid")
+public func cb4u_att_request_characteristic_uuid(
+    _ requestPtr: UnsafeRawPointer,
+    _ serviceUUID: UnsafeMutablePointer<CChar>,
+    _ serviceUUIDSize: Int32,
+    _ characteristicUUID: UnsafeMutablePointer<CChar>,
+    _ characteristicUUIDSize: Int32
+) {
+    let instance = Unmanaged<CB4UATTRequest>.fromOpaque(requestPtr).takeUnretainedValue()
+    
+    if let service = instance.characteristic.service {
+        let serviceUUIDString = service.uuid.uuidString
+        let serviceUUIDMaxSize = Int(serviceUUIDSize) - 1
+        serviceUUIDString.withCString { serviceUUIDStringPtr in
+            if serviceUUIDString.count > serviceUUIDMaxSize {
+                print("cb4u_att_request_characteristic_uuid: serviceUUIDSize is too small. serviceUUIDSize: \(serviceUUIDSize), serviceUUID.count: \(serviceUUIDString.count)")
+            } else {
+                strcpy(serviceUUID, serviceUUIDStringPtr)
+            }
+        }
+    }
+    let characteristicUUIDString = instance.characteristic.uuid.uuidString
+    let characteristicUUIDMaxSize = Int(characteristicUUIDSize) - 1
+    
+    characteristicUUIDString.withCString { characteristicUUIDStringPtr in
+        if characteristicUUIDString.count > characteristicUUIDMaxSize {
+            print("cb4u_att_request_characteristic_uuid: characteristicUUIDSize is too small. characteristicUUIDSize: \(characteristicUUIDSize), characteristicUUID.count: \(characteristicUUIDString.count)")
+        } else {
+            strcpy(characteristicUUID, characteristicUUIDStringPtr)
+        }
+    }
+}
+
+@_cdecl("cb4u_att_request_set_value")
+public func cb4u_att_request_set_value(_ requestPtr: UnsafeRawPointer, _ dataBytes: UnsafePointer<UInt8>, _ dataLength: Int32) {
+    let instance = Unmanaged<CB4UATTRequest>.fromOpaque(requestPtr).takeUnretainedValue()
+    
+    let data = dataLength > 0 ? Data(bytes: dataBytes, count: Int(dataLength)) : nil
+    instance.setValue(data)
+}
+
+@_cdecl("cb4u_att_request_offset")
+public func cb4u_att_request_offset(_ requestPtr: UnsafeRawPointer) -> Int32 {
+    let instance = Unmanaged<CB4UATTRequest>.fromOpaque(requestPtr).takeUnretainedValue()
+    
+    return Int32(instance.offset)
 }
