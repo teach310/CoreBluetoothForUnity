@@ -8,6 +8,7 @@ namespace CoreBluetooth
         void DidUpdateState(CBPeripheralManager peripheral);
         void DidAddService(CBPeripheralManager peripheral, CBService service, CBError error) { }
         void DidStartAdvertising(CBPeripheralManager peripheral, CBError error) { }
+        void DidReceiveReadRequest(CBPeripheralManager peripheral, CBATTRequest request) { }
     }
 
     internal interface IPeripheralManagerData
@@ -40,11 +41,23 @@ namespace CoreBluetooth
         Dictionary<string, CBMutableService> _services = new Dictionary<string, CBMutableService>();
         HashSet<string> _addingServiceUUIDs = new HashSet<string>();
 
+        static readonly int s_maxATTRequests = 10;
+        Queue<IDisposable> _attRequestDisposables = new Queue<IDisposable>();
+
         public CBPeripheralManager(ICBPeripheralManagerDelegate peripheralDelegate = null)
         {
             _handle = SafeNativePeripheralManagerHandle.Create(this);
             Delegate = peripheralDelegate;
             _nativePeripheralManagerProxy = new NativePeripheralManagerProxy(_handle);
+        }
+
+        void AddATTRequestDisposable(IDisposable disposable)
+        {
+            _attRequestDisposables.Enqueue(disposable);
+            while (_attRequestDisposables.Count > s_maxATTRequests)
+            {
+                _attRequestDisposables.Dequeue().Dispose();
+            }
         }
 
         public void AddService(CBMutableService service)
@@ -128,6 +141,14 @@ namespace CoreBluetooth
             _delegate?.DidStartAdvertising(this, error);
         }
 
+        internal void DidReceiveReadRequest(SafeNativeATTRequestHandle requestHandle)
+        {
+            if (_disposed) return;
+            var request = new CBATTRequest(requestHandle, new NativeATTRequestProxy(requestHandle, this));
+            _delegate?.DidReceiveReadRequest(this, request);
+            AddATTRequestDisposable(request);
+        }
+
         public void Dispose()
         {
             if (_disposed) return;
@@ -136,6 +157,11 @@ namespace CoreBluetooth
             foreach (var central in _centrals.Values)
             {
                 central.Dispose();
+            }
+
+            while (_attRequestDisposables.Count > 0)
+            {
+                _attRequestDisposables.Dequeue().Dispose();
             }
 
             _disposed = true;
