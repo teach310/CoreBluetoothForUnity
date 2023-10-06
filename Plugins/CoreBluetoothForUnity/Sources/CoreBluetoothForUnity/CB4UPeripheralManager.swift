@@ -47,6 +47,10 @@ public class CB4UPeripheralManager : NSObject {
     public var isAdvertising: Bool {
         return peripheralManager.isAdvertising
     }
+
+    public func respond(to request: CB4UATTRequest, withResult result: CBATTError.Code) {
+        peripheralManager.respond(to: request.request, withResult: result)
+    }
 }
 
 extension CB4UPeripheralManager : CBPeripheralManagerDelegate {

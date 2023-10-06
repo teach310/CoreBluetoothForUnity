@@ -1,7 +1,7 @@
 import CoreBluetooth
 
 public class CB4UATTRequest {
-    private var request: CBATTRequest!
+    var request: CBATTRequest!
     
     public init(request: CBATTRequest) {
         self.request = request
