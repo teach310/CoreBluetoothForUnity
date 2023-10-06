@@ -369,27 +369,6 @@ public func cb4u_mutable_characteristic_set_permissions(_ characteristicPtr: Uns
     instance.permissions = CBAttributePermissions(rawValue: UInt(permissions))
 }
 
-// [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-//         internal static extern void cb4u_att_request_release(IntPtr handle);
-
-//         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-//         internal static extern IntPtr cb4u_att_request_central(SafeNativeATTRequestHandle handle);
-
-//         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-//         internal static extern void cb4u_att_request_characteristic_uuid(
-//             SafeNativeATTRequestHandle handle,
-//             [MarshalAs(UnmanagedType.LPStr), Out] StringBuilder serviceUUID,
-//             int serviceUUIDSize,
-//             [MarshalAs(UnmanagedType.LPStr), Out] StringBuilder characteristicUUID,
-//             int characteristicUUIDSize
-//         );
-
-//         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-//         internal static extern int cb4u_att_request_set_value(SafeNativeATTRequestHandle handle, byte[] dataBytes, int dataLength);
-
-//         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-//         internal static extern int cb4u_att_request_offset(SafeNativeATTRequestHandle handle);
-
 @_cdecl("cb4u_att_request_release")
 public func cb4u_att_request_release(_ requestPtr: UnsafeRawPointer) {
     Unmanaged<CB4UATTRequest>.fromOpaque(requestPtr).release()
