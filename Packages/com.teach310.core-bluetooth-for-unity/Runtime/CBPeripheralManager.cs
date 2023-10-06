@@ -94,6 +94,12 @@ namespace CoreBluetooth
             }
         }
 
+        public void RespondToRequest(CBATTRequest request, CBATTError result)
+        {
+            ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
+            _nativePeripheralManagerProxy.RespondToRequest(request, result);
+        }
+
         void IPeripheralManagerData.AddCentral(CBCentral central)
         {
             _centrals.Add(central.Identifier, central);
