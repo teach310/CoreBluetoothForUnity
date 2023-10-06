@@ -13,6 +13,7 @@ namespace CoreBluetoothSample
         string characteristicUUID = "E3737B3F-A08D-405B-B32D-35A8F6C64C5D";
 
         List<IDisposable> disposables = new List<IDisposable>();
+        byte[] value = null;
 
         void Start()
         {
@@ -60,10 +61,20 @@ namespace CoreBluetoothSample
 
         public void DidReceiveReadRequest(CBPeripheralManager peripheral, CBATTRequest request)
         {
-            Debug.Log($"[DidReceiveReadRequest] peripheral: {peripheral}");
-            Debug.Log($"[DidReceiveReadRequest] request central: {request.Central}");
-            Debug.Log($"[DidReceiveReadRequest] request characteristic: {request.Characteristic}");
-            Debug.Log($"[DidReceiveReadRequest] request offset: {request.Offset}");
+            if (request.Characteristic.UUID != characteristicUUID)
+            {
+                peripheral.RespondToRequest(request, CBATTError.AttributeNotFound);
+                return;
+            }
+
+            if (request.Offset > request.Characteristic.Value.Length)
+            {
+                peripheral.RespondToRequest(request, CBATTError.InvalidOffset);
+                return;
+            }
+
+            request.Value = value ?? new byte[0];
+            peripheral.RespondToRequest(request, CBATTError.Success);
         }
 
         void OnDestroy()
