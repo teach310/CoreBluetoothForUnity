@@ -13,6 +13,7 @@ namespace CoreBluetoothSample
         string characteristicUUID = "E3737B3F-A08D-405B-B32D-35A8F6C64C5D";
 
         List<IDisposable> disposables = new List<IDisposable>();
+        byte[] value = null;
 
         void Start()
         {
@@ -42,6 +43,38 @@ namespace CoreBluetoothSample
         public void DidAddService(CBPeripheralManager peripheral, CBService service, CBError error)
         {
             Debug.Log($"[DidAddService] peripheral: {peripheral}  service: {service}  error: {error}");
+            if (error == null)
+            {
+                var options = new StartAdvertisingOptions()
+                {
+                    LocalName = "Unity",
+                    ServiceUUIDs = new string[] { serviceUUID }
+                };
+                peripheral.StartAdvertising(options);
+            }
+        }
+
+        public void DidStartAdvertising(CBPeripheralManager peripheral, CBError error)
+        {
+            Debug.Log($"[DidStartAdvertising] peripheral: {peripheral}  error: {error}");
+        }
+
+        public void DidReceiveReadRequest(CBPeripheralManager peripheral, CBATTRequest request)
+        {
+            if (request.Characteristic.UUID != characteristicUUID)
+            {
+                peripheral.RespondToRequest(request, CBATTError.AttributeNotFound);
+                return;
+            }
+
+            if (request.Offset > request.Characteristic.Value.Length)
+            {
+                peripheral.RespondToRequest(request, CBATTError.InvalidOffset);
+                return;
+            }
+
+            request.Value = value ?? new byte[0];
+            peripheral.RespondToRequest(request, CBATTError.Success);
         }
 
         void OnDestroy()

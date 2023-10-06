@@ -34,7 +34,8 @@ namespace CoreBluetooth
                 handle,
                 DidUpdateState,
                 DidAddService,
-                DidStartAdvertising
+                DidStartAdvertising,
+                DidReceiveReadRequest
             );
         }
 
@@ -63,6 +64,14 @@ namespace CoreBluetooth
         internal static void DidStartAdvertising(IntPtr peripheralPtr, int errorCode)
         {
             GetPeripheralManager(peripheralPtr)?.DidStartAdvertising(CBError.CreateOrNullFromCode(errorCode));
+        }
+
+        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralManagerDidReceiveReadRequestHandler))]
+        internal static void DidReceiveReadRequest(IntPtr peripheralPtr, IntPtr requestPtr)
+        {
+            GetPeripheralManager(peripheralPtr)?.DidReceiveReadRequest(
+                new SafeNativeATTRequestHandle(requestPtr)
+            );
         }
     }
 }

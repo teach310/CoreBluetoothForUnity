@@ -46,5 +46,10 @@ namespace CoreBluetooth
         }
 
         internal bool IsAdvertising => NativeMethods.cb4u_peripheral_manager_is_advertising(_handle);
+
+        internal void RespondToRequest(CBATTRequest request, CBATTError result)
+        {
+            NativeMethods.cb4u_peripheral_manager_respond_to_request(_handle, request.Handle, (int)result);
+        }
     }
 }
