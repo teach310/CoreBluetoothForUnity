@@ -333,6 +333,28 @@ public func cb4u_mutable_characteristic_release(_ characteristicPtr: UnsafeRawPo
     Unmanaged<CB4UMutableCharacteristic>.fromOpaque(characteristicPtr).release()
 }
 
+@_cdecl("cb4u_mutable_characteristic_value_length")
+public func cb4u_mutable_characteristic_value_length(_ characteristicPtr: UnsafeRawPointer) -> Int32 {
+    let instance = Unmanaged<CB4UMutableCharacteristic>.fromOpaque(characteristicPtr).takeUnretainedValue()
+    
+    return Int32(instance.valueLength)
+}
+
+@_cdecl("cb4u_mutable_characteristic_value")
+public func cb4u_mutable_characteristic_value(_ characteristicPtr: UnsafeRawPointer, _ dataBytes: UnsafeMutablePointer<UInt8>, _ dataLength: Int32) -> Int32 {
+    let instance = Unmanaged<CB4UMutableCharacteristic>.fromOpaque(characteristicPtr).takeUnretainedValue()
+    
+    guard let value = instance.value else {
+        return 0
+    }
+    
+    value.withUnsafeBytes { (valueBytes: UnsafeRawBufferPointer) in
+        let valueBytesPtr = valueBytes.bindMemory(to: UInt8.self).baseAddress!
+        dataBytes.update(from: valueBytesPtr, count: Int(dataLength))
+    }
+    return 1
+}
+
 @_cdecl("cb4u_mutable_characteristic_set_value")
 public func cb4u_mutable_characteristic_set_value(_ characteristicPtr: UnsafeRawPointer, _ dataBytes: UnsafePointer<UInt8>, _ dataLength: Int32) {
     let instance = Unmanaged<CB4UMutableCharacteristic>.fromOpaque(characteristicPtr).takeUnretainedValue()

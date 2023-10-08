@@ -7,6 +7,7 @@ namespace CoreBluetooth
 {
     internal interface INativeMutableCharacteristic : INativeCharacteristic
     {
+        byte[] Value { get; }
         void SetValue(byte[] value);
         void SetProperties(CBCharacteristicProperties properties);
         CBAttributePermissions Permissions { get; }
@@ -28,13 +29,12 @@ namespace CoreBluetooth
             get
             {
                 ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
-                return base.Value;
+                return _nativeMutableCharacteristic.Value;
             }
             set
             {
                 ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
                 _nativeMutableCharacteristic.SetValue(value);
-                UpdateValue(value);
             }
         }
 
@@ -76,7 +76,6 @@ namespace CoreBluetooth
             Handle = SafeNativeMutableCharacteristicHandle.Create(uuid, properties, value, permissions);
             _nativeMutableCharacteristic = new NativeMutableCharacteristicProxy(Handle);
             nativeCharacteristic = _nativeMutableCharacteristic;
-            UpdateValue(value);
         }
 
         public override string ToString()

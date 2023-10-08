@@ -82,6 +82,9 @@ public class CB4UMutableCharacteristic {
     get
     set
   }
+  public var valueLength: Swift.Int {
+    get
+  }
   public var properties: CoreBluetooth.CBCharacteristicProperties {
     get
     set
@@ -198,6 +201,10 @@ public func cb4u_mutable_service_add_characteristic(_ servicePtr: Swift.UnsafeRa
 public func cb4u_mutable_characteristic_new(_ characteristicUUID: Swift.UnsafePointer<Swift.CChar>, _ properties: Swift.Int32, _ dataBytes: Swift.UnsafePointer<Swift.UInt8>, _ dataLength: Swift.Int32, _ permissions: Swift.Int32) -> Swift.UnsafeMutableRawPointer
 @_cdecl("cb4u_mutable_characteristic_release")
 public func cb4u_mutable_characteristic_release(_ characteristicPtr: Swift.UnsafeRawPointer)
+@_cdecl("cb4u_mutable_characteristic_value_length")
+public func cb4u_mutable_characteristic_value_length(_ characteristicPtr: Swift.UnsafeRawPointer) -> Swift.Int32
+@_cdecl("cb4u_mutable_characteristic_value")
+public func cb4u_mutable_characteristic_value(_ characteristicPtr: Swift.UnsafeRawPointer, _ dataBytes: Swift.UnsafeMutablePointer<Swift.UInt8>, _ dataLength: Swift.Int32) -> Swift.Int32
 @_cdecl("cb4u_mutable_characteristic_set_value")
 public func cb4u_mutable_characteristic_set_value(_ characteristicPtr: Swift.UnsafeRawPointer, _ dataBytes: Swift.UnsafePointer<Swift.UInt8>, _ dataLength: Swift.Int32)
 @_cdecl("cb4u_mutable_characteristic_properties")
