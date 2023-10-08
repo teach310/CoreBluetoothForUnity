@@ -11,6 +11,10 @@ public class CB4UMutableCharacteristic {
             characteristic.value = newValue
         }
     }
+
+    public var valueLength: Int {
+        return characteristic.value?.count ?? 0
+    }
     
     public var properties: CBCharacteristicProperties {
         get {
