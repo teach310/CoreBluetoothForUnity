@@ -422,6 +422,12 @@ SWIFT_EXTERN void cb4u_mutable_characteristic_set_properties(void const * _Nonnu
 SWIFT_EXTERN void cb4u_mutable_characteristic_set_value(void const * _Nonnull characteristicPtr, uint8_t const * _Nonnull dataBytes, int32_t dataLength);
 
 
+SWIFT_EXTERN int32_t cb4u_mutable_characteristic_value(void const * _Nonnull characteristicPtr, uint8_t * _Nonnull dataBytes, int32_t dataLength) SWIFT_WARN_UNUSED_RESULT;
+
+
+SWIFT_EXTERN int32_t cb4u_mutable_characteristic_value_length(void const * _Nonnull characteristicPtr) SWIFT_WARN_UNUSED_RESULT;
+
+
 SWIFT_EXTERN void cb4u_mutable_service_add_characteristic(void const * _Nonnull servicePtr, void const * _Nonnull characteristicPtr);
 
 
