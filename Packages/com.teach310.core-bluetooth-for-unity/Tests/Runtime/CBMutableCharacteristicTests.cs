@@ -28,8 +28,9 @@ namespace CoreBluetoothTests
         {
             using var characteristic = new CBMutableCharacteristic(validUUID1, CBCharacteristicProperties.Broadcast, null, CBAttributePermissions.Readable);
             Assert.That(characteristic.Value, Is.Null);
-            characteristic.Value = new byte[] { 0x01 };
-            Assert.That(characteristic.Value, Is.EqualTo(new byte[] { 0x01 }));
+            var data = new byte[] { 0x01, 0x02 };
+            characteristic.Value = data;
+            Assert.That(characteristic.Value, Is.EqualTo(data));
             characteristic.Value = null;
             Assert.That(characteristic.Value, Is.Null);
         }
@@ -56,7 +57,6 @@ namespace CoreBluetoothTests
         public void ToString_Output()
         {
             using var characteristic = new CBMutableCharacteristic(validUUID1, CBCharacteristicProperties.Broadcast, null, CBAttributePermissions.Readable);
-            UnityEngine.Debug.Log(characteristic.ToString());
             Assert.That(characteristic.ToString(), Is.EqualTo($"CBMutableCharacteristic: UUID = {validUUID1}, properties = Broadcast, value = null, notifying = NO, permissions = Readable"));
         }
     }

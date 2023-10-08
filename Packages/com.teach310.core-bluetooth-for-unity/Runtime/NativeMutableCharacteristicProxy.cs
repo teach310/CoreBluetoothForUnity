@@ -9,6 +9,22 @@ namespace CoreBluetooth
             _handle = handle;
         }
 
+        byte[] INativeMutableCharacteristic.Value
+        {
+            get
+            {
+                var dataLength = NativeMethods.cb4u_mutable_characteristic_value_length(_handle);
+                var data = new byte[dataLength];
+                int result = NativeMethods.cb4u_mutable_characteristic_value(_handle, data, dataLength);
+
+                if (result == 0)
+                {
+                    return null;
+                }
+                return data;
+            }
+        }
+
         void INativeMutableCharacteristic.SetValue(byte[] value)
         {
             NativeMethods.cb4u_mutable_characteristic_set_value(_handle, value, value?.Length ?? 0);
