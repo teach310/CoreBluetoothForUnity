@@ -21,7 +21,7 @@ namespace CoreBluetooth
     /// An object that scans for, discovers, connects to, and manages peripherals.
     /// https://developer.apple.com/documentation/corebluetooth/cbcentralmanager
     /// </summary>
-    public class CBCentralManager : IDisposable
+    public class CBCentralManager : CBManager, IDisposable
     {
         bool _disposed = false;
         SafeNativeCentralManagerHandle _handle;
@@ -39,8 +39,6 @@ namespace CoreBluetooth
                 _delegate = value;
             }
         }
-
-        public CBManagerState State { get; private set; } = CBManagerState.Unknown;
 
         NativeCentralManagerProxy _nativeCentralManagerProxy;
 
@@ -116,6 +114,17 @@ namespace CoreBluetooth
             return characteristic;
         }
 
+        CBCharacteristic FindOrInitializeCharacteristic(CBService service, string characteristicUUID)
+        {
+            var characteristic = service.FindCharacteristic(characteristicUUID);
+            if (characteristic == null)
+            {
+                var nativeCharacteristicProxy = new NativeCharacteristicProxy(service.Peripheral.Identifier, service.UUID, characteristicUUID, _handle);
+                characteristic = new CBCharacteristic(characteristicUUID, nativeCharacteristicProxy);
+            }
+            return characteristic;
+        }
+
         internal void DidConnect(string peripheralId)
         {
             if (_disposed) return;
@@ -183,11 +192,7 @@ namespace CoreBluetooth
                 return;
             }
 
-            var characteristics = characteristicUUIDs.Select(uuid =>
-            {
-                var nativeCharacteristicProxy = new NativeCharacteristicProxy(peripheralId, serviceUUID, uuid, _handle);
-                return new CBCharacteristic(uuid, service, nativeCharacteristicProxy);
-            }).ToArray();
+            var characteristics = characteristicUUIDs.Select(uuid => FindOrInitializeCharacteristic(service, uuid)).ToArray();
             peripheral.DidDiscoverCharacteristics(characteristics, service, error);
         }
 

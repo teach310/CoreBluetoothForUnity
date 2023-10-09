@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace CoreBluetooth
 {
@@ -10,6 +11,19 @@ namespace CoreBluetooth
 #else
         const string DLL_NAME = "CB4UBundle";
 #endif
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void cb4u_central_release(IntPtr handle);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern IntPtr cb4u_central_identifier(
+            SafeNativeCentralHandle handle,
+            [MarshalAs(UnmanagedType.LPStr), Out] StringBuilder identifier,
+            int identifierSize
+        );
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int cb4u_central_maximum_update_value_length(SafeNativeCentralHandle handle);
+
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern IntPtr cb4u_central_manager_new();
 
@@ -114,5 +128,132 @@ namespace CoreBluetooth
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern int cb4u_central_manager_characteristic_properties(SafeNativeCentralManagerHandle handle, [MarshalAs(UnmanagedType.LPStr), In] string peripheralId, [MarshalAs(UnmanagedType.LPStr), In] string serviceId, [MarshalAs(UnmanagedType.LPStr), In] string characteristicId);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern IntPtr cb4u_peripheral_manager_new();
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void cb4u_peripheral_manager_release(IntPtr handle);
+
+        internal delegate void CB4UPeripheralManagerDidUpdateStateHandler(IntPtr peripheralManagerPtr, CBManagerState state);
+        internal delegate void CB4UPeripheralManagerDidAddServiceHandler(IntPtr peripheralManagerPtr, string serviceUUID, int errorCode);
+        internal delegate void CB4UPeripheralManagerDidStartAdvertisingHandler(IntPtr peripheralManagerPtr, int errorCode);
+        internal delegate void CB4UPeripheralManagerDidReceiveReadRequestHandler(IntPtr peripheralManagerPtr, IntPtr requestPtr);
+        internal delegate void CB4UPeripheralManagerDidReceiveWriteRequestsHandler(IntPtr peripheralManagerPtr, IntPtr requestsPtr);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void cb4u_peripheral_manager_register_handlers(
+            SafeNativePeripheralManagerHandle handle,
+            CB4UPeripheralManagerDidUpdateStateHandler didUpdateStateHandler,
+            CB4UPeripheralManagerDidAddServiceHandler didAddServiceHandler,
+            CB4UPeripheralManagerDidStartAdvertisingHandler didStartAdvertisingHandler,
+            CB4UPeripheralManagerDidReceiveReadRequestHandler didReceiveReadRequestHandler,
+            CB4UPeripheralManagerDidReceiveWriteRequestsHandler didReceiveWriteRequestsHandler
+        );
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int cb4u_peripheral_manager_add_service(
+            SafeNativePeripheralManagerHandle peripheralHandle,
+            SafeNativeMutableServiceHandle serviceHandle
+        );
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void cb4u_peripheral_manager_start_advertising(
+            SafeNativePeripheralManagerHandle peripheralHandle,
+            [MarshalAs(UnmanagedType.LPStr), In] string localName,
+            [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPStr, SizeParamIndex = 3)] string[] serviceUUIDs,
+            int serviceUUIDsCount
+        );
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void cb4u_peripheral_manager_stop_advertising(SafeNativePeripheralManagerHandle peripheralHandle);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.I1)]
+        internal static extern bool cb4u_peripheral_manager_is_advertising(SafeNativePeripheralManagerHandle peripheralHandle);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void cb4u_peripheral_manager_respond_to_request(SafeNativePeripheralManagerHandle peripheralHandle, SafeNativeATTRequestHandle requestPtr, int errorCode);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern IntPtr cb4u_mutable_service_new([MarshalAs(UnmanagedType.LPStr), In] string uuid, [MarshalAs(UnmanagedType.I1)] bool primary);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void cb4u_mutable_service_release(IntPtr handle);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void cb4u_mutable_service_clear_characteristics(SafeNativeMutableServiceHandle handle);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int cb4u_mutable_service_add_characteristic(SafeNativeMutableServiceHandle serviceHandle, SafeNativeMutableCharacteristicHandle characteristicHandle);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern IntPtr cb4u_mutable_characteristic_new(
+            [MarshalAs(UnmanagedType.LPStr), In] string uuid,
+            int properties,
+            [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.U1, SizeParamIndex = 3)] byte[] dataBytes,
+            int dataLength,
+            int permissions
+        );
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void cb4u_mutable_characteristic_release(IntPtr handle);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int cb4u_mutable_characteristic_value_length(SafeNativeMutableCharacteristicHandle handle);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int cb4u_mutable_characteristic_value(SafeNativeMutableCharacteristicHandle handle, byte[] dataBytes, int dataLength);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void cb4u_mutable_characteristic_set_value(SafeNativeMutableCharacteristicHandle handle, [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.U1, SizeParamIndex = 2), In] byte[] dataBytes, int dataLength);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int cb4u_mutable_characteristic_properties(SafeNativeMutableCharacteristicHandle handle);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void cb4u_mutable_characteristic_set_properties(SafeNativeMutableCharacteristicHandle handle, int properties);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int cb4u_mutable_characteristic_permissions(SafeNativeMutableCharacteristicHandle handle);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void cb4u_mutable_characteristic_set_permissions(SafeNativeMutableCharacteristicHandle handle, int permissions);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void cb4u_att_request_release(IntPtr handle);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern IntPtr cb4u_att_request_central(SafeNativeATTRequestHandle handle);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void cb4u_att_request_characteristic_uuid(
+            SafeNativeATTRequestHandle handle,
+            [MarshalAs(UnmanagedType.LPStr), Out] StringBuilder serviceUUID,
+            int serviceUUIDSize,
+            [MarshalAs(UnmanagedType.LPStr), Out] StringBuilder characteristicUUID,
+            int characteristicUUIDSize
+        );
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int cb4u_att_request_value_length(SafeNativeATTRequestHandle handle);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int cb4u_att_request_value(SafeNativeATTRequestHandle handle, byte[] dataBytes, int dataLength);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void cb4u_att_request_set_value(SafeNativeATTRequestHandle handle, byte[] dataBytes, int dataLength);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int cb4u_att_request_offset(SafeNativeATTRequestHandle handle);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern IntPtr cb4u_att_requests_release(IntPtr handle);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int cb4u_att_requests_count(SafeNativeATTRequestsHandle handle);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern IntPtr cb4u_att_requests_request(SafeNativeATTRequestsHandle handle, int index);
     }
 }
