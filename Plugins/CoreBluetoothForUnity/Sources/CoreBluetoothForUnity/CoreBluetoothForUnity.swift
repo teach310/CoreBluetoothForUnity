@@ -478,3 +478,22 @@ public func cb4u_att_request_offset(_ requestPtr: UnsafeRawPointer) -> Int32 {
     
     return Int32(instance.offset)
 }
+
+@_cdecl("cb4u_att_requests_release")
+public func cb4u_att_requests_release(_ requestsPtr: UnsafeRawPointer) {
+    Unmanaged<CB4UATTRequests>.fromOpaque(requestsPtr).release()
+}
+
+@_cdecl("cb4u_att_requests_count")
+public func cb4u_att_requests_count(_ requestsPtr: UnsafeRawPointer) -> Int32 {
+    let instance = Unmanaged<CB4UATTRequests>.fromOpaque(requestsPtr).takeUnretainedValue()
+    
+    return Int32(instance.count)
+}
+
+@_cdecl("cb4u_att_requests_request")
+public func cb4u_att_requests_request(_ requestsPtr: UnsafeRawPointer, _ index: Int32) -> UnsafeMutableRawPointer {
+    let instance = Unmanaged<CB4UATTRequests>.fromOpaque(requestsPtr).takeUnretainedValue()
+    
+    return Unmanaged.passRetained(instance.request(at: Int(index))).toOpaque()
+}
