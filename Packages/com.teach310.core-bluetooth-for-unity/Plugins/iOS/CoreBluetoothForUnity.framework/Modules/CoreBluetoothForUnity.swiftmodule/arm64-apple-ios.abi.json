@@ -8910,17 +8910,25 @@
           },
           {
             "kind": "TypeNominal",
-            "name": "UnsafePointer",
-            "printedName": "Swift.UnsafePointer<Swift.UInt8>",
+            "name": "Optional",
+            "printedName": "Swift.UnsafePointer<Swift.UInt8>?",
             "children": [
               {
                 "kind": "TypeNominal",
-                "name": "UInt8",
-                "printedName": "Swift.UInt8",
-                "usr": "s:s5UInt8V"
+                "name": "UnsafePointer",
+                "printedName": "Swift.UnsafePointer<Swift.UInt8>",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "UInt8",
+                    "printedName": "Swift.UInt8",
+                    "usr": "s:s5UInt8V"
+                  }
+                ],
+                "usr": "s:SP"
               }
             ],
-            "usr": "s:SP"
+            "usr": "s:Sq"
           },
           {
             "kind": "TypeNominal",
@@ -8931,7 +8939,7 @@
         ],
         "declKind": "Func",
         "usr": "c:(cm)cb4u_mutable_characteristic_set_value:::",
-        "mangledName": "$s21CoreBluetoothForUnity37cb4u_mutable_characteristic_set_valueyySV_SPys5UInt8VGs5Int32VtF",
+        "mangledName": "$s21CoreBluetoothForUnity37cb4u_mutable_characteristic_set_valueyySV_SPys5UInt8VGSgs5Int32VtF",
         "moduleName": "CoreBluetoothForUnity",
         "declAttributes": [
           "AccessControl",
@@ -9849,84 +9857,77 @@
     {
       "filePath": "\/Users\/teach310\/UnityProjects\/CoreBluetoothForUnity\/Plugins\/CoreBluetoothForUnity\/Sources\/CoreBluetoothForUnity\/CoreBluetoothForUnity.swift",
       "kind": "IntegerLiteral",
-      "offset": 18490,
+      "offset": 18494,
       "length": 1,
       "value": "0"
     },
     {
       "filePath": "\/Users\/teach310\/UnityProjects\/CoreBluetoothForUnity\/Plugins\/CoreBluetoothForUnity\/Sources\/CoreBluetoothForUnity\/CoreBluetoothForUnity.swift",
       "kind": "IntegerLiteral",
-      "offset": 18733,
+      "offset": 18741,
       "length": 1,
       "value": "1"
     },
     {
       "filePath": "\/Users\/teach310\/UnityProjects\/CoreBluetoothForUnity\/Plugins\/CoreBluetoothForUnity\/Sources\/CoreBluetoothForUnity\/CoreBluetoothForUnity.swift",
       "kind": "IntegerLiteral",
-      "offset": 19075,
-      "length": 1,
-      "value": "0"
-    },
-    {
-      "filePath": "\/Users\/teach310\/UnityProjects\/CoreBluetoothForUnity\/Plugins\/CoreBluetoothForUnity\/Sources\/CoreBluetoothForUnity\/CoreBluetoothForUnity.swift",
-      "kind": "IntegerLiteral",
-      "offset": 21566,
+      "offset": 21619,
       "length": 1,
       "value": "1"
     },
     {
       "filePath": "\/Users\/teach310\/UnityProjects\/CoreBluetoothForUnity\/Plugins\/CoreBluetoothForUnity\/Sources\/CoreBluetoothForUnity\/CoreBluetoothForUnity.swift",
       "kind": "StringLiteral",
-      "offset": 21716,
+      "offset": 21769,
       "length": 152,
       "value": "\"cb4u_att_request_characteristic_uuid: serviceUUIDSize is too small. serviceUUIDSize: \""
     },
     {
       "filePath": "\/Users\/teach310\/UnityProjects\/CoreBluetoothForUnity\/Plugins\/CoreBluetoothForUnity\/Sources\/CoreBluetoothForUnity\/CoreBluetoothForUnity.swift",
       "kind": "StringLiteral",
-      "offset": 21820,
+      "offset": 21873,
       "length": 1,
       "value": "\", serviceUUID.count: \""
     },
     {
       "filePath": "\/Users\/teach310\/UnityProjects\/CoreBluetoothForUnity\/Plugins\/CoreBluetoothForUnity\/Sources\/CoreBluetoothForUnity\/CoreBluetoothForUnity.swift",
       "kind": "StringLiteral",
-      "offset": 21867,
+      "offset": 21920,
       "length": 2,
       "value": "\"\""
     },
     {
       "filePath": "\/Users\/teach310\/UnityProjects\/CoreBluetoothForUnity\/Plugins\/CoreBluetoothForUnity\/Sources\/CoreBluetoothForUnity\/CoreBluetoothForUnity.swift",
       "kind": "IntegerLiteral",
-      "offset": 22120,
+      "offset": 22173,
       "length": 1,
       "value": "1"
     },
     {
       "filePath": "\/Users\/teach310\/UnityProjects\/CoreBluetoothForUnity\/Plugins\/CoreBluetoothForUnity\/Sources\/CoreBluetoothForUnity\/CoreBluetoothForUnity.swift",
       "kind": "StringLiteral",
-      "offset": 22291,
+      "offset": 22344,
       "length": 187,
       "value": "\"cb4u_att_request_characteristic_uuid: characteristicUUIDSize is too small. characteristicUUIDSize: \""
     },
     {
       "filePath": "\/Users\/teach310\/UnityProjects\/CoreBluetoothForUnity\/Plugins\/CoreBluetoothForUnity\/Sources\/CoreBluetoothForUnity\/CoreBluetoothForUnity.swift",
       "kind": "StringLiteral",
-      "offset": 22416,
+      "offset": 22469,
       "length": 1,
       "value": "\", characteristicUUID.count: \""
     },
     {
       "filePath": "\/Users\/teach310\/UnityProjects\/CoreBluetoothForUnity\/Plugins\/CoreBluetoothForUnity\/Sources\/CoreBluetoothForUnity\/CoreBluetoothForUnity.swift",
       "kind": "StringLiteral",
-      "offset": 22477,
+      "offset": 22530,
       "length": 2,
       "value": "\"\""
     },
     {
       "filePath": "\/Users\/teach310\/UnityProjects\/CoreBluetoothForUnity\/Plugins\/CoreBluetoothForUnity\/Sources\/CoreBluetoothForUnity\/CoreBluetoothForUnity.swift",
       "kind": "IntegerLiteral",
-      "offset": 22874,
+      "offset": 22927,
       "length": 1,
       "value": "0"
     },

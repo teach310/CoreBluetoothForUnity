@@ -31,6 +31,9 @@ namespace CoreBluetoothTests
             var data = new byte[] { 0x01, 0x02 };
             characteristic.Value = data;
             Assert.That(characteristic.Value, Is.EqualTo(data));
+            data = new byte[0];
+            characteristic.Value = data;
+            Assert.That(characteristic.Value, Is.EqualTo(data));
             characteristic.Value = null;
             Assert.That(characteristic.Value, Is.Null);
         }

@@ -419,7 +419,7 @@ SWIFT_EXTERN void cb4u_mutable_characteristic_set_permissions(void const * _Nonn
 SWIFT_EXTERN void cb4u_mutable_characteristic_set_properties(void const * _Nonnull characteristicPtr, int32_t properties);
 
 
-SWIFT_EXTERN void cb4u_mutable_characteristic_set_value(void const * _Nonnull characteristicPtr, uint8_t const * _Nonnull dataBytes, int32_t dataLength);
+SWIFT_EXTERN void cb4u_mutable_characteristic_set_value(void const * _Nonnull characteristicPtr, uint8_t const * _Nullable dataBytes, int32_t dataLength);
 
 
 SWIFT_EXTERN int32_t cb4u_mutable_characteristic_value(void const * _Nonnull characteristicPtr, uint8_t * _Nonnull dataBytes, int32_t dataLength) SWIFT_WARN_UNUSED_RESULT;

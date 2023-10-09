@@ -356,11 +356,14 @@ public func cb4u_mutable_characteristic_value(_ characteristicPtr: UnsafeRawPoin
 }
 
 @_cdecl("cb4u_mutable_characteristic_set_value")
-public func cb4u_mutable_characteristic_set_value(_ characteristicPtr: UnsafeRawPointer, _ dataBytes: UnsafePointer<UInt8>, _ dataLength: Int32) {
+public func cb4u_mutable_characteristic_set_value(_ characteristicPtr: UnsafeRawPointer, _ dataBytes: UnsafePointer<UInt8>?, _ dataLength: Int32) {
     let instance = Unmanaged<CB4UMutableCharacteristic>.fromOpaque(characteristicPtr).takeUnretainedValue()
     
-    let data = dataLength > 0 ? Data(bytes: dataBytes, count: Int(dataLength)) : nil
-    instance.value = data
+    if let dataBytes = dataBytes {
+        instance.value = Data(bytes: dataBytes, count: Int(dataLength))
+    } else {
+        instance.value = nil
+    }
 }
 
 @_cdecl("cb4u_mutable_characteristic_properties")
