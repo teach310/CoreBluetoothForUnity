@@ -439,12 +439,37 @@ public func cb4u_att_request_characteristic_uuid(
     }
 }
 
-@_cdecl("cb4u_att_request_set_value")
-public func cb4u_att_request_set_value(_ requestPtr: UnsafeRawPointer, _ dataBytes: UnsafePointer<UInt8>, _ dataLength: Int32) {
+@_cdecl("cb4u_att_request_value_length")
+public func cb4u_att_request_value_length(_ requestPtr: UnsafeRawPointer) -> Int32 {
     let instance = Unmanaged<CB4UATTRequest>.fromOpaque(requestPtr).takeUnretainedValue()
     
-    let data = dataLength > 0 ? Data(bytes: dataBytes, count: Int(dataLength)) : nil
-    instance.setValue(data)
+    return Int32(instance.valueLength)
+}
+
+@_cdecl("cb4u_att_request_value")
+public func cb4u_att_request_value(_ requestPtr: UnsafeRawPointer, _ dataBytes: UnsafeMutablePointer<UInt8>, _ dataLength: Int32) -> Int32 {
+    let instance = Unmanaged<CB4UATTRequest>.fromOpaque(requestPtr).takeUnretainedValue()
+    
+    guard let value = instance.value else {
+        return 0
+    }
+    
+    value.withUnsafeBytes { (valueBytes: UnsafeRawBufferPointer) in
+        let valueBytesPtr = valueBytes.bindMemory(to: UInt8.self).baseAddress!
+        dataBytes.update(from: valueBytesPtr, count: Int(dataLength))
+    }
+    return 1
+}
+
+@_cdecl("cb4u_att_request_set_value")
+public func cb4u_att_request_set_value(_ requestPtr: UnsafeRawPointer, _ dataBytes: UnsafePointer<UInt8>?, _ dataLength: Int32) {
+    let instance = Unmanaged<CB4UATTRequest>.fromOpaque(requestPtr).takeUnretainedValue()
+    
+    if let dataBytes = dataBytes {
+        instance.value = Data(bytes: dataBytes, count: Int(dataLength))
+    } else {
+        instance.value = nil
+    }
 }
 
 @_cdecl("cb4u_att_request_offset")
