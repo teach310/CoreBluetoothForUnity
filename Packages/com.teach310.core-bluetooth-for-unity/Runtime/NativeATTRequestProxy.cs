@@ -56,6 +56,22 @@ namespace CoreBluetooth
             }
         }
 
+        byte[] INativeATTRequest.Value
+        {
+            get
+            {
+                var dataLength = NativeMethods.cb4u_att_request_value_length(_handle);
+                var data = new byte[dataLength];
+                int result = NativeMethods.cb4u_att_request_value(_handle, data, dataLength);
+
+                if (result == 0)
+                {
+                    return null;
+                }
+                return data;
+            }
+        }
+
         void INativeATTRequest.SetValue(byte[] value)
         {
             NativeMethods.cb4u_att_request_set_value(_handle, value, value?.Length ?? 0);

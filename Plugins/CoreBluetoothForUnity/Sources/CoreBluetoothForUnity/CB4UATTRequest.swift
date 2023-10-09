@@ -15,8 +15,17 @@ public class CB4UATTRequest {
         return request.characteristic
     }
     
-    public func setValue(_ value: Data?) {
-        request.value = value
+    public var value: Data? {
+        get {
+            return request.value
+        }
+        set {
+            request.value = newValue
+        }
+    }
+    
+    public var valueLength: Int {
+        return request.value?.count ?? 0
     }
     
     public var offset: Int {

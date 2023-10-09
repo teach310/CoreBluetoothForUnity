@@ -226,6 +226,7 @@ public typealias CB4UPeripheralManagerDidUpdateStateHandler = @convention(c) (Un
 public typealias CB4UPeripheralManagerDidAddServiceHandler = @convention(c) (UnsafeRawPointer, UnsafePointer<CChar>, Int32) -> Void
 public typealias CB4UPeripheralManagerDidStartAdvertisingHandler = @convention(c) (UnsafeRawPointer, Int32) -> Void
 public typealias CB4UPeripheralManagerDidReceiveReadRequestHandler = @convention(c) (UnsafeRawPointer, UnsafeRawPointer) -> Void
+public typealias CB4UPeripheralManagerDidReceiveWriteRequestsHandler = @convention(c) (UnsafeRawPointer, UnsafeRawPointer) -> Void
 
 @_cdecl("cb4u_peripheral_manager_register_handlers")
 public func cb4u_peripheral_manager_register_handlers(
@@ -233,7 +234,8 @@ public func cb4u_peripheral_manager_register_handlers(
     _ didUpdateStateHandler: @escaping CB4UPeripheralManagerDidUpdateStateHandler,
     _ didAddServiceHandler: @escaping CB4UPeripheralManagerDidAddServiceHandler,
     _ didStartAdvertisingHandler: @escaping CB4UPeripheralManagerDidStartAdvertisingHandler,
-    _ didReceiveReadRequestHandler: @escaping CB4UPeripheralManagerDidReceiveReadRequestHandler
+    _ didReceiveReadRequestHandler: @escaping CB4UPeripheralManagerDidReceiveReadRequestHandler,
+    _ didReceiveWriteRequestsHandler: @escaping CB4UPeripheralManagerDidReceiveWriteRequestsHandler
 ) {
     let instance = Unmanaged<CB4UPeripheralManager>.fromOpaque(peripheralManagerPtr).takeUnretainedValue()
     
@@ -241,6 +243,7 @@ public func cb4u_peripheral_manager_register_handlers(
     instance.didAddServiceHandler = didAddServiceHandler
     instance.didStartAdvertisingHandler = didStartAdvertisingHandler
     instance.didReceiveReadRequestHandler = didReceiveReadRequestHandler
+    instance.didReceiveWriteRequestsHandler = didReceiveWriteRequestsHandler
 }
 
 @_cdecl("cb4u_peripheral_manager_add_service")
@@ -439,12 +442,37 @@ public func cb4u_att_request_characteristic_uuid(
     }
 }
 
-@_cdecl("cb4u_att_request_set_value")
-public func cb4u_att_request_set_value(_ requestPtr: UnsafeRawPointer, _ dataBytes: UnsafePointer<UInt8>, _ dataLength: Int32) {
+@_cdecl("cb4u_att_request_value_length")
+public func cb4u_att_request_value_length(_ requestPtr: UnsafeRawPointer) -> Int32 {
     let instance = Unmanaged<CB4UATTRequest>.fromOpaque(requestPtr).takeUnretainedValue()
     
-    let data = dataLength > 0 ? Data(bytes: dataBytes, count: Int(dataLength)) : nil
-    instance.setValue(data)
+    return Int32(instance.valueLength)
+}
+
+@_cdecl("cb4u_att_request_value")
+public func cb4u_att_request_value(_ requestPtr: UnsafeRawPointer, _ dataBytes: UnsafeMutablePointer<UInt8>, _ dataLength: Int32) -> Int32 {
+    let instance = Unmanaged<CB4UATTRequest>.fromOpaque(requestPtr).takeUnretainedValue()
+    
+    guard let value = instance.value else {
+        return 0
+    }
+    
+    value.withUnsafeBytes { (valueBytes: UnsafeRawBufferPointer) in
+        let valueBytesPtr = valueBytes.bindMemory(to: UInt8.self).baseAddress!
+        dataBytes.update(from: valueBytesPtr, count: Int(dataLength))
+    }
+    return 1
+}
+
+@_cdecl("cb4u_att_request_set_value")
+public func cb4u_att_request_set_value(_ requestPtr: UnsafeRawPointer, _ dataBytes: UnsafePointer<UInt8>?, _ dataLength: Int32) {
+    let instance = Unmanaged<CB4UATTRequest>.fromOpaque(requestPtr).takeUnretainedValue()
+    
+    if let dataBytes = dataBytes {
+        instance.value = Data(bytes: dataBytes, count: Int(dataLength))
+    } else {
+        instance.value = nil
+    }
 }
 
 @_cdecl("cb4u_att_request_offset")
@@ -452,4 +480,23 @@ public func cb4u_att_request_offset(_ requestPtr: UnsafeRawPointer) -> Int32 {
     let instance = Unmanaged<CB4UATTRequest>.fromOpaque(requestPtr).takeUnretainedValue()
     
     return Int32(instance.offset)
+}
+
+@_cdecl("cb4u_att_requests_release")
+public func cb4u_att_requests_release(_ requestsPtr: UnsafeRawPointer) {
+    Unmanaged<CB4UATTRequests>.fromOpaque(requestsPtr).release()
+}
+
+@_cdecl("cb4u_att_requests_count")
+public func cb4u_att_requests_count(_ requestsPtr: UnsafeRawPointer) -> Int32 {
+    let instance = Unmanaged<CB4UATTRequests>.fromOpaque(requestsPtr).takeUnretainedValue()
+    
+    return Int32(instance.count)
+}
+
+@_cdecl("cb4u_att_requests_request")
+public func cb4u_att_requests_request(_ requestsPtr: UnsafeRawPointer, _ index: Int32) -> UnsafeMutableRawPointer {
+    let instance = Unmanaged<CB4UATTRequests>.fromOpaque(requestsPtr).takeUnretainedValue()
+    
+    return Unmanaged.passRetained(instance.request(at: Int(index))).toOpaque()
 }

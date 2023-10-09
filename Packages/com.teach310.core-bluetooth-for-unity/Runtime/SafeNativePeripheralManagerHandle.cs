@@ -35,7 +35,8 @@ namespace CoreBluetooth
                 DidUpdateState,
                 DidAddService,
                 DidStartAdvertising,
-                DidReceiveReadRequest
+                DidReceiveReadRequest,
+                DidReceiveWriteRequests
             );
         }
 
@@ -71,6 +72,14 @@ namespace CoreBluetooth
         {
             GetPeripheralManager(peripheralPtr)?.DidReceiveReadRequest(
                 new SafeNativeATTRequestHandle(requestPtr)
+            );
+        }
+
+        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralManagerDidReceiveWriteRequestsHandler))]
+        internal static void DidReceiveWriteRequests(IntPtr peripheralPtr, IntPtr requestsPtr)
+        {
+            GetPeripheralManager(peripheralPtr)?.DidReceiveWriteRequests(
+                new SafeNativeATTRequestsHandle(requestsPtr)
             );
         }
     }

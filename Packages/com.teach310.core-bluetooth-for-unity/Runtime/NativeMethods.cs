@@ -139,6 +139,7 @@ namespace CoreBluetooth
         internal delegate void CB4UPeripheralManagerDidAddServiceHandler(IntPtr peripheralManagerPtr, string serviceUUID, int errorCode);
         internal delegate void CB4UPeripheralManagerDidStartAdvertisingHandler(IntPtr peripheralManagerPtr, int errorCode);
         internal delegate void CB4UPeripheralManagerDidReceiveReadRequestHandler(IntPtr peripheralManagerPtr, IntPtr requestPtr);
+        internal delegate void CB4UPeripheralManagerDidReceiveWriteRequestsHandler(IntPtr peripheralManagerPtr, IntPtr requestsPtr);
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void cb4u_peripheral_manager_register_handlers(
@@ -146,7 +147,8 @@ namespace CoreBluetooth
             CB4UPeripheralManagerDidUpdateStateHandler didUpdateStateHandler,
             CB4UPeripheralManagerDidAddServiceHandler didAddServiceHandler,
             CB4UPeripheralManagerDidStartAdvertisingHandler didStartAdvertisingHandler,
-            CB4UPeripheralManagerDidReceiveReadRequestHandler didReceiveReadRequestHandler
+            CB4UPeripheralManagerDidReceiveReadRequestHandler didReceiveReadRequestHandler,
+            CB4UPeripheralManagerDidReceiveWriteRequestsHandler didReceiveWriteRequestsHandler
         );
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
@@ -234,9 +236,24 @@ namespace CoreBluetooth
         );
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int cb4u_att_request_value_length(SafeNativeATTRequestHandle handle);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int cb4u_att_request_value(SafeNativeATTRequestHandle handle, byte[] dataBytes, int dataLength);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void cb4u_att_request_set_value(SafeNativeATTRequestHandle handle, byte[] dataBytes, int dataLength);
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern int cb4u_att_request_offset(SafeNativeATTRequestHandle handle);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern IntPtr cb4u_att_requests_release(IntPtr handle);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int cb4u_att_requests_count(SafeNativeATTRequestsHandle handle);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern IntPtr cb4u_att_requests_request(SafeNativeATTRequestsHandle handle, int index);
     }
 }

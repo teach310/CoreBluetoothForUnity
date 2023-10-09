@@ -6,6 +6,7 @@ namespace CoreBluetooth
     {
         CBCentral Central { get; }
         CBCharacteristic Characteristic { get; }
+        byte[] Value { get; }
         void SetValue(byte[] value);
         int Offset { get; }
     }
@@ -38,15 +39,17 @@ namespace CoreBluetooth
             }
         }
 
-        byte[] _value = null;
         public byte[] Value
         {
-            get => _value;
+            get
+            {
+                ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
+                return _nativeATTRequest.Value;
+            }
             set
             {
                 ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
                 _nativeATTRequest.SetValue(value);
-                _value = value;
             }
         }
 

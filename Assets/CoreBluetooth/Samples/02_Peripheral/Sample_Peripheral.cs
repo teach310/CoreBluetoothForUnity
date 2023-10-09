@@ -67,7 +67,8 @@ namespace CoreBluetoothSample
                 return;
             }
 
-            if (request.Offset > request.Characteristic.Value.Length)
+            int valueLength = value?.Length ?? 0;
+            if (request.Offset > valueLength)
             {
                 peripheral.RespondToRequest(request, CBATTError.InvalidOffset);
                 return;
@@ -75,6 +76,30 @@ namespace CoreBluetoothSample
 
             request.Value = value ?? new byte[0];
             peripheral.RespondToRequest(request, CBATTError.Success);
+            Debug.Log($"[DidReceiveReadRequest] {System.Text.Encoding.UTF8.GetString(request.Value)}");
+        }
+
+        public void DidReceiveWriteRequests(CBPeripheralManager peripheral, CBATTRequest[] requests)
+        {
+            var firstRequest = requests[0];
+            foreach (var request in requests)
+            {
+                if (request.Characteristic.UUID != characteristicUUID)
+                {
+                    peripheral.RespondToRequest(firstRequest, CBATTError.AttributeNotFound);
+                    return;
+                }
+                int valueLength = value?.Length ?? 0;
+                if (request.Offset > valueLength)
+                {
+                    peripheral.RespondToRequest(firstRequest, CBATTError.InvalidOffset);
+                    return;
+                }
+            }
+
+            value = firstRequest.Value;
+            peripheral.RespondToRequest(firstRequest, CBATTError.Success);
+            Debug.Log($"[DidReceiveWriteRequests] {System.Text.Encoding.UTF8.GetString(firstRequest.Value)}");
         }
 
         void OnDestroy()

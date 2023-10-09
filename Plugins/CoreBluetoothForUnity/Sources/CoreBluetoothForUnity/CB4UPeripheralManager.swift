@@ -8,6 +8,7 @@ public class CB4UPeripheralManager : NSObject {
     public var didAddServiceHandler: CB4UPeripheralManagerDidAddServiceHandler?
     public var didStartAdvertisingHandler: CB4UPeripheralManagerDidStartAdvertisingHandler?
     public var didReceiveReadRequestHandler: CB4UPeripheralManagerDidReceiveReadRequestHandler?
+    public var didReceiveWriteRequestsHandler: CB4UPeripheralManagerDidReceiveWriteRequestsHandler?
     
     public override init() {
         super.init()
@@ -78,5 +79,12 @@ extension CB4UPeripheralManager : CBPeripheralManagerDelegate {
         let requestPtr = Unmanaged.passRetained(request).toOpaque()
         
         didReceiveReadRequestHandler?(selfPointer(), requestPtr)
+    }
+
+    public func peripheralManager(_ peripheral: CBPeripheralManager, didReceiveWrite requests: [CBATTRequest]) {
+        let requests = CB4UATTRequests(requests: requests)
+        let requestsPtr = Unmanaged.passRetained(requests).toOpaque()
+        
+        didReceiveWriteRequestsHandler?(selfPointer(), requestsPtr)
     }
 }
