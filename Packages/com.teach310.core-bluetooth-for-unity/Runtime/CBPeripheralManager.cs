@@ -9,6 +9,7 @@ namespace CoreBluetooth
         void DidAddService(CBPeripheralManager peripheral, CBService service, CBError error) { }
         void DidStartAdvertising(CBPeripheralManager peripheral, CBError error) { }
         void DidReceiveReadRequest(CBPeripheralManager peripheral, CBATTRequest request) { }
+        void DidReceiveWriteRequests(CBPeripheralManager peripheral, CBATTRequest[] requests) { }
     }
 
     internal interface IPeripheralManagerData
@@ -153,6 +154,14 @@ namespace CoreBluetooth
             var request = new CBATTRequest(requestHandle, new NativeATTRequestProxy(requestHandle, this));
             _delegate?.DidReceiveReadRequest(this, request);
             AddATTRequestDisposable(request);
+        }
+
+        internal void DidReceiveWriteRequests(SafeNativeATTRequestsHandle requestsHandle)
+        {
+            if (_disposed) return;
+            var requests = new CBATTRequests(requestsHandle, new NativeATTRequestsProxy(requestsHandle, this));
+            _delegate?.DidReceiveWriteRequests(this, requests.Requests);
+            AddATTRequestDisposable(requests);
         }
 
         public void Dispose()
