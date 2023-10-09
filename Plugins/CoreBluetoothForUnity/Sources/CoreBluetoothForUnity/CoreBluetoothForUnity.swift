@@ -226,6 +226,7 @@ public typealias CB4UPeripheralManagerDidUpdateStateHandler = @convention(c) (Un
 public typealias CB4UPeripheralManagerDidAddServiceHandler = @convention(c) (UnsafeRawPointer, UnsafePointer<CChar>, Int32) -> Void
 public typealias CB4UPeripheralManagerDidStartAdvertisingHandler = @convention(c) (UnsafeRawPointer, Int32) -> Void
 public typealias CB4UPeripheralManagerDidReceiveReadRequestHandler = @convention(c) (UnsafeRawPointer, UnsafeRawPointer) -> Void
+public typealias CB4UPeripheralManagerDidReceiveWriteRequestsHandler = @convention(c) (UnsafeRawPointer, UnsafeRawPointer) -> Void
 
 @_cdecl("cb4u_peripheral_manager_register_handlers")
 public func cb4u_peripheral_manager_register_handlers(
@@ -233,7 +234,8 @@ public func cb4u_peripheral_manager_register_handlers(
     _ didUpdateStateHandler: @escaping CB4UPeripheralManagerDidUpdateStateHandler,
     _ didAddServiceHandler: @escaping CB4UPeripheralManagerDidAddServiceHandler,
     _ didStartAdvertisingHandler: @escaping CB4UPeripheralManagerDidStartAdvertisingHandler,
-    _ didReceiveReadRequestHandler: @escaping CB4UPeripheralManagerDidReceiveReadRequestHandler
+    _ didReceiveReadRequestHandler: @escaping CB4UPeripheralManagerDidReceiveReadRequestHandler,
+    _ didReceiveWriteRequestsHandler: @escaping CB4UPeripheralManagerDidReceiveWriteRequestsHandler
 ) {
     let instance = Unmanaged<CB4UPeripheralManager>.fromOpaque(peripheralManagerPtr).takeUnretainedValue()
     
@@ -241,6 +243,7 @@ public func cb4u_peripheral_manager_register_handlers(
     instance.didAddServiceHandler = didAddServiceHandler
     instance.didStartAdvertisingHandler = didStartAdvertisingHandler
     instance.didReceiveReadRequestHandler = didReceiveReadRequestHandler
+    instance.didReceiveWriteRequestsHandler = didReceiveWriteRequestsHandler
 }
 
 @_cdecl("cb4u_peripheral_manager_add_service")
