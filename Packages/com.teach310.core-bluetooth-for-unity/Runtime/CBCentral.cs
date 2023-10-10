@@ -24,7 +24,6 @@ namespace CoreBluetooth
             get
             {
                 ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
-
                 if (_identifier == null)
                 {
                     _identifier = _nativeCentral.Identifier;
@@ -56,6 +55,8 @@ namespace CoreBluetooth
         public void Dispose()
         {
             if (_disposed) return;
+
+            Handle?.Dispose();
 
             _disposed = true;
         }
