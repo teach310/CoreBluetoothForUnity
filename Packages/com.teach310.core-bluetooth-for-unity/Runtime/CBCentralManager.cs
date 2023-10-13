@@ -149,16 +149,12 @@ namespace CoreBluetooth
             Delegate?.DidFailToConnectPeripheral(this, peripheral, error);
         }
 
-        internal void DidDiscoverPeripheral(string peripheralId, string peripheralName, int rssi)
+        internal void DidDiscoverPeripheral(SafeNativePeripheralHandle peripheralHandle, int rssi)
         {
             if (_disposed) return;
 
-            if (!_peripherals.TryGetValue(peripheralId, out var peripheral))
-            {
-                var nativePeriphalProxy = new NativePeripheralProxy(peripheralId, _handle);
-                peripheral = new CBPeripheral(peripheralId, peripheralName, nativePeriphalProxy);
-                _peripherals.Add(peripheralId, peripheral);
-            }
+            var peripheral = new CBPeripheral(peripheralHandle);
+            _peripherals.Add(peripheral.Identifier, peripheral);
             Delegate?.DidDiscoverPeripheral(this, peripheral, rssi);
         }
 
@@ -237,6 +233,10 @@ namespace CoreBluetooth
             if (_disposed) return;
 
             _handle?.Dispose();
+            foreach (var peripheral in _peripherals.Values)
+            {
+                peripheral.Dispose();
+            }
 
             _disposed = true;
         }

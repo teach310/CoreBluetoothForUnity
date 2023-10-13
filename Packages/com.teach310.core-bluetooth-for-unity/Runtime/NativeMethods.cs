@@ -33,7 +33,7 @@ namespace CoreBluetooth
         internal delegate void CB4UCentralManagerDidConnectHandler(IntPtr centralPtr, IntPtr peripheralIdPtr);
         internal delegate void CB4UCentralManagerDidDisconnectPeripheralHandler(IntPtr centralPtr, IntPtr peripheralIdPtr, int errorCode);
         internal delegate void CB4UCentralManagerDidFailToConnectHandler(IntPtr centralPtr, IntPtr peripheralIdPtr, int errorCode);
-        internal delegate void CB4UCentralManagerDidDiscoverPeripheralHandler(IntPtr centralPtr, IntPtr peripheralIdPtr, IntPtr peripheralNamePtr, int rssi);
+        internal delegate void CB4UCentralManagerDidDiscoverPeripheralHandler(IntPtr centralPtr, IntPtr peripheralPtr, int rssi);
         internal delegate void CB4UCentralManagerDidUpdateStateHandler(IntPtr centralPtr, CBManagerState state);
 
         // NOTE: using comma-separated service UUIDs instead of an array of service UUIDs to avoid marshalling issues
@@ -79,52 +79,64 @@ namespace CoreBluetooth
         internal static extern bool cb4u_central_manager_is_scanning(SafeNativeCentralManagerHandle handle);
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern int cb4u_central_manager_peripheral_discover_services(
-            SafeNativeCentralManagerHandle handle,
-            [MarshalAs(UnmanagedType.LPStr), In] string peripheralId,
-            [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPStr, SizeParamIndex = 3)] string[] serviceUUIDs,
+        internal static extern void cb4u_peripheral_release(IntPtr handle);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern IntPtr cb4u_peripheral_identifier(
+            SafeNativePeripheralHandle handle,
+            [MarshalAs(UnmanagedType.LPStr), Out] StringBuilder identifier,
+            int identifierSize
+        );
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int cb4u_peripheral_name(
+            SafeNativePeripheralHandle handle,
+            [MarshalAs(UnmanagedType.LPStr), Out] StringBuilder name,
+            int nameSize
+        );
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void cb4u_peripheral_discover_services(
+            SafeNativePeripheralHandle handle,
+            [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPStr, SizeParamIndex = 2)] string[] serviceUUIDs,
             int serviceUUIDsCount
         );
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern int cb4u_central_manager_peripheral_discover_characteristics(
-            SafeNativeCentralManagerHandle handle,
-            [MarshalAs(UnmanagedType.LPStr), In] string peripheralId,
+        internal static extern int cb4u_peripheral_discover_characteristics(
+            SafeNativePeripheralHandle handle,
             [MarshalAs(UnmanagedType.LPStr), In] string serviceUUID,
-            [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPStr, SizeParamIndex = 4)] string[] characteristicUUIDs,
+            [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPStr, SizeParamIndex = 3)] string[] characteristicUUIDs,
             int characteristicUUIDsCount
         );
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern int cb4u_central_manager_peripheral_read_characteristic_value(
-            SafeNativeCentralManagerHandle handle,
-            [MarshalAs(UnmanagedType.LPStr), In] string peripheralId,
+        internal static extern int cb4u_peripheral_read_characteristic_value(
+            SafeNativePeripheralHandle handle,
             [MarshalAs(UnmanagedType.LPStr), In] string serviceUUID,
             [MarshalAs(UnmanagedType.LPStr), In] string characteristicUUID
         );
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern int cb4u_central_manager_peripheral_write_characteristic_value(
-            SafeNativeCentralManagerHandle handle,
-            [MarshalAs(UnmanagedType.LPStr), In] string peripheralId,
+        internal static extern int cb4u_peripheral_write_characteristic_value(
+            SafeNativePeripheralHandle handle,
             [MarshalAs(UnmanagedType.LPStr), In] string serviceUUID,
             [MarshalAs(UnmanagedType.LPStr), In] string characteristicUUID,
-            [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.U1, SizeParamIndex = 5)] byte[] dataBytes,
+            byte[] dataBytes,
             int dataLength,
             int writeType
         );
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern int cb4u_central_manager_peripheral_set_notify_value(
-            SafeNativeCentralManagerHandle handle,
-            [MarshalAs(UnmanagedType.LPStr), In] string peripheralId,
+        internal static extern int cb4u_peripheral_set_notify_value(
+            SafeNativePeripheralHandle handle,
             [MarshalAs(UnmanagedType.LPStr), In] string serviceUUID,
             [MarshalAs(UnmanagedType.LPStr), In] string characteristicUUID,
             [MarshalAs(UnmanagedType.I1)] bool enabled
         );
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern int cb4u_central_manager_peripheral_state(SafeNativeCentralManagerHandle handle, [MarshalAs(UnmanagedType.LPStr), In] string peripheralId);
+        internal static extern int cb4u_peripheral_state(SafeNativePeripheralHandle handle);
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern int cb4u_central_manager_characteristic_properties(SafeNativeCentralManagerHandle handle, [MarshalAs(UnmanagedType.LPStr), In] string peripheralId, [MarshalAs(UnmanagedType.LPStr), In] string serviceId, [MarshalAs(UnmanagedType.LPStr), In] string characteristicId);

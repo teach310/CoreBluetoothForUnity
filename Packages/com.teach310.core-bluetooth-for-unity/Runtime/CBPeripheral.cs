@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -14,6 +15,8 @@ namespace CoreBluetooth
 
     internal interface INativePeripheral
     {
+        string Identifier { get; }
+        string Name { get; }
         void DiscoverServices(string[] serviceUUIDs);
         void DiscoverCharacteristics(string[] characteristicUUIDs, CBService service);
         void ReadValue(CBCharacteristic characteristic);
@@ -35,21 +38,44 @@ namespace CoreBluetooth
     /// A remote peripheral device.
     /// https://developer.apple.com/documentation/corebluetooth/cbperipheral
     /// </summary>
-    public class CBPeripheral
+    public class CBPeripheral : IDisposable
     {
-        public string Identifier { get; }
-        public string Name { get; }
+        bool _disposed = false;
+        internal SafeNativePeripheralHandle Handle { get; }
+        INativePeripheral _nativePeripheral = null;
+
+        string _identifier = null;
+        public string Identifier
+        {
+            get
+            {
+                ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
+
+                if (_identifier == null)
+                {
+                    _identifier = _nativePeripheral.Identifier;
+                }
+                return _identifier;
+            }
+        }
+
+        public string Name
+        {
+            get
+            {
+                ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
+                return _nativePeripheral.Name;
+            }
+        }
+
         public ICBPeripheralDelegate Delegate { get; set; }
         List<CBService> _services = new List<CBService>();
         public ReadOnlyCollection<CBService> Services { get; }
 
-        INativePeripheral _nativePeripheral;
-
-        internal CBPeripheral(string id, string name, INativePeripheral nativePeripheral)
+        internal CBPeripheral(SafeNativePeripheralHandle nativePeripheral)
         {
-            this.Identifier = id;
-            this.Name = name;
-            this._nativePeripheral = nativePeripheral;
+            Handle = nativePeripheral;
+            _nativePeripheral = new NativePeripheralProxy(Handle);
             this.Services = _services.AsReadOnly();
         }
 
@@ -92,7 +118,14 @@ namespace CoreBluetooth
         /// <summary>
         /// The connection state of the peripheral.
         /// </summary>
-        public CBPeripheralState State => _nativePeripheral.State;
+        public CBPeripheralState State
+        {
+            get
+            {
+                ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
+                return _nativePeripheral.State;
+            }
+        }
 
         internal CBCharacteristic FindCharacteristic(string serviceUUID, string characteristicUUID)
         {
@@ -139,6 +172,15 @@ namespace CoreBluetooth
         public override string ToString()
         {
             return $"CBPeripheral: identifier = {Identifier}, name = {Name}, state = {State}";
+        }
+
+        public void Dispose()
+        {
+            if (_disposed) return;
+
+            Handle?.Dispose();
+
+            _disposed = true;
         }
     }
 }

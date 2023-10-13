@@ -1,16 +1,40 @@
 using System;
+using System.Text;
 
 namespace CoreBluetooth
 {
     internal class NativePeripheralProxy : INativePeripheral
     {
-        string _peripheralId;
-        readonly SafeNativeCentralManagerHandle _handle;
+        readonly SafeNativePeripheralHandle _handle;
 
-        internal NativePeripheralProxy(string peripheralId, SafeNativeCentralManagerHandle handle)
+        internal NativePeripheralProxy(SafeNativePeripheralHandle handle)
         {
-            _peripheralId = peripheralId;
             _handle = handle;
+        }
+
+        string INativePeripheral.Identifier
+        {
+            get
+            {
+                var sb = new StringBuilder(64);
+                NativeMethods.cb4u_peripheral_identifier(_handle, sb, sb.Capacity);
+                return sb.ToString();
+            }
+        }
+
+        string INativePeripheral.Name
+        {
+            get
+            {
+                var sb = new StringBuilder(64);
+                int result = NativeMethods.cb4u_peripheral_name(_handle, sb, sb.Capacity);
+
+                if (result == 0)
+                {
+                    return null;
+                }
+                return sb.ToString();
+            }
         }
 
         void INativePeripheral.DiscoverServices(string[] serviceUUIDs)
@@ -23,13 +47,11 @@ namespace CoreBluetooth
                 }
             }
 
-            int result = NativeMethods.cb4u_central_manager_peripheral_discover_services(
+            NativeMethods.cb4u_peripheral_discover_services(
                 _handle,
-                _peripheralId,
                 serviceUUIDs,
                 serviceUUIDs?.Length ?? 0
             );
-            ExceptionUtils.ThrowIfPeripheralNotFound(result, _peripheralId);
         }
 
         void INativePeripheral.DiscoverCharacteristics(string[] characteristicUUIDs, CBService service)
@@ -42,37 +64,36 @@ namespace CoreBluetooth
                 }
             }
 
-            int result = NativeMethods.cb4u_central_manager_peripheral_discover_characteristics(
+            int result = NativeMethods.cb4u_peripheral_discover_characteristics(
                 _handle,
-                _peripheralId,
                 service.UUID,
                 characteristicUUIDs,
                 characteristicUUIDs?.Length ?? 0
             );
 
-            ExceptionUtils.ThrowIfPeripheralNotFound(result, _peripheralId);
             ExceptionUtils.ThrowIfServiceNotFound(result, service.UUID);
         }
 
         void INativePeripheral.ReadValue(CBCharacteristic characteristic)
         {
-            int result = NativeMethods.cb4u_central_manager_peripheral_read_characteristic_value(
+            int result = NativeMethods.cb4u_peripheral_read_characteristic_value(
                 _handle,
-                _peripheralId,
                 characteristic.Service.UUID,
                 characteristic.UUID
             );
 
-            ExceptionUtils.ThrowIfPeripheralNotFound(result, _peripheralId);
             ExceptionUtils.ThrowIfServiceNotFound(result, characteristic.Service.UUID);
             ExceptionUtils.ThrowIfCharacteristicNotFound(result, characteristic.UUID);
         }
 
         void INativePeripheral.WriteValue(byte[] data, CBCharacteristic characteristic, CBCharacteristicWriteType writeType)
         {
-            int result = NativeMethods.cb4u_central_manager_peripheral_write_characteristic_value(
+            if (data == null)
+                throw new ArgumentNullException(nameof(data));
+
+
+            int result = NativeMethods.cb4u_peripheral_write_characteristic_value(
                 _handle,
-                _peripheralId,
                 characteristic.Service.UUID,
                 characteristic.UUID,
                 data,
@@ -80,22 +101,19 @@ namespace CoreBluetooth
                 (int)writeType
             );
 
-            ExceptionUtils.ThrowIfPeripheralNotFound(result, _peripheralId);
             ExceptionUtils.ThrowIfServiceNotFound(result, characteristic.Service.UUID);
             ExceptionUtils.ThrowIfCharacteristicNotFound(result, characteristic.UUID);
         }
 
         void INativePeripheral.SetNotifyValue(bool enabled, CBCharacteristic characteristic)
         {
-            int result = NativeMethods.cb4u_central_manager_peripheral_set_notify_value(
+            int result = NativeMethods.cb4u_peripheral_set_notify_value(
                 _handle,
-                _peripheralId,
                 characteristic.Service.UUID,
                 characteristic.UUID,
                 enabled
             );
 
-            ExceptionUtils.ThrowIfPeripheralNotFound(result, _peripheralId);
             ExceptionUtils.ThrowIfServiceNotFound(result, characteristic.Service.UUID);
             ExceptionUtils.ThrowIfCharacteristicNotFound(result, characteristic.UUID);
         }
@@ -104,7 +122,7 @@ namespace CoreBluetooth
         {
             get
             {
-                int state = NativeMethods.cb4u_central_manager_peripheral_state(_handle, _peripheralId);
+                int state = NativeMethods.cb4u_peripheral_state(_handle);
                 return (CBPeripheralState)state;
             }
         }
