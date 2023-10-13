@@ -60,16 +60,13 @@ namespace CoreBluetooth
         public void Connect(CBPeripheral peripheral)
         {
             ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
-            ThrowIfPeripheralNotDiscovered(peripheral);
-
-            _nativeCentralManagerProxy.Connect(peripheral.Identifier);
+            _nativeCentralManagerProxy.Connect(peripheral);
         }
 
         public void CancelPeripheralConnection(CBPeripheral peripheral)
         {
             ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
-            ThrowIfPeripheralNotDiscovered(peripheral);
-            _nativeCentralManagerProxy.CancelPeripheralConnection(peripheral.Identifier);
+            _nativeCentralManagerProxy.CancelPeripheralConnection(peripheral);
         }
 
         public void ScanForPeripherals(string[] serviceUUIDs = null)
