@@ -4,8 +4,6 @@ import CoreBluetooth
 // This is a wrapper class for exposing CBCentralManager to Unity.
 public class CB4UCentralManager : NSObject {
     private var centralManager: CBCentralManager!
-    // key: peripheralId
-    var peripherals: Dictionary<String, CBPeripheral> = [:]
     
     public var didConnectHandler: CB4UCentralManagerDidConnectHandler?
     public var didDisconnectPeripheralHandler: CB4UCentralManagerDidDisconnectPeripheralHandler?
@@ -18,11 +16,6 @@ public class CB4UCentralManager : NSObject {
     public var peripheralDidUpdateValueForCharacteristicHandler: CB4UPeripheralDidUpdateValueForCharacteristicHandler?
     public var peripheralDidWriteValueForCharacteristicHandler: CB4UPeripheralDidWriteValueForCharacteristicHandler?
     public var peripheralDidUpdateNotificationStateForCharacteristicHandler: CB4UPeripheralDidUpdateNotificationStateForCharacteristicHandler?
-    
-    let peripheralNotFound: Int32 = -1
-    let serviceNotFound: Int32 = -2
-    let characteristicNotFound: Int32 = -3
-    let success: Int32 = 0
     
     public override init() {
         super.init()
