@@ -4,6 +4,7 @@ BUILD_DIR := Build
 BASE_NAME := CoreBluetoothForUnity
 WORKSPACE := $(BASE_NAME).xcworkspace
 BUNDLE_NAME := CB4UBundle
+DYLIB_NAME := libCoreBluetoothForUnity
 
 .PHONY: clean
 clean:
@@ -21,6 +22,17 @@ bundle/cp:
 
 .PHONY: bundle
 bundle: clean bundle/build bundle/cp
+
+.PHONY: dylib/build
+dylib/build:
+	swift build -c release --arch arm64 --arch x86_64
+
+.PHONY: dylib/cp
+dylib/cp:
+	cp -f .build/apple/Products/Release/$(DYLIB_NAME).dylib $(UNITY_PLUGIN_MACOS_DIR)
+
+.PHONY: dylib
+dylib: clean dylib/build dylib/cp
 
 .PHONY: framework/build
 framework/build:

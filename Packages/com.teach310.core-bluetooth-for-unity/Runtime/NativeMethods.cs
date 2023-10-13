@@ -9,7 +9,7 @@ namespace CoreBluetooth
 #if UNITY_IOS && !UNITY_EDITOR
         const string DLL_NAME = "__Internal";
 #else
-        const string DLL_NAME = "CB4UBundle";
+        const string DLL_NAME = "libCoreBluetoothForUnity";
 #endif
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void cb4u_central_release(IntPtr handle);
