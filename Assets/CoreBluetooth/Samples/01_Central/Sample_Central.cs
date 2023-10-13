@@ -1,6 +1,6 @@
-using UnityEngine;
-using CoreBluetooth;
 using System.Text;
+using CoreBluetooth;
+using UnityEngine;
 
 namespace CoreBluetoothSample
 {
