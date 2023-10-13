@@ -79,17 +79,19 @@ public func cb4u_central_manager_register_handlers(
 }
 
 @_cdecl("cb4u_central_manager_connect")
-public func cb4u_central_manager_connect(_ centralPtr: UnsafeRawPointer, _ peripheralId: UnsafePointer<CChar>) -> Int32 {
+public func cb4u_central_manager_connect(_ centralPtr: UnsafeRawPointer, _ peripheralPtr: UnsafeRawPointer) {
     let instance = Unmanaged<CB4UCentralManager>.fromOpaque(centralPtr).takeUnretainedValue()
+    let peripheral = Unmanaged<CB4UPeripheral>.fromOpaque(peripheralPtr).takeUnretainedValue()
     
-    return instance.connect(peripheralId: String(cString: peripheralId))
+    instance.connect(peripheral: peripheral)
 }
 
 @_cdecl("cb4u_central_manager_cancel_peripheral_connection")
-public func cb4u_central_manager_cancel_peripheral_connection(_ centralPtr: UnsafeRawPointer, _ peripheralId: UnsafePointer<CChar>) -> Int32 {
+public func cb4u_central_manager_cancel_peripheral_connection(_ centralPtr: UnsafeRawPointer, _ peripheralPtr: UnsafeRawPointer) {
     let instance = Unmanaged<CB4UCentralManager>.fromOpaque(centralPtr).takeUnretainedValue()
+    let peripheral = Unmanaged<CB4UPeripheral>.fromOpaque(peripheralPtr).takeUnretainedValue()
     
-    return instance.cancelPeripheralConnection(peripheralId: String(cString: peripheralId))
+    instance.cancelPeripheralConnection(peripheral: peripheral)
 }
 
 @_cdecl("cb4u_central_manager_scan_for_peripherals")

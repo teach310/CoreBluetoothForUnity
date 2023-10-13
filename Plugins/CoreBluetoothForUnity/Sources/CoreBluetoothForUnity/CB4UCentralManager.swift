@@ -47,20 +47,12 @@ public class CB4UCentralManager : NSObject {
         return Int32(error!._code)
     }
     
-    public func connect(peripheralId: String) -> Int32 {
-        guard let peripheral = peripherals[peripheralId] else {
-            return peripheralNotFound
-        }
-        centralManager.connect(peripheral)
-        return success
+    public func connect(peripheral: CB4UPeripheral) {
+        centralManager.connect(peripheral.peripheral)
     }
     
-    public func cancelPeripheralConnection(peripheralId: String) -> Int32 {
-        guard let peripheral = peripherals[peripheralId] else {
-            return peripheralNotFound
-        }
-        centralManager.cancelPeripheralConnection(peripheral)
-        return success
+    public func cancelPeripheralConnection(peripheral: CB4UPeripheral) {
+        centralManager.cancelPeripheralConnection(peripheral.peripheral)
     }
     
     public func scanForPeripherals(withServices serviceUUIDs: [CBUUID]?) {
