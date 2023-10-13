@@ -60,16 +60,13 @@ namespace CoreBluetooth
         public void Connect(CBPeripheral peripheral)
         {
             ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
-            ThrowIfPeripheralNotDiscovered(peripheral);
-
-            _nativeCentralManagerProxy.Connect(peripheral.Identifier);
+            _nativeCentralManagerProxy.Connect(peripheral);
         }
 
         public void CancelPeripheralConnection(CBPeripheral peripheral)
         {
             ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
-            ThrowIfPeripheralNotDiscovered(peripheral);
-            _nativeCentralManagerProxy.CancelPeripheralConnection(peripheral.Identifier);
+            _nativeCentralManagerProxy.CancelPeripheralConnection(peripheral);
         }
 
         public void ScanForPeripherals(string[] serviceUUIDs = null)
@@ -119,7 +116,7 @@ namespace CoreBluetooth
             var characteristic = service.FindCharacteristic(characteristicUUID);
             if (characteristic == null)
             {
-                var nativeCharacteristicProxy = new NativeCharacteristicProxy(service.Peripheral.Identifier, service.UUID, characteristicUUID, _handle);
+                var nativeCharacteristicProxy = new NativeCharacteristicProxy(service.UUID, characteristicUUID, service.Peripheral.Handle);
                 characteristic = new CBCharacteristic(characteristicUUID, nativeCharacteristicProxy);
             }
             return characteristic;
@@ -149,16 +146,12 @@ namespace CoreBluetooth
             Delegate?.DidFailToConnectPeripheral(this, peripheral, error);
         }
 
-        internal void DidDiscoverPeripheral(string peripheralId, string peripheralName, int rssi)
+        internal void DidDiscoverPeripheral(SafeNativePeripheralHandle peripheralHandle, int rssi)
         {
             if (_disposed) return;
 
-            if (!_peripherals.TryGetValue(peripheralId, out var peripheral))
-            {
-                var nativePeriphalProxy = new NativePeripheralProxy(peripheralId, _handle);
-                peripheral = new CBPeripheral(peripheralId, peripheralName, nativePeriphalProxy);
-                _peripherals.Add(peripheralId, peripheral);
-            }
+            var peripheral = new CBPeripheral(peripheralHandle);
+            _peripherals.Add(peripheral.Identifier, peripheral);
             Delegate?.DidDiscoverPeripheral(this, peripheral, rssi);
         }
 
@@ -237,6 +230,10 @@ namespace CoreBluetooth
             if (_disposed) return;
 
             _handle?.Dispose();
+            foreach (var peripheral in _peripherals.Values)
+            {
+                peripheral.Dispose();
+            }
 
             _disposed = true;
         }

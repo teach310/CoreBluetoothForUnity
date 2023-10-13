@@ -4,8 +4,6 @@ import CoreBluetooth
 // This is a wrapper class for exposing CBCentralManager to Unity.
 public class CB4UCentralManager : NSObject {
     private var centralManager: CBCentralManager!
-    // key: peripheralId
-    var peripherals: Dictionary<String, CBPeripheral> = [:]
     
     public var didConnectHandler: CB4UCentralManagerDidConnectHandler?
     public var didDisconnectPeripheralHandler: CB4UCentralManagerDidDisconnectPeripheralHandler?
@@ -18,11 +16,6 @@ public class CB4UCentralManager : NSObject {
     public var peripheralDidUpdateValueForCharacteristicHandler: CB4UPeripheralDidUpdateValueForCharacteristicHandler?
     public var peripheralDidWriteValueForCharacteristicHandler: CB4UPeripheralDidWriteValueForCharacteristicHandler?
     public var peripheralDidUpdateNotificationStateForCharacteristicHandler: CB4UPeripheralDidUpdateNotificationStateForCharacteristicHandler?
-    
-    let peripheralNotFound: Int32 = -1
-    let serviceNotFound: Int32 = -2
-    let characteristicNotFound: Int32 = -3
-    let success: Int32 = 0
     
     public override init() {
         super.init()
@@ -47,20 +40,12 @@ public class CB4UCentralManager : NSObject {
         return Int32(error!._code)
     }
     
-    public func connect(peripheralId: String) -> Int32 {
-        guard let peripheral = peripherals[peripheralId] else {
-            return peripheralNotFound
-        }
-        centralManager.connect(peripheral)
-        return success
+    public func connect(peripheral: CB4UPeripheral) {
+        centralManager.connect(peripheral.peripheral)
     }
     
-    public func cancelPeripheralConnection(peripheralId: String) -> Int32 {
-        guard let peripheral = peripherals[peripheralId] else {
-            return peripheralNotFound
-        }
-        centralManager.cancelPeripheralConnection(peripheral)
-        return success
+    public func cancelPeripheralConnection(peripheral: CB4UPeripheral) {
+        centralManager.cancelPeripheralConnection(peripheral.peripheral)
     }
     
     public func scanForPeripherals(withServices serviceUUIDs: [CBUUID]?) {
@@ -102,14 +87,10 @@ extension CB4UCentralManager : CBCentralManagerDelegate {
     }
     
     public func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
-        let peripheralId = peripheral.identifier.uuidString
+        let cb4u_peripheral = CB4UPeripheral(peripheral: peripheral)
         peripheral.delegate = self
-        peripherals[peripheralId] = peripheral
-        peripheralId.withCString { (uuidCString) in
-            (peripheral.name ?? "").withCString { (nameCString) in
-                didDiscoverPeripheralHandler?(selfPointer(), uuidCString, nameCString, Int32(RSSI.intValue))
-            }
-        }
+        let peripheralPtr = Unmanaged.passRetained(cb4u_peripheral).toOpaque()
+        didDiscoverPeripheralHandler?(selfPointer(), peripheralPtr, Int32(RSSI.intValue))
     }
     
     public func centralManagerDidUpdateState(_ central: CBCentralManager) {

@@ -79,11 +79,10 @@ namespace CoreBluetooth
         }
 
         [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UCentralManagerDidDiscoverPeripheralHandler))]
-        internal static void DidDiscoverPeripheral(IntPtr centralPtr, IntPtr peripheralIdPtr, IntPtr peripheralNamePtr, int rssi)
+        internal static void DidDiscoverPeripheral(IntPtr centralPtr, IntPtr peripheralPtr, int rssi)
         {
             GetCentralManager(centralPtr)?.DidDiscoverPeripheral(
-                Marshal.PtrToStringUTF8(peripheralIdPtr),
-                Marshal.PtrToStringUTF8(peripheralNamePtr),
+                new SafeNativePeripheralHandle(peripheralPtr),
                 rssi
             );
         }
