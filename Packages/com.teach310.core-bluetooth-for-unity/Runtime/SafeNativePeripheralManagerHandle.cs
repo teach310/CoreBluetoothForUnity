@@ -1,23 +1,20 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
+using Microsoft.Win32.SafeHandles;
 
 namespace CoreBluetooth
 {
-    public class SafeNativePeripheralManagerHandle : SafeHandle
+    public class SafeNativePeripheralManagerHandle : SafeHandleZeroOrMinusOneIsInvalid
     {
         static Dictionary<IntPtr, CBPeripheralManager> s_peripheralManagerMap = new Dictionary<IntPtr, CBPeripheralManager>();
 
-        public override bool IsInvalid => handle == IntPtr.Zero;
-
-        SafeNativePeripheralManagerHandle(IntPtr handle) : base(handle, true) { }
+        SafeNativePeripheralManagerHandle() : base(true) { }
 
         internal static SafeNativePeripheralManagerHandle Create(CBPeripheralManager peripheralManager)
         {
-            var handle = NativeMethods.cb4u_peripheral_manager_new();
-            var instance = new SafeNativePeripheralManagerHandle(handle);
+            var instance = NativeMethods.cb4u_peripheral_manager_new();
             RegisterHandlers(instance);
-            s_peripheralManagerMap.Add(handle, peripheralManager);
+            s_peripheralManagerMap.Add(instance.handle, peripheralManager);
             return instance;
         }
 

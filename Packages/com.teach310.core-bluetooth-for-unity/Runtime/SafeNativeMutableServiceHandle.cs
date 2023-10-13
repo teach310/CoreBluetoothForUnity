@@ -1,19 +1,14 @@
-using System;
-using System.Runtime.InteropServices;
+using Microsoft.Win32.SafeHandles;
 
 namespace CoreBluetooth
 {
-    internal class SafeNativeMutableServiceHandle : SafeHandle
+    internal class SafeNativeMutableServiceHandle : SafeHandleZeroOrMinusOneIsInvalid
     {
-        public override bool IsInvalid => handle == IntPtr.Zero;
-
-        SafeNativeMutableServiceHandle(IntPtr handle) : base(handle, true) { }
+        SafeNativeMutableServiceHandle() : base(true) { }
 
         internal static SafeNativeMutableServiceHandle Create(string uuid, bool isPrimary)
         {
-            var handle = NativeMethods.cb4u_mutable_service_new(uuid, isPrimary);
-            var instance = new SafeNativeMutableServiceHandle(handle);
-            return instance;
+            return NativeMethods.cb4u_mutable_service_new(uuid, isPrimary);
         }
 
         protected override bool ReleaseHandle()

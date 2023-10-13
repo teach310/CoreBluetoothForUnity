@@ -25,7 +25,7 @@ namespace CoreBluetooth
         internal static extern int cb4u_central_maximum_update_value_length(SafeNativeCentralHandle handle);
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern IntPtr cb4u_central_manager_new();
+        internal static extern SafeNativeCentralManagerHandle cb4u_central_manager_new();
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void cb4u_central_manager_release(IntPtr handle);
@@ -146,7 +146,7 @@ namespace CoreBluetooth
         );
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern IntPtr cb4u_peripheral_manager_new();
+        internal static extern SafeNativePeripheralManagerHandle cb4u_peripheral_manager_new();
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void cb4u_peripheral_manager_release(IntPtr handle);
@@ -192,7 +192,7 @@ namespace CoreBluetooth
         internal static extern void cb4u_peripheral_manager_respond_to_request(SafeNativePeripheralManagerHandle peripheralHandle, SafeNativeATTRequestHandle requestPtr, int errorCode);
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern IntPtr cb4u_mutable_service_new([MarshalAs(UnmanagedType.LPStr), In] string uuid, [MarshalAs(UnmanagedType.I1)] bool primary);
+        internal static extern SafeNativeMutableServiceHandle cb4u_mutable_service_new([MarshalAs(UnmanagedType.LPStr), In] string uuid, [MarshalAs(UnmanagedType.I1)] bool primary);
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void cb4u_mutable_service_release(IntPtr handle);
@@ -204,7 +204,7 @@ namespace CoreBluetooth
         internal static extern int cb4u_mutable_service_add_characteristic(SafeNativeMutableServiceHandle serviceHandle, SafeNativeMutableCharacteristicHandle characteristicHandle);
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern IntPtr cb4u_mutable_characteristic_new(
+        internal static extern SafeNativeMutableCharacteristicHandle cb4u_mutable_characteristic_new(
             [MarshalAs(UnmanagedType.LPStr), In] string uuid,
             int properties,
             [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.U1, SizeParamIndex = 3)] byte[] dataBytes,
