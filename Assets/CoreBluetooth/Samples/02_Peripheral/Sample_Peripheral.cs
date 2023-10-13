@@ -1,7 +1,7 @@
-using System.Collections.Generic;
-using UnityEngine;
-using CoreBluetooth;
 using System;
+using System.Collections.Generic;
+using CoreBluetooth;
+using UnityEngine;
 
 namespace CoreBluetoothSample
 {
