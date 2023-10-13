@@ -1,23 +1,21 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Microsoft.Win32.SafeHandles;
 
 namespace CoreBluetooth
 {
-    internal class SafeNativeCentralManagerHandle : SafeHandle
+    internal class SafeNativeCentralManagerHandle : SafeHandleZeroOrMinusOneIsInvalid
     {
         static Dictionary<IntPtr, CBCentralManager> s_centralManagerMap = new Dictionary<IntPtr, CBCentralManager>();
 
-        public override bool IsInvalid => handle == IntPtr.Zero;
-
-        SafeNativeCentralManagerHandle(IntPtr handle) : base(handle, true) { }
+        SafeNativeCentralManagerHandle() : base(true) { }
 
         internal static SafeNativeCentralManagerHandle Create(CBCentralManager centralManager)
         {
-            var handle = NativeMethods.cb4u_central_manager_new();
-            var instance = new SafeNativeCentralManagerHandle(handle);
+            var instance = NativeMethods.cb4u_central_manager_new();
             RegisterHandlers(instance);
-            s_centralManagerMap.Add(handle, centralManager);
+            s_centralManagerMap.Add(instance.handle, centralManager);
             return instance;
         }
 

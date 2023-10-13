@@ -1,13 +1,10 @@
-using System;
-using System.Runtime.InteropServices;
+using Microsoft.Win32.SafeHandles;
 
 namespace CoreBluetooth
 {
-    internal class SafeNativeMutableCharacteristicHandle : SafeHandle
+    internal class SafeNativeMutableCharacteristicHandle : SafeHandleZeroOrMinusOneIsInvalid
     {
-        public override bool IsInvalid => handle == IntPtr.Zero;
-
-        SafeNativeMutableCharacteristicHandle(IntPtr handle) : base(handle, true) { }
+        SafeNativeMutableCharacteristicHandle() : base(true) { }
 
         internal static SafeNativeMutableCharacteristicHandle Create(
             string uuid,
@@ -16,13 +13,12 @@ namespace CoreBluetooth
             CBAttributePermissions permissions
         )
         {
-            var handle = NativeMethods.cb4u_mutable_characteristic_new(uuid,
+            return NativeMethods.cb4u_mutable_characteristic_new(
+                uuid,
                 (int)properties,
                 value,
                 value?.Length ?? 0,
                 (int)permissions);
-            var instance = new SafeNativeMutableCharacteristicHandle(handle);
-            return instance;
         }
 
         protected override bool ReleaseHandle()
