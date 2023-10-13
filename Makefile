@@ -20,5 +20,5 @@ package/build:
 
 .PHONY: plugins/build
 plugins/build:
-	make -C Plugins/CoreBluetoothForUnity bundle
+	make -C Plugins/CoreBluetoothForUnity dylib
 	make -C Plugins/CoreBluetoothForUnity framework
