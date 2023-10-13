@@ -3,8 +3,7 @@ include .env
 BUILD_DIR := Build
 BASE_NAME := CoreBluetoothForUnity
 WORKSPACE := $(BASE_NAME).xcworkspace
-BUNDLE_NAME := CB4UBundle
-DYLIB_NAME := libCoreBluetoothForUnity
+DYLIB_NAME := lib$(BASE_NAME)
 
 .PHONY: clean
 clean:
