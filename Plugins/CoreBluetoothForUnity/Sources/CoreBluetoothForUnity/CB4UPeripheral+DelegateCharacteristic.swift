@@ -1,10 +1,7 @@
 import CoreBluetooth
 
-extension CB4UCentralManager {
-    public func characteristicProperties(_ peripheralId: String, _ serviceUUID: CBUUID, _ characteristicUUID: CBUUID) -> Int32 {
-        guard let peripheral = peripherals[peripheralId] else {
-            return peripheralNotFound
-        }
+extension CB4UPeripheral {
+    public func characteristicProperties(_ serviceUUID: CBUUID, _ characteristicUUID: CBUUID) -> Int32 {
         guard let service = peripheral.services?.first(where: { $0.uuid == serviceUUID }) else {
             return serviceNotFound
         }

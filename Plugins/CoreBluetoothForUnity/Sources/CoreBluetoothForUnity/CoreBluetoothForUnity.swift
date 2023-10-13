@@ -241,11 +241,15 @@ public func cb4u_peripheral_state(_ peripheralPtr: UnsafeRawPointer) -> Int32 {
     return Int32(instance.state.rawValue)
 }
 
-@_cdecl("cb4u_central_manager_characteristic_properties")
-public func cb4u_central_manager_characteristic_properties(_ centralPtr: UnsafeRawPointer, _ peripheralId: UnsafePointer<CChar>, _ serviceUUID: UnsafePointer<CChar>, _ characteristicUUID: UnsafePointer<CChar>) -> Int32 {
-    let instance = Unmanaged<CB4UCentralManager>.fromOpaque(centralPtr).takeUnretainedValue()
+@_cdecl("cb4u_peripheral_characteristic_properties")
+public func cb4u_peripheral_characteristic_properties(
+    _ peripheralPtr: UnsafeRawPointer,
+    _ serviceUUID: UnsafePointer<CChar>,
+    _ characteristicUUID: UnsafePointer<CChar>
+) -> Int32 {
+    let instance = Unmanaged<CB4UPeripheral>.fromOpaque(peripheralPtr).takeUnretainedValue()
     
-    return instance.characteristicProperties(String(cString: peripheralId), CBUUID(string: String(cString: serviceUUID)), CBUUID(string: String(cString: characteristicUUID)))
+    return instance.characteristicProperties(CBUUID(string: String(cString: serviceUUID)), CBUUID(string: String(cString: characteristicUUID)))
 }
 
 @_cdecl("cb4u_peripheral_manager_new")
