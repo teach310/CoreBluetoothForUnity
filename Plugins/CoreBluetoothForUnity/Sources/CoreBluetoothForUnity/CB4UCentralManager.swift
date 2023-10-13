@@ -102,14 +102,10 @@ extension CB4UCentralManager : CBCentralManagerDelegate {
     }
     
     public func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
-        let peripheralId = peripheral.identifier.uuidString
+        let cb4u_peripheral = CB4UPeripheral(peripheral: peripheral)
         peripheral.delegate = self
-        peripherals[peripheralId] = peripheral
-        peripheralId.withCString { (uuidCString) in
-            (peripheral.name ?? "").withCString { (nameCString) in
-                didDiscoverPeripheralHandler?(selfPointer(), uuidCString, nameCString, Int32(RSSI.intValue))
-            }
-        }
+        let peripheralPtr = Unmanaged.passRetained(cb4u_peripheral).toOpaque()
+        didDiscoverPeripheralHandler?(selfPointer(), peripheralPtr, Int32(RSSI.intValue))
     }
     
     public func centralManagerDidUpdateState(_ central: CBCentralManager) {

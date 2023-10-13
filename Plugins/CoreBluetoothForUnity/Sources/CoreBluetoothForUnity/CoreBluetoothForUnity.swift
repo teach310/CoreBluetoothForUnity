@@ -40,7 +40,7 @@ public func cb4u_central_manager_release(_ centralManagerPtr: UnsafeRawPointer) 
 public typealias CB4UCentralManagerDidConnectHandler = @convention(c) (UnsafeRawPointer, UnsafePointer<CChar>) -> Void
 public typealias CB4UCentralManagerDidDisconnectPeripheralHandler = @convention(c) (UnsafeRawPointer, UnsafePointer<CChar>, Int32) -> Void
 public typealias CB4UCentralManagerDidFailToConnectHandler = @convention(c) (UnsafeRawPointer, UnsafePointer<CChar>, Int32) -> Void
-public typealias CB4UCentralManagerDidDiscoverPeripheralHandler = @convention(c) (UnsafeRawPointer, UnsafePointer<CChar>, UnsafePointer<CChar>, Int32) -> Void
+public typealias CB4UCentralManagerDidDiscoverPeripheralHandler = @convention(c) (UnsafeRawPointer, UnsafeRawPointer, Int32) -> Void
 public typealias CB4UCentralManagerDidUpdateStateHandler = @convention(c) (UnsafeRawPointer, Int32) -> Void
 
 public typealias CB4UPeripheralDidDiscoverServicesHandler = @convention(c) (UnsafeRawPointer, UnsafePointer<CChar>, UnsafePointer<CChar>, Int32) -> Void
@@ -122,87 +122,121 @@ public func cb4u_central_manager_is_scanning(_ centralPtr: UnsafeRawPointer) -> 
     return instance.isScanning
 }
 
-@_cdecl("cb4u_central_manager_peripheral_discover_services")
-public func cb4u_central_manager_peripheral_discover_services(
-    _ centralPtr: UnsafeRawPointer,
-    _ peripheralId: UnsafePointer<CChar>,
+@_cdecl("cb4u_peripheral_release")
+public func cb4u_peripheral_release(_ peripheralPtr: UnsafeRawPointer) {
+    Unmanaged<CB4UPeripheral>.fromOpaque(peripheralPtr).release()
+}
+
+@_cdecl("cb4u_peripheral_identifier")
+public func cb4u_peripheral_identifier(_ peripheralPtr: UnsafeRawPointer, _ identifier: UnsafeMutablePointer<CChar>, _ identifierSize: Int32) {
+    let instance = Unmanaged<CB4UPeripheral>.fromOpaque(peripheralPtr).takeUnretainedValue()
+    
+    let identifierString = instance.identifier
+    let maxSize = Int(identifierSize) - 1
+    identifierString.withCString { identifierStringPtr in
+        if identifierString.count > maxSize {
+            print("cb4u_peripheral_identifier: identifierSize is too small. identifierSize: \(identifierSize), identifier.count: \(identifierString.count)")
+        } else {
+            strcpy(identifier, identifierStringPtr)
+        }
+    }
+}
+
+@_cdecl("cb4u_peripheral_name")
+public func cb4u_peripheral_name(_ peripheralPtr: UnsafeRawPointer, _ name: UnsafeMutablePointer<CChar>, _ nameSize: Int32) -> Int32 {
+    let instance = Unmanaged<CB4UPeripheral>.fromOpaque(peripheralPtr).takeUnretainedValue()
+    
+    guard let nameString = instance.name else {
+        return 0
+    }
+    
+    let maxSize = Int(nameSize) - 1
+    nameString.withCString { nameStringPtr in
+        if nameString.count > maxSize {
+            print("cb4u_peripheral_name: nameSize is too small. nameSize: \(nameSize), name.count: \(nameString.count)")
+        } else {
+            strcpy(name, nameStringPtr)
+        }
+    }
+    return 1
+}
+
+@_cdecl("cb4u_peripheral_discover_services")
+public func cb4u_peripheral_discover_services(
+    _ peripheralPtr: UnsafeRawPointer,
     _ serviceUUIDs: UnsafePointer<UnsafePointer<CChar>?>,
     _ serviceUUIDsCount: Int32
-) -> Int32 {
-    let instance = Unmanaged<CB4UCentralManager>.fromOpaque(centralPtr).takeUnretainedValue()
+) {
+    let instance = Unmanaged<CB4UPeripheral>.fromOpaque(peripheralPtr).takeUnretainedValue()
     
     let serviceUUIDsArray = (0..<Int(serviceUUIDsCount)).map { index -> CBUUID in
         let uuidString = String(cString: serviceUUIDs[index]!)
         return CBUUID(string: uuidString)
     }
     
-    return instance.peripheralDiscoverServices(String(cString: peripheralId), serviceUUIDsArray)
+    instance.discoverServices(serviceUUIDsArray)
 }
 
-@_cdecl("cb4u_central_manager_peripheral_discover_characteristics")
-public func cb4u_central_manager_peripheral_discover_characteristics(
-    _ centralPtr: UnsafeRawPointer,
-    _ peripheralId: UnsafePointer<CChar>,
+@_cdecl("cb4u_peripheral_discover_characteristics")
+public func cb4u_peripheral_discover_characteristics(
+    _ peripheralPtr: UnsafeRawPointer,
     _ serviceUUID: UnsafePointer<CChar>,
     _ characteristicUUIDs: UnsafePointer<UnsafePointer<CChar>?>,
     _ characteristicUUIDsCount: Int32
 ) -> Int32 {
-    let instance = Unmanaged<CB4UCentralManager>.fromOpaque(centralPtr).takeUnretainedValue()
+    let instance = Unmanaged<CB4UPeripheral>.fromOpaque(peripheralPtr).takeUnretainedValue()
     
     let characteristicUUIDsArray = (0..<Int(characteristicUUIDsCount)).map { index -> CBUUID in
         let uuidString = String(cString: characteristicUUIDs[index]!)
         return CBUUID(string: uuidString)
     }
     
-    return instance.peripheralDiscoverCharacteristics(String(cString: peripheralId), CBUUID(string: String(cString: serviceUUID)), characteristicUUIDsArray)
+    return instance.discoverCharacteristics(CBUUID(string: String(cString: serviceUUID)), characteristicUUIDsArray)
 }
 
-@_cdecl("cb4u_central_manager_peripheral_read_characteristic_value")
-public func cb4u_central_manager_peripheral_read_characteristic_value(
-    _ centralPtr: UnsafeRawPointer,
-    _ peripheralId: UnsafePointer<CChar>,
+@_cdecl("cb4u_peripheral_read_characteristic_value")
+public func cb4u_peripheral_read_characteristic_value(
+    _ peripheralPtr: UnsafeRawPointer,
     _ serviceUUID: UnsafePointer<CChar>,
     _ characteristicUUID: UnsafePointer<CChar>
 ) -> Int32 {
-    let instance = Unmanaged<CB4UCentralManager>.fromOpaque(centralPtr).takeUnretainedValue()
+    let instance = Unmanaged<CB4UPeripheral>.fromOpaque(peripheralPtr).takeUnretainedValue()
     
-    return instance.peripheralReadCharacteristicValue(String(cString: peripheralId), CBUUID(string: String(cString: serviceUUID)), CBUUID(string: String(cString: characteristicUUID)))
+    return instance.readCharacteristicValue(CBUUID(string: String(cString: serviceUUID)), CBUUID(string: String(cString: characteristicUUID)))
 }
 
-@_cdecl("cb4u_central_manager_peripheral_write_characteristic_value")
-public func cb4u_central_manager_peripheral_write_characteristic_value(
-    _ centralPtr: UnsafeRawPointer,
-    _ peripheralId: UnsafePointer<CChar>,
+@_cdecl("cb4u_peripheral_write_characteristic_value")
+public func cb4u_peripheral_write_characteristic_value(
+    _ peripheralPtr: UnsafeRawPointer,
     _ serviceUUID: UnsafePointer<CChar>,
     _ characteristicUUID: UnsafePointer<CChar>,
     _ dataBytes: UnsafePointer<UInt8>,
     _ dataLength: Int32,
     _ writeType: Int32
 ) -> Int32 {
-    let instance = Unmanaged<CB4UCentralManager>.fromOpaque(centralPtr).takeUnretainedValue()
+    let instance = Unmanaged<CB4UPeripheral>.fromOpaque(peripheralPtr).takeUnretainedValue()
     
     let data = Data(bytes: dataBytes, count: Int(dataLength))
-    return instance.peripheralWriteCharacteristicValue(String(cString: peripheralId), CBUUID(string: String(cString: serviceUUID)), CBUUID(string: String(cString: characteristicUUID)), data, CBCharacteristicWriteType(rawValue: Int(writeType))!)
+    return instance.writeCharacteristicValue(CBUUID(string: String(cString: serviceUUID)), CBUUID(string: String(cString: characteristicUUID)), data, CBCharacteristicWriteType(rawValue: Int(writeType))!)
 }
 
-@_cdecl("cb4u_central_manager_peripheral_set_notify_value")
-public func cb4u_central_manager_peripheral_set_notify_value(
-    _ centralPtr: UnsafeRawPointer,
-    _ peripheralId: UnsafePointer<CChar>,
+@_cdecl("cb4u_peripheral_set_notify_value")
+public func cb4u_peripheral_set_notify_value(
+    _ peripheralPtr: UnsafeRawPointer,
     _ serviceUUID: UnsafePointer<CChar>,
     _ characteristicUUID: UnsafePointer<CChar>,
     _ enabled: Bool
 ) -> Int32 {
-    let instance = Unmanaged<CB4UCentralManager>.fromOpaque(centralPtr).takeUnretainedValue()
+    let instance = Unmanaged<CB4UPeripheral>.fromOpaque(peripheralPtr).takeUnretainedValue()
     
-    return instance.peripheralSetNotifyValue(String(cString: peripheralId), CBUUID(string: String(cString: serviceUUID)), CBUUID(string: String(cString: characteristicUUID)), enabled)
+    return instance.setNotifyValue(CBUUID(string: String(cString: serviceUUID)), CBUUID(string: String(cString: characteristicUUID)), enabled)
 }
 
-@_cdecl("cb4u_central_manager_peripheral_state")
-public func cb4u_central_manager_peripheral_state(_ centralPtr: UnsafeRawPointer, _ peripheralId: UnsafePointer<CChar>) -> Int32 {
-    let instance = Unmanaged<CB4UCentralManager>.fromOpaque(centralPtr).takeUnretainedValue()
+@_cdecl("cb4u_peripheral_state")
+public func cb4u_peripheral_state(_ peripheralPtr: UnsafeRawPointer) -> Int32 {
+    let instance = Unmanaged<CB4UPeripheral>.fromOpaque(peripheralPtr).takeUnretainedValue()
     
-    return instance.peripheralState(String(cString: peripheralId))
+    return Int32(instance.state.rawValue)
 }
 
 @_cdecl("cb4u_central_manager_characteristic_properties")
