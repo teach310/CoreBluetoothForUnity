@@ -4,14 +4,12 @@ namespace CoreBluetooth
 {
     internal class NativeCharacteristicProxy : INativeCharacteristic
     {
-        string _peripheralId;
         string _serviceUUID;
         string _characteristicUUID;
-        readonly SafeNativeCentralManagerHandle _handle;
+        readonly SafeNativePeripheralHandle _handle;
 
-        internal NativeCharacteristicProxy(string peripheralId, string serviceUUID, string characteristicUUID, SafeNativeCentralManagerHandle handle)
+        internal NativeCharacteristicProxy(string serviceUUID, string characteristicUUID, SafeNativePeripheralHandle handle)
         {
-            _peripheralId = peripheralId;
             _serviceUUID = serviceUUID;
             _characteristicUUID = characteristicUUID;
             _handle = handle;
@@ -21,14 +19,8 @@ namespace CoreBluetooth
         {
             get
             {
-                int result = NativeMethods.cb4u_central_manager_characteristic_properties(
-                    _handle,
-                    _peripheralId,
-                    _serviceUUID,
-                    _characteristicUUID
-                );
+                int result = NativeMethods.cb4u_peripheral_characteristic_properties(_handle, _serviceUUID, _characteristicUUID);
 
-                ExceptionUtils.ThrowIfPeripheralNotFound(result, _peripheralId);
                 ExceptionUtils.ThrowIfServiceNotFound(result, _serviceUUID);
                 ExceptionUtils.ThrowIfCharacteristicNotFound(result, _characteristicUUID);
 

@@ -116,7 +116,7 @@ namespace CoreBluetooth
             var characteristic = service.FindCharacteristic(characteristicUUID);
             if (characteristic == null)
             {
-                var nativeCharacteristicProxy = new NativeCharacteristicProxy(service.Peripheral.Identifier, service.UUID, characteristicUUID, _handle);
+                var nativeCharacteristicProxy = new NativeCharacteristicProxy(service.UUID, characteristicUUID, service.Peripheral.Handle);
                 characteristic = new CBCharacteristic(characteristicUUID, nativeCharacteristicProxy);
             }
             return characteristic;
