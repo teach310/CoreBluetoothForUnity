@@ -36,13 +36,6 @@ namespace CoreBluetooth
         internal delegate void CB4UCentralManagerDidDiscoverPeripheralHandler(IntPtr centralPtr, IntPtr peripheralPtr, int rssi);
         internal delegate void CB4UCentralManagerDidUpdateStateHandler(IntPtr centralPtr, CBManagerState state);
 
-        // NOTE: using comma-separated service UUIDs instead of an array of service UUIDs to avoid marshalling issues
-        internal delegate void CB4UPeripheralDidDiscoverServicesHandler(IntPtr centralPtr, IntPtr peripheralIdPtr, IntPtr commaSeparatedServiceUUIDsPtr, int errorCode);
-        internal delegate void CB4UPeripheralDidDiscoverCharacteristicsHandler(IntPtr centralPtr, IntPtr peripheralIdPtr, IntPtr serviceUUIDPtr, IntPtr commaSeparatedCharacteristicUUIDsPtr, int errorCode);
-        internal delegate void CB4UPeripheralDidUpdateValueForCharacteristicHandler(IntPtr centralPtr, IntPtr peripheralIdPtr, IntPtr serviceUUIDPtr, IntPtr characteristicUUIDPtr, IntPtr dataPtr, int dataLength, int errorCode);
-        internal delegate void CB4UPeripheralDidWriteValueForCharacteristicHandler(IntPtr centralPtr, IntPtr peripheralIdPtr, IntPtr serviceUUIDPtr, IntPtr characteristicUUIDPtr, int errorCode);
-        internal delegate void CB4UPeripheralDidUpdateNotificationStateForCharacteristicHandler(IntPtr centralPtr, IntPtr peripheralIdPtr, IntPtr serviceUUIDPtr, IntPtr characteristicUUIDPtr, int notificationState, int errorCode);
-
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void cb4u_central_manager_register_handlers(
             SafeNativeCentralManagerHandle handle,
@@ -50,12 +43,7 @@ namespace CoreBluetooth
             CB4UCentralManagerDidDisconnectPeripheralHandler didDisconnectPeripheralHandler,
             CB4UCentralManagerDidFailToConnectHandler didFailToConnectHandler,
             CB4UCentralManagerDidDiscoverPeripheralHandler didDiscoverPeripheralHandler,
-            CB4UCentralManagerDidUpdateStateHandler didUpdateStateHandler,
-            CB4UPeripheralDidDiscoverServicesHandler peripheralDidDiscoverServicesHandler,
-            CB4UPeripheralDidDiscoverCharacteristicsHandler peripheralDidDiscoverCharacteristicsHandler,
-            CB4UPeripheralDidUpdateValueForCharacteristicHandler peripheralDidUpdateValueForCharacteristicHandler,
-            CB4UPeripheralDidWriteValueForCharacteristicHandler peripheralDidWriteValueForCharacteristicHandler,
-            CB4UPeripheralDidUpdateNotificationStateForCharacteristicHandler peripheralDidUpdateNotificationStateForCharacteristicHandler
+            CB4UCentralManagerDidUpdateStateHandler didUpdateStateHandler
         );
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
@@ -80,6 +68,23 @@ namespace CoreBluetooth
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void cb4u_peripheral_release(IntPtr handle);
+
+        // NOTE: using comma-separated service UUIDs instead of an array of service UUIDs to avoid marshalling issues
+        internal delegate void CB4UPeripheralDidDiscoverServicesHandler(IntPtr peripheralPtr, IntPtr commaSeparatedServiceUUIDsPtr, int errorCode);
+        internal delegate void CB4UPeripheralDidDiscoverCharacteristicsHandler(IntPtr peripheralPtr, IntPtr serviceUUIDPtr, IntPtr commaSeparatedCharacteristicUUIDsPtr, int errorCode);
+        internal delegate void CB4UPeripheralDidUpdateValueForCharacteristicHandler(IntPtr peripheralPtr, IntPtr serviceUUIDPtr, IntPtr characteristicUUIDPtr, IntPtr dataPtr, int dataLength, int errorCode);
+        internal delegate void CB4UPeripheralDidWriteValueForCharacteristicHandler(IntPtr peripheralPtr, IntPtr serviceUUIDPtr, IntPtr characteristicUUIDPtr, int errorCode);
+        internal delegate void CB4UPeripheralDidUpdateNotificationStateForCharacteristicHandler(IntPtr peripheralPtr, IntPtr serviceUUIDPtr, IntPtr characteristicUUIDPtr, int notificationState, int errorCode);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void cb4u_peripheral_register_handlers(
+            SafeNativePeripheralHandle handle,
+            CB4UPeripheralDidDiscoverServicesHandler didDiscoverServicesHandler,
+            CB4UPeripheralDidDiscoverCharacteristicsHandler didDiscoverCharacteristicsHandler,
+            CB4UPeripheralDidUpdateValueForCharacteristicHandler didUpdateValueForCharacteristicHandler,
+            CB4UPeripheralDidWriteValueForCharacteristicHandler didWriteValueForCharacteristicHandler,
+            CB4UPeripheralDidUpdateNotificationStateForCharacteristicHandler didUpdateNotificationStateForCharacteristicHandler
+        );
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern IntPtr cb4u_peripheral_identifier(

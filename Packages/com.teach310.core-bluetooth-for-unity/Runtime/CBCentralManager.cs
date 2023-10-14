@@ -100,28 +100,6 @@ namespace CoreBluetooth
             return peripheral;
         }
 
-        CBCharacteristic GetCharacteristic(CBPeripheral peripheral, string serviceUUID, string characteristicUUID)
-        {
-            var characteristic = peripheral.FindCharacteristic(serviceUUID, characteristicUUID);
-            if (characteristic == null)
-            {
-                UnityEngine.Debug.LogError($"Characteristic {characteristicUUID} not found.");
-                return null;
-            }
-            return characteristic;
-        }
-
-        CBCharacteristic FindOrInitializeCharacteristic(CBService service, string characteristicUUID)
-        {
-            var characteristic = service.FindCharacteristic(characteristicUUID);
-            if (characteristic == null)
-            {
-                var nativeCharacteristicProxy = new NativeCharacteristicProxy(service.UUID, characteristicUUID, service.Peripheral.Handle);
-                characteristic = new CBCharacteristic(characteristicUUID, nativeCharacteristicProxy);
-            }
-            return characteristic;
-        }
-
         internal void DidConnect(string peripheralId)
         {
             if (_disposed) return;
@@ -160,69 +138,6 @@ namespace CoreBluetooth
             if (_disposed) return;
             this.State = state;
             Delegate?.DidUpdateState(this);
-        }
-
-        internal void PeripheralDidDiscoverServices(string peripheralId, string[] serviceUUIDs, CBError error)
-        {
-            if (_disposed) return;
-            var peripheral = GetPeripheral(peripheralId);
-            if (peripheral == null) return;
-
-            var services = serviceUUIDs.Select(uuid => new CBService(uuid, peripheral)).ToArray();
-            peripheral.DidDiscoverServices(services, error);
-        }
-
-        internal void PeripheralDidDiscoverCharacteristics(string peripheralId, string serviceUUID, string[] characteristicUUIDs, CBError error)
-        {
-            if (_disposed) return;
-            var peripheral = GetPeripheral(peripheralId);
-            if (peripheral == null) return;
-
-            var service = peripheral.Services.FirstOrDefault(s => s.UUID == serviceUUID);
-            if (service == null)
-            {
-                UnityEngine.Debug.LogError($"Service {serviceUUID} not found.");
-                return;
-            }
-
-            var characteristics = characteristicUUIDs.Select(uuid => FindOrInitializeCharacteristic(service, uuid)).ToArray();
-            peripheral.DidDiscoverCharacteristics(characteristics, service, error);
-        }
-
-        internal void PeripheralDidUpdateValueForCharacteristic(string peripheralId, string serviceUUID, string characteristicUUID, byte[] data, CBError error)
-        {
-            if (_disposed) return;
-            var peripheral = GetPeripheral(peripheralId);
-            if (peripheral == null) return;
-
-            var characteristic = GetCharacteristic(peripheral, serviceUUID, characteristicUUID);
-            if (characteristic == null) return;
-
-            peripheral.DidUpdateValueForCharacteristic(characteristic, data, error);
-        }
-
-        internal void PeripheralDidWriteValueForCharacteristic(string peripheralId, string serviceUUID, string characteristicUUID, CBError error)
-        {
-            if (_disposed) return;
-            var peripheral = GetPeripheral(peripheralId);
-            if (peripheral == null) return;
-
-            var characteristic = GetCharacteristic(peripheral, serviceUUID, characteristicUUID);
-            if (characteristic == null) return;
-
-            peripheral.DidWriteValueForCharacteristic(characteristic, error);
-        }
-
-        internal void PeripheralDidUpdateNotificationStateForCharacteristic(string peripheralId, string serviceUUID, string characteristicUUID, bool isNotifying, CBError error)
-        {
-            if (_disposed) return;
-            var peripheral = GetPeripheral(peripheralId);
-            if (peripheral == null) return;
-
-            var characteristic = GetCharacteristic(peripheral, serviceUUID, characteristicUUID);
-            if (characteristic == null) return;
-
-            peripheral.DidUpdateNotificationStateForCharacteristic(characteristic, isNotifying, error);
         }
 
         public void Dispose()
