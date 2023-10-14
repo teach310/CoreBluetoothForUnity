@@ -155,10 +155,13 @@ namespace CoreBluetooth
         void INativePeripheralDelegate.DidDiscoverServices(string[] serviceUUIDs, CBError error)
         {
             if (_disposed) return;
-            var services = serviceUUIDs.Select(uuid => new CBService(uuid, this)).ToArray();
-            // TODO: keep existing service instances
+            var services = serviceUUIDs.Select(uuid =>
+            {
+                return _services.FirstOrDefault(s => s.UUID == uuid) ?? new CBService(uuid, this);
+            }).ToArray();
             _services.Clear();
             _services.AddRange(services);
+
             Delegate?.DidDiscoverServices(this, error);
         }
 
