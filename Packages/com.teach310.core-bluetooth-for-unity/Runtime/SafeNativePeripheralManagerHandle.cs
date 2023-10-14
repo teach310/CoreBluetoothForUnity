@@ -4,23 +4,48 @@ using Microsoft.Win32.SafeHandles;
 
 namespace CoreBluetooth
 {
+    internal interface INativePeripheralManagerDelegate
+    {
+        void DidUpdateState(CBManagerState state) { }
+        void DidAddService(string serviceUUID, CBError error) { }
+        void DidStartAdvertising(CBError error) { }
+        void DidReceiveReadRequest(SafeNativeATTRequestHandle request) { }
+        void DidReceiveWriteRequests(SafeNativeATTRequestsHandle requests) { }
+    }
+
     public class SafeNativePeripheralManagerHandle : SafeHandleZeroOrMinusOneIsInvalid
     {
-        static Dictionary<IntPtr, CBPeripheralManager> s_peripheralManagerMap = new Dictionary<IntPtr, CBPeripheralManager>();
+        static Dictionary<IntPtr, INativePeripheralManagerDelegate> s_peripheralManagerDelegateMap = new Dictionary<IntPtr, INativePeripheralManagerDelegate>();
 
         SafeNativePeripheralManagerHandle() : base(true) { }
 
-        internal static SafeNativePeripheralManagerHandle Create(CBPeripheralManager peripheralManager)
+        internal static SafeNativePeripheralManagerHandle Create()
         {
             var instance = NativeMethods.cb4u_peripheral_manager_new();
-            RegisterHandlers(instance);
-            s_peripheralManagerMap.Add(instance.handle, peripheralManager);
+            instance.RegisterHandlers();
             return instance;
+        }
+
+        void RegisterHandlers()
+        {
+            NativeMethods.cb4u_peripheral_manager_register_handlers(
+                this,
+                DidUpdateState,
+                DidAddService,
+                DidStartAdvertising,
+                DidReceiveReadRequest,
+                DidReceiveWriteRequests
+            );
+        }
+
+        internal void SetDelegate(INativePeripheralManagerDelegate peripheralManagerDelegate)
+        {
+            s_peripheralManagerDelegateMap[handle] = peripheralManagerDelegate;
         }
 
         protected override bool ReleaseHandle()
         {
-            s_peripheralManagerMap.Remove(handle);
+            s_peripheralManagerDelegateMap.Remove(handle);
             NativeMethods.cb4u_peripheral_manager_release(handle);
             return true;
         }
@@ -37,37 +62,37 @@ namespace CoreBluetooth
             );
         }
 
-        static CBPeripheralManager GetPeripheralManager(IntPtr peripheralPtr)
+        static INativePeripheralManagerDelegate GetDelegate(IntPtr peripheralPtr)
         {
-            if (!s_peripheralManagerMap.TryGetValue(peripheralPtr, out var peripheralManager))
+            if (!s_peripheralManagerDelegateMap.TryGetValue(peripheralPtr, out var peripheralManagerDelegate))
             {
-                UnityEngine.Debug.LogError("CBPeripheralManager instance not found.");
+                return null;
             }
-            return peripheralManager;
+            return peripheralManagerDelegate;
         }
 
         [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralManagerDidUpdateStateHandler))]
         internal static void DidUpdateState(IntPtr peripheralPtr, CBManagerState state)
         {
-            GetPeripheralManager(peripheralPtr)?.DidUpdateState(state);
+            GetDelegate(peripheralPtr)?.DidUpdateState(state);
         }
 
         [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralManagerDidAddServiceHandler))]
         internal static void DidAddService(IntPtr peripheralPtr, string serviceUUID, int errorCode)
         {
-            GetPeripheralManager(peripheralPtr)?.DidAddService(serviceUUID, CBError.CreateOrNullFromCode(errorCode));
+            GetDelegate(peripheralPtr)?.DidAddService(serviceUUID, CBError.CreateOrNullFromCode(errorCode));
         }
 
         [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralManagerDidStartAdvertisingHandler))]
         internal static void DidStartAdvertising(IntPtr peripheralPtr, int errorCode)
         {
-            GetPeripheralManager(peripheralPtr)?.DidStartAdvertising(CBError.CreateOrNullFromCode(errorCode));
+            GetDelegate(peripheralPtr)?.DidStartAdvertising(CBError.CreateOrNullFromCode(errorCode));
         }
 
         [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralManagerDidReceiveReadRequestHandler))]
         internal static void DidReceiveReadRequest(IntPtr peripheralPtr, IntPtr requestPtr)
         {
-            GetPeripheralManager(peripheralPtr)?.DidReceiveReadRequest(
+            GetDelegate(peripheralPtr)?.DidReceiveReadRequest(
                 new SafeNativeATTRequestHandle(requestPtr)
             );
         }
@@ -75,7 +100,7 @@ namespace CoreBluetooth
         [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralManagerDidReceiveWriteRequestsHandler))]
         internal static void DidReceiveWriteRequests(IntPtr peripheralPtr, IntPtr requestsPtr)
         {
-            GetPeripheralManager(peripheralPtr)?.DidReceiveWriteRequests(
+            GetDelegate(peripheralPtr)?.DidReceiveWriteRequests(
                 new SafeNativeATTRequestsHandle(requestsPtr)
             );
         }

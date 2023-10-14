@@ -5,9 +5,10 @@ namespace CoreBluetooth
     {
         readonly SafeNativePeripheralManagerHandle _handle;
 
-        internal NativePeripheralManagerProxy(SafeNativePeripheralManagerHandle handle)
+        internal NativePeripheralManagerProxy(SafeNativePeripheralManagerHandle handle, INativePeripheralManagerDelegate peripheralManagerDelegate)
         {
             _handle = handle;
+            _handle.SetDelegate(peripheralManagerDelegate);
         }
 
         internal void AddService(CBMutableService service)

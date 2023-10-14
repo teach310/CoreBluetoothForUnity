@@ -19,7 +19,7 @@ namespace CoreBluetooth
         CBCharacteristic FindCharacteristic(string serviceUUID, string characteristicUUID);
     }
 
-    public class CBPeripheralManager : CBManager, IPeripheralManagerData, IDisposable
+    public class CBPeripheralManager : CBManager, IPeripheralManagerData, INativePeripheralManagerDelegate, IDisposable
     {
         bool _disposed = false;
         SafeNativePeripheralManagerHandle _handle;
@@ -47,9 +47,9 @@ namespace CoreBluetooth
 
         public CBPeripheralManager(ICBPeripheralManagerDelegate peripheralDelegate = null)
         {
-            _handle = SafeNativePeripheralManagerHandle.Create(this);
+            _handle = SafeNativePeripheralManagerHandle.Create();
             Delegate = peripheralDelegate;
-            _nativePeripheralManagerProxy = new NativePeripheralManagerProxy(_handle);
+            _nativePeripheralManagerProxy = new NativePeripheralManagerProxy(_handle, this);
         }
 
         void AddATTRequestDisposable(IDisposable disposable)
@@ -124,14 +124,14 @@ namespace CoreBluetooth
             return null;
         }
 
-        internal void DidUpdateState(CBManagerState state)
+        void INativePeripheralManagerDelegate.DidUpdateState(CBManagerState state)
         {
             if (_disposed) return;
             State = state;
             _delegate?.DidUpdateState(this);
         }
 
-        internal void DidAddService(string serviceUUID, CBError error)
+        void INativePeripheralManagerDelegate.DidAddService(string serviceUUID, CBError error)
         {
             if (_disposed) return;
             if (!_addingServiceUUIDs.Remove(serviceUUID))
@@ -142,13 +142,13 @@ namespace CoreBluetooth
             _delegate?.DidAddService(this, _services[serviceUUID], error);
         }
 
-        internal void DidStartAdvertising(CBError error)
+        void INativePeripheralManagerDelegate.DidStartAdvertising(CBError error)
         {
             if (_disposed) return;
             _delegate?.DidStartAdvertising(this, error);
         }
 
-        internal void DidReceiveReadRequest(SafeNativeATTRequestHandle requestHandle)
+        void INativePeripheralManagerDelegate.DidReceiveReadRequest(SafeNativeATTRequestHandle requestHandle)
         {
             if (_disposed) return;
             var request = new CBATTRequest(requestHandle, new NativeATTRequestProxy(requestHandle, this));
@@ -156,7 +156,7 @@ namespace CoreBluetooth
             AddATTRequestDisposable(request);
         }
 
-        internal void DidReceiveWriteRequests(SafeNativeATTRequestsHandle requestsHandle)
+        void INativePeripheralManagerDelegate.DidReceiveWriteRequests(SafeNativeATTRequestsHandle requestsHandle)
         {
             if (_disposed) return;
             var requests = new CBATTRequests(requestsHandle, new NativeATTRequestsProxy(requestsHandle, this));
