@@ -49,14 +49,6 @@ namespace CoreBluetooth
             _nativeCentralManagerProxy = new NativeCentralManagerProxy(_handle);
         }
 
-        void ThrowIfPeripheralNotDiscovered(CBPeripheral peripheral)
-        {
-            if (!_peripherals.ContainsKey(peripheral.Identifier))
-            {
-                throw new ArgumentException($"Peripheral {peripheral} is not discovered.");
-            }
-        }
-
         public void Connect(CBPeripheral peripheral)
         {
             ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
