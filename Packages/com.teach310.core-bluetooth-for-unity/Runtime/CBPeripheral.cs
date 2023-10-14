@@ -141,17 +141,6 @@ namespace CoreBluetooth
             return service.FindCharacteristic(characteristicUUID);
         }
 
-        CBCharacteristic GetCharacteristic(string serviceUUID, string characteristicUUID)
-        {
-            var characteristic = FindCharacteristic(serviceUUID, characteristicUUID);
-            if (characteristic == null)
-            {
-                UnityEngine.Debug.LogError($"Characteristic {characteristicUUID} not found.");
-                return null;
-            }
-            return characteristic;
-        }
-
         CBCharacteristic FindOrInitializeCharacteristic(CBService service, string characteristicUUID)
         {
             var characteristic = service.FindCharacteristic(characteristicUUID);
@@ -190,7 +179,7 @@ namespace CoreBluetooth
         void INativePeripheralDelegate.DidUpdateValueForCharacteristic(string serviceUUID, string characteristicUUID, byte[] data, CBError error)
         {
             if (_disposed) return;
-            var characteristic = GetCharacteristic(serviceUUID, characteristicUUID);
+            var characteristic = FindCharacteristic(serviceUUID, characteristicUUID);
             if (characteristic == null) return;
             characteristic.UpdateValue(data);
             Delegate?.DidUpdateValueForCharacteristic(this, characteristic, error);
@@ -199,7 +188,7 @@ namespace CoreBluetooth
         void INativePeripheralDelegate.DidWriteValueForCharacteristic(string serviceUUID, string characteristicUUID, CBError error)
         {
             if (_disposed) return;
-            var characteristic = GetCharacteristic(serviceUUID, characteristicUUID);
+            var characteristic = FindCharacteristic(serviceUUID, characteristicUUID);
             if (characteristic == null) return;
 
             Delegate?.DidWriteValueForCharacteristic(this, characteristic, error);
@@ -208,7 +197,7 @@ namespace CoreBluetooth
         void INativePeripheralDelegate.DidUpdateNotificationStateForCharacteristic(string serviceUUID, string characteristicUUID, bool isNotifying, CBError error)
         {
             if (_disposed) return;
-            var characteristic = GetCharacteristic(serviceUUID, characteristicUUID);
+            var characteristic = FindCharacteristic(serviceUUID, characteristicUUID);
             if (characteristic == null) return;
             characteristic.UpdateIsNotifying(isNotifying);
             Delegate?.DidUpdateNotificationStateForCharacteristic(this, characteristic, error);
