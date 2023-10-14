@@ -17,6 +17,7 @@ namespace CoreBluetooth
     {
         string Identifier { get; }
         string Name { get; }
+        void SetDelegate(INativePeripheralDelegate peripheralDelegate);
         void DiscoverServices(string[] serviceUUIDs);
         void DiscoverCharacteristics(string[] characteristicUUIDs, CBService service);
         void ReadValue(CBCharacteristic characteristic);
@@ -38,7 +39,7 @@ namespace CoreBluetooth
     /// A remote peripheral device.
     /// https://developer.apple.com/documentation/corebluetooth/cbperipheral
     /// </summary>
-    public class CBPeripheral : IDisposable
+    public class CBPeripheral : INativePeripheralDelegate, IDisposable
     {
         bool _disposed = false;
         internal SafeNativePeripheralHandle Handle { get; }
@@ -76,6 +77,7 @@ namespace CoreBluetooth
         {
             Handle = nativePeripheral;
             _nativePeripheral = new NativePeripheralProxy(Handle);
+            _nativePeripheral.SetDelegate(this);
             this.Services = _services.AsReadOnly();
         }
 
@@ -136,35 +138,67 @@ namespace CoreBluetooth
 
             var service = Services.FirstOrDefault(s => s.UUID == serviceUUID);
             if (service == null) return null;
-            return service.Characteristics.FirstOrDefault(c => c.UUID == characteristicUUID);
+            return service.FindCharacteristic(characteristicUUID);
         }
 
-        internal void DidDiscoverServices(CBService[] services, CBError error)
+        CBCharacteristic FindOrInitializeCharacteristic(CBService service, string characteristicUUID)
         {
+            var characteristic = service.FindCharacteristic(characteristicUUID);
+            if (characteristic == null)
+            {
+                var nativeCharacteristicProxy = new NativeCharacteristicProxy(service.UUID, characteristicUUID, service.Peripheral.Handle);
+                characteristic = new CBCharacteristic(characteristicUUID, nativeCharacteristicProxy);
+            }
+            return characteristic;
+        }
+
+        void INativePeripheralDelegate.DidDiscoverServices(string[] serviceUUIDs, CBError error)
+        {
+            if (_disposed) return;
+            var services = serviceUUIDs.Select(uuid => new CBService(uuid, this)).ToArray();
+            // TODO: keep existing service instances
             _services.Clear();
             _services.AddRange(services);
             Delegate?.DidDiscoverServices(this, error);
         }
 
-        internal void DidDiscoverCharacteristics(CBCharacteristic[] characteristics, CBService service, CBError error)
+        void INativePeripheralDelegate.DidDiscoverCharacteristics(string serviceUUID, string[] characteristicUUIDs, CBError error)
         {
+            if (_disposed) return;
+            var service = _services.FirstOrDefault(s => s.UUID == serviceUUID);
+            if (service == null)
+            {
+                UnityEngine.Debug.LogError($"Service {serviceUUID} not found.");
+                return;
+            }
+            var characteristics = characteristicUUIDs.Select(uuid => FindOrInitializeCharacteristic(service, uuid)).ToArray();
             service.UpdateCharacteristics(characteristics);
             Delegate?.DidDiscoverCharacteristics(this, service, error);
         }
 
-        internal void DidUpdateValueForCharacteristic(CBCharacteristic characteristic, byte[] data, CBError error)
+        void INativePeripheralDelegate.DidUpdateValueForCharacteristic(string serviceUUID, string characteristicUUID, byte[] data, CBError error)
         {
+            if (_disposed) return;
+            var characteristic = FindCharacteristic(serviceUUID, characteristicUUID);
+            if (characteristic == null) return;
             characteristic.UpdateValue(data);
             Delegate?.DidUpdateValueForCharacteristic(this, characteristic, error);
         }
 
-        internal void DidWriteValueForCharacteristic(CBCharacteristic characteristic, CBError error)
+        void INativePeripheralDelegate.DidWriteValueForCharacteristic(string serviceUUID, string characteristicUUID, CBError error)
         {
+            if (_disposed) return;
+            var characteristic = FindCharacteristic(serviceUUID, characteristicUUID);
+            if (characteristic == null) return;
+
             Delegate?.DidWriteValueForCharacteristic(this, characteristic, error);
         }
 
-        internal void DidUpdateNotificationStateForCharacteristic(CBCharacteristic characteristic, bool isNotifying, CBError error)
+        void INativePeripheralDelegate.DidUpdateNotificationStateForCharacteristic(string serviceUUID, string characteristicUUID, bool isNotifying, CBError error)
         {
+            if (_disposed) return;
+            var characteristic = FindCharacteristic(serviceUUID, characteristicUUID);
+            if (characteristic == null) return;
             characteristic.UpdateIsNotifying(isNotifying);
             Delegate?.DidUpdateNotificationStateForCharacteristic(this, characteristic, error);
         }

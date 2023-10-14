@@ -37,6 +37,11 @@ namespace CoreBluetooth
             }
         }
 
+        void INativePeripheral.SetDelegate(INativePeripheralDelegate peripheralDelegate)
+        {
+            _handle.SetDelegate(peripheralDelegate);
+        }
+
         void INativePeripheral.DiscoverServices(string[] serviceUUIDs)
         {
             if (serviceUUIDs != null)

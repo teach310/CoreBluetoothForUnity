@@ -34,12 +34,7 @@ namespace CoreBluetooth
                 DidDisconnectPeripheral,
                 DidFailToConnect,
                 DidDiscoverPeripheral,
-                DidUpdateState,
-                PeripheralDidDiscoverServices,
-                PeripheralDidDiscoverCharacteristics,
-                PeripheralDidUpdateValueForCharacteristic,
-                PeripheralDidWriteValueForCharacteristic,
-                PeripheralDidUpdateNotificationStateForCharacteristic
+                DidUpdateState
             );
         }
 
@@ -89,77 +84,6 @@ namespace CoreBluetooth
         internal static void DidUpdateState(IntPtr centralPtr, CBManagerState state)
         {
             GetCentralManager(centralPtr)?.DidUpdateState(state);
-        }
-
-        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralDidDiscoverServicesHandler))]
-        internal static void PeripheralDidDiscoverServices(IntPtr centralPtr, IntPtr peripheralIdPtr, IntPtr commaSeparatedServiceUUIDsPtr, int errorCode)
-        {
-            string commaSeparatedServiceUUIDs = Marshal.PtrToStringUTF8(commaSeparatedServiceUUIDsPtr);
-            if (string.IsNullOrEmpty(commaSeparatedServiceUUIDs))
-            {
-                throw new ArgumentException("commaSeparatedServiceUUIDs is null or empty.");
-            }
-
-            GetCentralManager(centralPtr)?.PeripheralDidDiscoverServices(
-                Marshal.PtrToStringUTF8(peripheralIdPtr),
-                commaSeparatedServiceUUIDs.Split(','),
-                CBError.CreateOrNullFromCode(errorCode)
-            );
-        }
-
-        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralDidDiscoverCharacteristicsHandler))]
-        internal static void PeripheralDidDiscoverCharacteristics(IntPtr centralPtr, IntPtr peripheralIdPtr, IntPtr serviceUUIDPtr, IntPtr commaSeparatedCharacteristicUUIDsPtr, int errorCode)
-        {
-            string commaSeparatedCharacteristicUUIDs = Marshal.PtrToStringUTF8(commaSeparatedCharacteristicUUIDsPtr);
-            if (string.IsNullOrEmpty(commaSeparatedCharacteristicUUIDs))
-            {
-                throw new ArgumentException("commaSeparatedCharacteristicUUIDs is null or empty.");
-            }
-
-            GetCentralManager(centralPtr)?.PeripheralDidDiscoverCharacteristics(
-                Marshal.PtrToStringUTF8(peripheralIdPtr),
-                Marshal.PtrToStringUTF8(serviceUUIDPtr),
-                commaSeparatedCharacteristicUUIDs.Split(','),
-                CBError.CreateOrNullFromCode(errorCode)
-            );
-        }
-
-        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralDidUpdateValueForCharacteristicHandler))]
-        internal static void PeripheralDidUpdateValueForCharacteristic(IntPtr centralPtr, IntPtr peripheralIdPtr, IntPtr serviceUUIDPtr, IntPtr characteristicUUIDPtr, IntPtr dataPtr, int dataLength, int errorCode)
-        {
-            var dataBytes = new byte[dataLength];
-            Marshal.Copy(dataPtr, dataBytes, 0, dataLength);
-
-            GetCentralManager(centralPtr)?.PeripheralDidUpdateValueForCharacteristic(
-                Marshal.PtrToStringUTF8(peripheralIdPtr),
-                Marshal.PtrToStringUTF8(serviceUUIDPtr),
-                Marshal.PtrToStringUTF8(characteristicUUIDPtr),
-                dataBytes,
-                CBError.CreateOrNullFromCode(errorCode)
-            );
-        }
-
-        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralDidWriteValueForCharacteristicHandler))]
-        internal static void PeripheralDidWriteValueForCharacteristic(IntPtr centralPtr, IntPtr peripheralIdPtr, IntPtr serviceUUIDPtr, IntPtr characteristicUUIDPtr, int errorCode)
-        {
-            GetCentralManager(centralPtr)?.PeripheralDidWriteValueForCharacteristic(
-                Marshal.PtrToStringUTF8(peripheralIdPtr),
-                Marshal.PtrToStringUTF8(serviceUUIDPtr),
-                Marshal.PtrToStringUTF8(characteristicUUIDPtr),
-                CBError.CreateOrNullFromCode(errorCode)
-            );
-        }
-
-        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralDidUpdateNotificationStateForCharacteristicHandler))]
-        internal static void PeripheralDidUpdateNotificationStateForCharacteristic(IntPtr centralPtr, IntPtr peripheralIdPtr, IntPtr serviceUUIDPtr, IntPtr characteristicUUIDPtr, int notificationState, int errorCode)
-        {
-            GetCentralManager(centralPtr)?.PeripheralDidUpdateNotificationStateForCharacteristic(
-                Marshal.PtrToStringUTF8(peripheralIdPtr),
-                Marshal.PtrToStringUTF8(serviceUUIDPtr),
-                Marshal.PtrToStringUTF8(characteristicUUIDPtr),
-                notificationState == 1,
-                CBError.CreateOrNullFromCode(errorCode)
-            );
         }
     }
 }
