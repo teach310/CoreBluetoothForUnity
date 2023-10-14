@@ -50,11 +50,11 @@ namespace CoreBluetooth
 
         static INativePeripheralDelegate GetDelegate(IntPtr peripheralPtr)
         {
-            if (!s_nativePeripheralDelegateMap.TryGetValue(peripheralPtr, out var peripheral))
+            if (!s_nativePeripheralDelegateMap.TryGetValue(peripheralPtr, out var peripheralDelegate))
             {
                 return null;
             }
-            return peripheral;
+            return peripheralDelegate;
         }
 
         [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralDidDiscoverServicesHandler))]

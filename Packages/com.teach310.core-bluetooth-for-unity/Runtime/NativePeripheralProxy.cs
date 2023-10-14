@@ -7,9 +7,10 @@ namespace CoreBluetooth
     {
         readonly SafeNativePeripheralHandle _handle;
 
-        internal NativePeripheralProxy(SafeNativePeripheralHandle handle)
+        internal NativePeripheralProxy(SafeNativePeripheralHandle handle, INativePeripheralDelegate peripheralDelegate)
         {
             _handle = handle;
+            _handle.SetDelegate(peripheralDelegate);
         }
 
         string INativePeripheral.Identifier
@@ -35,11 +36,6 @@ namespace CoreBluetooth
                 }
                 return sb.ToString();
             }
-        }
-
-        void INativePeripheral.SetDelegate(INativePeripheralDelegate peripheralDelegate)
-        {
-            _handle.SetDelegate(peripheralDelegate);
         }
 
         void INativePeripheral.DiscoverServices(string[] serviceUUIDs)

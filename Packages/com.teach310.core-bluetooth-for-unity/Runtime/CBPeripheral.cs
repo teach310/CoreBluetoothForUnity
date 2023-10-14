@@ -17,7 +17,6 @@ namespace CoreBluetooth
     {
         string Identifier { get; }
         string Name { get; }
-        void SetDelegate(INativePeripheralDelegate peripheralDelegate);
         void DiscoverServices(string[] serviceUUIDs);
         void DiscoverCharacteristics(string[] characteristicUUIDs, CBService service);
         void ReadValue(CBCharacteristic characteristic);
@@ -76,8 +75,7 @@ namespace CoreBluetooth
         internal CBPeripheral(SafeNativePeripheralHandle nativePeripheral)
         {
             Handle = nativePeripheral;
-            _nativePeripheral = new NativePeripheralProxy(Handle);
-            _nativePeripheral.SetDelegate(this);
+            _nativePeripheral = new NativePeripheralProxy(Handle, this);
             this.Services = _services.AsReadOnly();
         }
 
