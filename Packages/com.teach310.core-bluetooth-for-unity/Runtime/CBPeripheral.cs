@@ -155,10 +155,13 @@ namespace CoreBluetooth
         void INativePeripheralDelegate.DidDiscoverServices(string[] serviceUUIDs, CBError error)
         {
             if (_disposed) return;
-            var services = serviceUUIDs.Select(uuid => new CBService(uuid, this)).ToArray();
-            // TODO: keep existing service instances
+            var services = serviceUUIDs.Select(uuid =>
+            {
+                return _services.FirstOrDefault(s => s.UUID == uuid) ?? new CBService(uuid, this);
+            }).ToArray();
             _services.Clear();
             _services.AddRange(services);
+
             Delegate?.DidDiscoverServices(this, error);
         }
 
@@ -166,11 +169,7 @@ namespace CoreBluetooth
         {
             if (_disposed) return;
             var service = _services.FirstOrDefault(s => s.UUID == serviceUUID);
-            if (service == null)
-            {
-                UnityEngine.Debug.LogError($"Service {serviceUUID} not found.");
-                return;
-            }
+            if (service == null) return;
             var characteristics = characteristicUUIDs.Select(uuid => FindOrInitializeCharacteristic(service, uuid)).ToArray();
             service.UpdateCharacteristics(characteristics);
             Delegate?.DidDiscoverCharacteristics(this, service, error);
