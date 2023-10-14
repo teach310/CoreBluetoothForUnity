@@ -6,9 +6,10 @@ namespace CoreBluetooth
     {
         readonly SafeNativeCentralManagerHandle _handle;
 
-        internal NativeCentralManagerProxy(SafeNativeCentralManagerHandle handle)
+        internal NativeCentralManagerProxy(SafeNativeCentralManagerHandle handle, INativeCentralManagerDelegate centralManagerDelegate)
         {
             _handle = handle;
+            _handle.SetDelegate(centralManagerDelegate);
         }
 
         internal void Connect(CBPeripheral peripheral)

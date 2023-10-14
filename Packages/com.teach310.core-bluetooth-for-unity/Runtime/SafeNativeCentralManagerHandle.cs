@@ -5,31 +5,32 @@ using Microsoft.Win32.SafeHandles;
 
 namespace CoreBluetooth
 {
+    internal interface INativeCentralManagerDelegate
+    {
+        void DidConnect(string peripheralId) { }
+        void DidDisconnectPeripheral(string peripheralId, CBError error) { }
+        void DidFailToConnect(string peripheralId, CBError error) { }
+        void DidDiscoverPeripheral(SafeNativePeripheralHandle peripheral, int rssi) { }
+        void DidUpdateState(CBManagerState state) { }
+    }
+
     internal class SafeNativeCentralManagerHandle : SafeHandleZeroOrMinusOneIsInvalid
     {
-        static Dictionary<IntPtr, CBCentralManager> s_centralManagerMap = new Dictionary<IntPtr, CBCentralManager>();
+        static Dictionary<IntPtr, INativeCentralManagerDelegate> s_centralManagerDelegateMap = new Dictionary<IntPtr, INativeCentralManagerDelegate>();
 
         SafeNativeCentralManagerHandle() : base(true) { }
 
-        internal static SafeNativeCentralManagerHandle Create(CBCentralManager centralManager)
+        internal static SafeNativeCentralManagerHandle Create()
         {
             var instance = NativeMethods.cb4u_central_manager_new();
-            RegisterHandlers(instance);
-            s_centralManagerMap.Add(instance.handle, centralManager);
+            instance.RegisterHandlers();
             return instance;
         }
 
-        protected override bool ReleaseHandle()
-        {
-            s_centralManagerMap.Remove(handle);
-            NativeMethods.cb4u_central_manager_release(handle);
-            return true;
-        }
-
-        static void RegisterHandlers(SafeNativeCentralManagerHandle handle)
+        void RegisterHandlers()
         {
             NativeMethods.cb4u_central_manager_register_handlers(
-                handle,
+                this,
                 DidConnect,
                 DidDisconnectPeripheral,
                 DidFailToConnect,
@@ -38,25 +39,37 @@ namespace CoreBluetooth
             );
         }
 
-        static CBCentralManager GetCentralManager(IntPtr centralPtr)
+        internal void SetDelegate(INativeCentralManagerDelegate centralManagerDelegate)
         {
-            if (!s_centralManagerMap.TryGetValue(centralPtr, out var centralManager))
+            s_centralManagerDelegateMap[handle] = centralManagerDelegate;
+        }
+
+        protected override bool ReleaseHandle()
+        {
+            s_centralManagerDelegateMap.Remove(handle);
+            NativeMethods.cb4u_central_manager_release(handle);
+            return true;
+        }
+
+        static INativeCentralManagerDelegate GetDelegate(IntPtr centralPtr)
+        {
+            if (!s_centralManagerDelegateMap.TryGetValue(centralPtr, out var centralManagerDelegate))
             {
-                UnityEngine.Debug.LogError("CBCentralManager instance not found.");
+                return null;
             }
-            return centralManager;
+            return centralManagerDelegate;
         }
 
         [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UCentralManagerDidConnectHandler))]
         internal static void DidConnect(IntPtr centralPtr, IntPtr peripheralIdPtr)
         {
-            GetCentralManager(centralPtr)?.DidConnect(Marshal.PtrToStringUTF8(peripheralIdPtr));
+            GetDelegate(centralPtr)?.DidConnect(Marshal.PtrToStringUTF8(peripheralIdPtr));
         }
 
         [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UCentralManagerDidDisconnectPeripheralHandler))]
         internal static void DidDisconnectPeripheral(IntPtr centralPtr, IntPtr peripheralIdPtr, int errorCode)
         {
-            GetCentralManager(centralPtr)?.DidDisconnectPeripheral(
+            GetDelegate(centralPtr)?.DidDisconnectPeripheral(
                 Marshal.PtrToStringUTF8(peripheralIdPtr),
                 CBError.CreateOrNullFromCode(errorCode)
             );
@@ -65,7 +78,7 @@ namespace CoreBluetooth
         [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UCentralManagerDidFailToConnectHandler))]
         internal static void DidFailToConnect(IntPtr centralPtr, IntPtr peripheralIdPtr, int errorCode)
         {
-            GetCentralManager(centralPtr)?.DidFailToConnect(
+            GetDelegate(centralPtr)?.DidFailToConnect(
                 Marshal.PtrToStringUTF8(peripheralIdPtr),
                 CBError.CreateOrNullFromCode(errorCode)
             );
@@ -74,7 +87,7 @@ namespace CoreBluetooth
         [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UCentralManagerDidDiscoverPeripheralHandler))]
         internal static void DidDiscoverPeripheral(IntPtr centralPtr, IntPtr peripheralPtr, int rssi)
         {
-            GetCentralManager(centralPtr)?.DidDiscoverPeripheral(
+            GetDelegate(centralPtr)?.DidDiscoverPeripheral(
                 new SafeNativePeripheralHandle(peripheralPtr),
                 rssi
             );
@@ -83,7 +96,7 @@ namespace CoreBluetooth
         [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UCentralManagerDidUpdateStateHandler))]
         internal static void DidUpdateState(IntPtr centralPtr, CBManagerState state)
         {
-            GetCentralManager(centralPtr)?.DidUpdateState(state);
+            GetDelegate(centralPtr)?.DidUpdateState(state);
         }
     }
 }

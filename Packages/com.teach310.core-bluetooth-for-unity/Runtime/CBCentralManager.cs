@@ -21,7 +21,7 @@ namespace CoreBluetooth
     /// An object that scans for, discovers, connects to, and manages peripherals.
     /// https://developer.apple.com/documentation/corebluetooth/cbcentralmanager
     /// </summary>
-    public class CBCentralManager : CBManager, IDisposable
+    public class CBCentralManager : CBManager, INativeCentralManagerDelegate, IDisposable
     {
         bool _disposed = false;
         SafeNativeCentralManagerHandle _handle;
@@ -44,9 +44,9 @@ namespace CoreBluetooth
 
         public CBCentralManager(ICBCentralManagerDelegate centralDelegate = null)
         {
-            _handle = SafeNativeCentralManagerHandle.Create(this);
+            _handle = SafeNativeCentralManagerHandle.Create();
             Delegate = centralDelegate;
-            _nativeCentralManagerProxy = new NativeCentralManagerProxy(_handle);
+            _nativeCentralManagerProxy = new NativeCentralManagerProxy(_handle, this);
         }
 
         public void Connect(CBPeripheral peripheral)
@@ -92,7 +92,7 @@ namespace CoreBluetooth
             return peripheral;
         }
 
-        internal void DidConnect(string peripheralId)
+        void INativeCentralManagerDelegate.DidConnect(string peripheralId)
         {
             if (_disposed) return;
             var peripheral = GetPeripheral(peripheralId);
@@ -100,7 +100,7 @@ namespace CoreBluetooth
             Delegate?.DidConnectPeripheral(this, peripheral);
         }
 
-        internal void DidDisconnectPeripheral(string peripheralId, CBError error)
+        void INativeCentralManagerDelegate.DidDisconnectPeripheral(string peripheralId, CBError error)
         {
             if (_disposed) return;
             var peripheral = GetPeripheral(peripheralId);
@@ -108,7 +108,7 @@ namespace CoreBluetooth
             Delegate?.DidDisconnectPeripheral(this, peripheral, error);
         }
 
-        internal void DidFailToConnect(string peripheralId, CBError error)
+        void INativeCentralManagerDelegate.DidFailToConnect(string peripheralId, CBError error)
         {
             if (_disposed) return;
             var peripheral = GetPeripheral(peripheralId);
@@ -116,7 +116,7 @@ namespace CoreBluetooth
             Delegate?.DidFailToConnectPeripheral(this, peripheral, error);
         }
 
-        internal void DidDiscoverPeripheral(SafeNativePeripheralHandle peripheralHandle, int rssi)
+        void INativeCentralManagerDelegate.DidDiscoverPeripheral(SafeNativePeripheralHandle peripheralHandle, int rssi)
         {
             if (_disposed) return;
 
@@ -125,7 +125,7 @@ namespace CoreBluetooth
             Delegate?.DidDiscoverPeripheral(this, peripheral, rssi);
         }
 
-        internal void DidUpdateState(CBManagerState state)
+        void INativeCentralManagerDelegate.DidUpdateState(CBManagerState state)
         {
             if (_disposed) return;
             this.State = state;
