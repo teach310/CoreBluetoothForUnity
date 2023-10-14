@@ -166,11 +166,7 @@ namespace CoreBluetooth
         {
             if (_disposed) return;
             var service = _services.FirstOrDefault(s => s.UUID == serviceUUID);
-            if (service == null)
-            {
-                UnityEngine.Debug.LogError($"Service {serviceUUID} not found.");
-                return;
-            }
+            if (service == null) return;
             var characteristics = characteristicUUIDs.Select(uuid => FindOrInitializeCharacteristic(service, uuid)).ToArray();
             service.UpdateCharacteristics(characteristics);
             Delegate?.DidDiscoverCharacteristics(this, service, error);
