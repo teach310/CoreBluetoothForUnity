@@ -1,6 +1,6 @@
 namespace CoreBluetooth
 {
-    internal class NativeATTRequestsProxy : INativeATTRequests
+    internal class NativeATTRequestsProxy
     {
         SafeNativeATTRequestsHandle _handle;
         IPeripheralManagerData _peripheralManagerData;
@@ -11,7 +11,7 @@ namespace CoreBluetooth
             _peripheralManagerData = peripheralManagerData;
         }
 
-        CBATTRequest[] INativeATTRequests.GetRequests()
+        internal CBATTRequest[] GetRequests()
         {
             int count = NativeMethods.cb4u_att_requests_count(_handle);
             CBATTRequest[] requests = new CBATTRequest[count];

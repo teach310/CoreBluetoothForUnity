@@ -2,7 +2,7 @@ using System;
 
 namespace CoreBluetooth
 {
-    internal class NativeCharacteristicProxy : INativeCharacteristic
+    internal class NativeCharacteristicProxy
     {
         string _serviceUUID;
         string _characteristicUUID;
@@ -15,7 +15,7 @@ namespace CoreBluetooth
             _handle = handle;
         }
 
-        CBCharacteristicProperties INativeCharacteristic.Properties
+        internal CBCharacteristicProperties Properties
         {
             get
             {

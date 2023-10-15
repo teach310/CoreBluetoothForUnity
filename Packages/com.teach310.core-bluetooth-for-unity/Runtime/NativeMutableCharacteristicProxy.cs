@@ -1,6 +1,6 @@
 namespace CoreBluetooth
 {
-    internal class NativeMutableCharacteristicProxy : INativeMutableCharacteristic
+    internal class NativeMutableCharacteristicProxy
     {
         SafeNativeMutableCharacteristicHandle _handle;
 
@@ -9,7 +9,7 @@ namespace CoreBluetooth
             _handle = handle;
         }
 
-        byte[] INativeMutableCharacteristic.Value
+        internal byte[] Value
         {
             get
             {
@@ -25,12 +25,12 @@ namespace CoreBluetooth
             }
         }
 
-        void INativeMutableCharacteristic.SetValue(byte[] value)
+        internal void SetValue(byte[] value)
         {
             NativeMethods.cb4u_mutable_characteristic_set_value(_handle, value, value?.Length ?? 0);
         }
 
-        CBCharacteristicProperties INativeCharacteristic.Properties
+        internal CBCharacteristicProperties Properties
         {
             get
             {
@@ -39,7 +39,7 @@ namespace CoreBluetooth
             }
         }
 
-        CBAttributePermissions INativeMutableCharacteristic.Permissions
+        internal CBAttributePermissions Permissions
         {
             get
             {
@@ -48,12 +48,12 @@ namespace CoreBluetooth
             }
         }
 
-        void INativeMutableCharacteristic.SetProperties(CBCharacteristicProperties properties)
+        internal void SetProperties(CBCharacteristicProperties properties)
         {
             NativeMethods.cb4u_mutable_characteristic_set_properties(_handle, (int)properties);
         }
 
-        void INativeMutableCharacteristic.SetPermissions(CBAttributePermissions permissions)
+        internal void SetPermissions(CBAttributePermissions permissions)
         {
             NativeMethods.cb4u_mutable_characteristic_set_permissions(_handle, (int)permissions);
         }

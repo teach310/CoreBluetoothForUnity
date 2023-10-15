@@ -2,11 +2,6 @@ using System;
 
 namespace CoreBluetooth
 {
-    internal interface INativeMutableService
-    {
-        void SetCharacteristics(CBCharacteristic[] characteristics);
-    }
-
     /// <summary>
     /// A service with writeable property values.
     /// https://developer.apple.com/documentation/corebluetooth/cbmutableservice
@@ -15,7 +10,7 @@ namespace CoreBluetooth
     {
         bool _disposed = false;
         internal SafeNativeMutableServiceHandle Handle { get; }
-        readonly INativeMutableService _nativeMutableService;
+        readonly NativeMutableServiceProxy _nativeMutableService;
 
         public override CBCharacteristic[] Characteristics
         {

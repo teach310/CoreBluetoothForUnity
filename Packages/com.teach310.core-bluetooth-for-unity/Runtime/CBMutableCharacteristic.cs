@@ -5,15 +5,6 @@ using UnityEngine;
 
 namespace CoreBluetooth
 {
-    internal interface INativeMutableCharacteristic : INativeCharacteristic
-    {
-        byte[] Value { get; }
-        void SetValue(byte[] value);
-        void SetProperties(CBCharacteristicProperties properties);
-        CBAttributePermissions Permissions { get; }
-        void SetPermissions(CBAttributePermissions permissions);
-    }
-
     /// <summary>
     /// A characteristic of a local peripheral’s service.
     /// https://developer.apple.com/documentation/corebluetooth/cbmutablecharacteristic
@@ -22,7 +13,7 @@ namespace CoreBluetooth
     {
         bool _disposed = false;
         internal SafeNativeMutableCharacteristicHandle Handle { get; }
-        INativeMutableCharacteristic _nativeMutableCharacteristic = null;
+        NativeMutableCharacteristicProxy _nativeMutableCharacteristic = null;
 
         public override byte[] Value
         {
@@ -75,7 +66,6 @@ namespace CoreBluetooth
         {
             Handle = SafeNativeMutableCharacteristicHandle.Create(uuid, properties, value, permissions);
             _nativeMutableCharacteristic = new NativeMutableCharacteristicProxy(Handle);
-            nativeCharacteristic = _nativeMutableCharacteristic;
         }
 
         public override string ToString()

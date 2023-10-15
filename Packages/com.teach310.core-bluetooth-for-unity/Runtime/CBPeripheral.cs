@@ -13,18 +13,6 @@ namespace CoreBluetooth
         Disconnecting
     }
 
-    internal interface INativePeripheral
-    {
-        string Identifier { get; }
-        string Name { get; }
-        void DiscoverServices(string[] serviceUUIDs);
-        void DiscoverCharacteristics(string[] characteristicUUIDs, CBService service);
-        void ReadValue(CBCharacteristic characteristic);
-        void WriteValue(byte[] data, CBCharacteristic characteristic, CBCharacteristicWriteType type);
-        void SetNotifyValue(bool enabled, CBCharacteristic characteristic);
-        CBPeripheralState State { get; }
-    }
-
     public interface ICBPeripheralDelegate
     {
         void DidDiscoverServices(CBPeripheral peripheral, CBError error) { }
@@ -42,7 +30,7 @@ namespace CoreBluetooth
     {
         bool _disposed = false;
         internal SafeNativePeripheralHandle Handle { get; }
-        INativePeripheral _nativePeripheral = null;
+        NativePeripheralProxy _nativePeripheral = null;
 
         string _identifier = null;
         public string Identifier

@@ -2,15 +2,6 @@ using System;
 
 namespace CoreBluetooth
 {
-    internal interface INativeATTRequest
-    {
-        CBCentral Central { get; }
-        CBCharacteristic Characteristic { get; }
-        byte[] Value { get; }
-        void SetValue(byte[] value);
-        int Offset { get; }
-    }
-
     /// <summary>
     /// A request that uses the Attribute Protocol (ATT).
     /// https://developer.apple.com/documentation/corebluetooth/cbattrequest
@@ -19,7 +10,7 @@ namespace CoreBluetooth
     {
         bool _disposed = false;
         internal SafeNativeATTRequestHandle Handle { get; }
-        INativeATTRequest _nativeATTRequest = null;
+        NativeATTRequestProxy _nativeATTRequest = null;
 
         public CBCentral Central
         {
@@ -62,7 +53,7 @@ namespace CoreBluetooth
             }
         }
 
-        internal CBATTRequest(SafeNativeATTRequestHandle handle, INativeATTRequest nativeATTRequest)
+        internal CBATTRequest(SafeNativeATTRequestHandle handle, NativeATTRequestProxy nativeATTRequest)
         {
             Handle = handle;
             _nativeATTRequest = nativeATTRequest;

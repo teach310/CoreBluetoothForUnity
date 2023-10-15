@@ -3,16 +3,11 @@ using System.Linq;
 
 namespace CoreBluetooth
 {
-    internal interface INativeATTRequests
-    {
-        CBATTRequest[] GetRequests();
-    }
-
     internal class CBATTRequests : IDisposable
     {
         bool _disposed = false;
         SafeNativeATTRequestsHandle _handle;
-        INativeATTRequests _nativeATTRequests;
+        NativeATTRequestsProxy _nativeATTRequests;
 
         CBATTRequest[] _requests = null;
         public CBATTRequest[] Requests
@@ -28,7 +23,7 @@ namespace CoreBluetooth
             }
         }
 
-        internal CBATTRequests(SafeNativeATTRequestsHandle handle, INativeATTRequests nativeATTRequests)
+        internal CBATTRequests(SafeNativeATTRequestsHandle handle, NativeATTRequestsProxy nativeATTRequests)
         {
             _handle = handle;
             _nativeATTRequests = nativeATTRequests;

@@ -23,11 +23,6 @@ namespace CoreBluetooth
         WithoutResponse
     }
 
-    internal interface INativeCharacteristic
-    {
-        CBCharacteristicProperties Properties { get; }
-    }
-
     /// <summary>
     /// A characteristic of a remote peripheral’s service.
     /// https://developer.apple.com/documentation/corebluetooth/cbcharacteristic
@@ -54,19 +49,19 @@ namespace CoreBluetooth
 
         public virtual CBCharacteristicProperties Properties
         {
-            get => nativeCharacteristic.Properties;
+            get => _nativeCharacteristic.Properties;
             set => throw new NotImplementedException(s_notImplementedExceptionMessage);
         }
 
         public bool IsNotifying { get; private set; } = false;
         internal void UpdateIsNotifying(bool isNotifying) => IsNotifying = isNotifying;
 
-        private protected INativeCharacteristic nativeCharacteristic;
+        NativeCharacteristicProxy _nativeCharacteristic;
 
-        internal CBCharacteristic(string uuid, INativeCharacteristic nativeCharacteristic)
+        internal CBCharacteristic(string uuid, NativeCharacteristicProxy nativeCharacteristic)
         {
             this.UUID = uuid;
-            this.nativeCharacteristic = nativeCharacteristic;
+            _nativeCharacteristic = nativeCharacteristic;
         }
 
         public override string ToString()
