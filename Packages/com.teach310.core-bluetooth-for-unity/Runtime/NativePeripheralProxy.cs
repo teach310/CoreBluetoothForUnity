@@ -3,7 +3,7 @@ using System.Text;
 
 namespace CoreBluetooth
 {
-    internal class NativePeripheralProxy : INativePeripheral
+    internal class NativePeripheralProxy
     {
         readonly SafeNativePeripheralHandle _handle;
 
@@ -13,7 +13,7 @@ namespace CoreBluetooth
             _handle.SetDelegate(peripheralDelegate);
         }
 
-        string INativePeripheral.Identifier
+        internal string Identifier
         {
             get
             {
@@ -23,7 +23,7 @@ namespace CoreBluetooth
             }
         }
 
-        string INativePeripheral.Name
+        internal string Name
         {
             get
             {
@@ -38,7 +38,7 @@ namespace CoreBluetooth
             }
         }
 
-        void INativePeripheral.DiscoverServices(string[] serviceUUIDs)
+        internal void DiscoverServices(string[] serviceUUIDs)
         {
             if (serviceUUIDs != null)
             {
@@ -55,7 +55,7 @@ namespace CoreBluetooth
             );
         }
 
-        void INativePeripheral.DiscoverCharacteristics(string[] characteristicUUIDs, CBService service)
+        internal void DiscoverCharacteristics(string[] characteristicUUIDs, CBService service)
         {
             if (characteristicUUIDs != null)
             {
@@ -75,7 +75,7 @@ namespace CoreBluetooth
             ExceptionUtils.ThrowIfServiceNotFound(result, service.UUID);
         }
 
-        void INativePeripheral.ReadValue(CBCharacteristic characteristic)
+        internal void ReadValue(CBCharacteristic characteristic)
         {
             int result = NativeMethods.cb4u_peripheral_read_characteristic_value(
                 _handle,
@@ -87,7 +87,7 @@ namespace CoreBluetooth
             ExceptionUtils.ThrowIfCharacteristicNotFound(result, characteristic.UUID);
         }
 
-        void INativePeripheral.WriteValue(byte[] data, CBCharacteristic characteristic, CBCharacteristicWriteType writeType)
+        internal void WriteValue(byte[] data, CBCharacteristic characteristic, CBCharacteristicWriteType writeType)
         {
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
@@ -106,7 +106,7 @@ namespace CoreBluetooth
             ExceptionUtils.ThrowIfCharacteristicNotFound(result, characteristic.UUID);
         }
 
-        void INativePeripheral.SetNotifyValue(bool enabled, CBCharacteristic characteristic)
+        internal void SetNotifyValue(bool enabled, CBCharacteristic characteristic)
         {
             int result = NativeMethods.cb4u_peripheral_set_notify_value(
                 _handle,
@@ -119,7 +119,7 @@ namespace CoreBluetooth
             ExceptionUtils.ThrowIfCharacteristicNotFound(result, characteristic.UUID);
         }
 
-        CBPeripheralState INativePeripheral.State
+        internal CBPeripheralState State
         {
             get
             {

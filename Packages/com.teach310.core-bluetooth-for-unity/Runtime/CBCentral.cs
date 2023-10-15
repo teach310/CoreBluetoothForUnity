@@ -2,12 +2,6 @@ using System;
 
 namespace CoreBluetooth
 {
-    internal interface INativeCentral
-    {
-        string Identifier { get; }
-        int MaximumUpdateValueLength { get; }
-    }
-
     /// <summary>
     /// A remote device connected to a local app, which is acting as a peripheral.
     /// https://developer.apple.com/documentation/corebluetooth/cbcentral
@@ -16,7 +10,7 @@ namespace CoreBluetooth
     {
         bool _disposed = false;
         internal SafeNativeCentralHandle Handle { get; }
-        INativeCentral _nativeCentral = null;
+        NativeCentralProxy _nativeCentral = null;
 
         string _identifier = null;
         public string Identifier

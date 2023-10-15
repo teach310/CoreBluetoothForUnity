@@ -2,7 +2,7 @@ using System;
 
 namespace CoreBluetooth
 {
-    internal class NativeMutableServiceProxy : INativeMutableService
+    internal class NativeMutableServiceProxy
     {
         SafeNativeMutableServiceHandle _handle;
 
@@ -11,7 +11,7 @@ namespace CoreBluetooth
             _handle = handle;
         }
 
-        void INativeMutableService.SetCharacteristics(CBCharacteristic[] characteristics)
+        internal void SetCharacteristics(CBCharacteristic[] characteristics)
         {
             if (characteristics == null)
             {
@@ -41,6 +41,5 @@ namespace CoreBluetooth
             }
             return mutableCharacteristic;
         }
-
     }
 }

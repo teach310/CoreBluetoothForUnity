@@ -2,7 +2,7 @@ using System.Text;
 
 namespace CoreBluetooth
 {
-    public class NativeCentralProxy : INativeCentral
+    internal class NativeCentralProxy
     {
         SafeNativeCentralHandle _handle;
 
@@ -11,7 +11,7 @@ namespace CoreBluetooth
             _handle = handle;
         }
 
-        public string Identifier
+        internal string Identifier
         {
             get
             {
@@ -21,6 +21,6 @@ namespace CoreBluetooth
             }
         }
 
-        public int MaximumUpdateValueLength => NativeMethods.cb4u_central_maximum_update_value_length(_handle);
+        internal int MaximumUpdateValueLength => NativeMethods.cb4u_central_maximum_update_value_length(_handle);
     }
 }

@@ -2,7 +2,7 @@ using System.Text;
 
 namespace CoreBluetooth
 {
-    internal class NativeATTRequestProxy : INativeATTRequest
+    internal class NativeATTRequestProxy
     {
         SafeNativeATTRequestHandle _handle;
         IPeripheralManagerData _peripheralManagerData;
@@ -13,7 +13,7 @@ namespace CoreBluetooth
             _peripheralManagerData = peripheralManagerData;
         }
 
-        CBCentral INativeATTRequest.Central
+        internal CBCentral Central
         {
             get
             {
@@ -39,7 +39,7 @@ namespace CoreBluetooth
             return new CBCentral(centralHandle);
         }
 
-        CBCharacteristic INativeATTRequest.Characteristic
+        internal CBCharacteristic Characteristic
         {
             get
             {
@@ -56,7 +56,7 @@ namespace CoreBluetooth
             }
         }
 
-        byte[] INativeATTRequest.Value
+        internal byte[] Value
         {
             get
             {
@@ -72,11 +72,11 @@ namespace CoreBluetooth
             }
         }
 
-        void INativeATTRequest.SetValue(byte[] value)
+        internal void SetValue(byte[] value)
         {
             NativeMethods.cb4u_att_request_set_value(_handle, value, value?.Length ?? 0);
         }
 
-        int INativeATTRequest.Offset => NativeMethods.cb4u_att_request_offset(_handle);
+        internal int Offset => NativeMethods.cb4u_att_request_offset(_handle);
     }
 }
