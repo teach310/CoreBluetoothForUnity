@@ -13,23 +13,16 @@ namespace CoreBluetooth
 
         internal void SetCharacteristics(CBCharacteristic[] characteristics)
         {
-            if (characteristics == null)
+            IntPtr[] mutableCharacteristics = null;
+            if (characteristics != null)
             {
-                NativeMethods.cb4u_mutable_service_clear_characteristics(_handle);
-                return;
+                mutableCharacteristics = new IntPtr[characteristics.Length];
+                for (int i = 0; i < characteristics.Length; i++)
+                {
+                    mutableCharacteristics[i] = ConvertToCBMutableCharacteristic(characteristics[i]).Handle.DangerousGetHandle();
+                }
             }
-
-            var mutableCharacteristics = new CBMutableCharacteristic[characteristics.Length];
-            for (int i = 0; i < characteristics.Length; i++)
-            {
-                mutableCharacteristics[i] = ConvertToCBMutableCharacteristic(characteristics[i]);
-            }
-
-            NativeMethods.cb4u_mutable_service_clear_characteristics(_handle);
-            foreach (var characteristic in mutableCharacteristics)
-            {
-                NativeMethods.cb4u_mutable_service_add_characteristic(_handle, characteristic.Handle);
-            }
+            NativeMethods.cb4u_mutable_service_set_characteristics(_handle, mutableCharacteristics, mutableCharacteristics?.Length ?? 0);
         }
 
         CBMutableCharacteristic ConvertToCBMutableCharacteristic(CBCharacteristic characteristic)

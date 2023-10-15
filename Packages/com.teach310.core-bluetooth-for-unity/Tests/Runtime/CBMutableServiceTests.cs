@@ -32,6 +32,9 @@ namespace CoreBluetoothTests
 
             service.Characteristics = characteristics;
             Assert.That(service.Characteristics, Is.EqualTo(characteristics));
+
+            service.Characteristics = null;
+            Assert.That(service.Characteristics, Is.Null);
             foreach (var item in characteristics)
             {
                 item.Dispose();

@@ -345,19 +345,19 @@ public func cb4u_mutable_service_release(_ servicePtr: UnsafeRawPointer) {
     Unmanaged<CB4UMutableService>.fromOpaque(servicePtr).release()
 }
 
-@_cdecl("cb4u_mutable_service_clear_characteristics")
-public func cb4u_mutable_service_clear_characteristics(_ servicePtr: UnsafeRawPointer) {
+@_cdecl("cb4u_mutable_service_set_characteristics")
+public func cb4u_mutable_service_set_characteristics(_ servicePtr: UnsafeRawPointer, _ characteristicsPtr: UnsafePointer<UnsafeRawPointer>?, _ characteristicsCount: Int32) {
     let service = Unmanaged<CB4UMutableService>.fromOpaque(servicePtr).takeUnretainedValue()
     
-    service.clearCharacteristics()
-}
-
-@_cdecl("cb4u_mutable_service_add_characteristic")
-public func cb4u_mutable_service_add_characteristic(_ servicePtr: UnsafeRawPointer, _ characteristicPtr: UnsafeRawPointer) {
-    let service = Unmanaged<CB4UMutableService>.fromOpaque(servicePtr).takeUnretainedValue()
-    let characteristic = Unmanaged<CB4UMutableCharacteristic>.fromOpaque(characteristicPtr).takeUnretainedValue()
-    
-    service.addCharacteristic(characteristic)
+    if let characteristicsPtr = characteristicsPtr {
+        let characteristics = (0..<Int(characteristicsCount)).map { index -> CB4UMutableCharacteristic in
+            let characteristicPtr = characteristicsPtr[index]
+            return Unmanaged<CB4UMutableCharacteristic>.fromOpaque(characteristicPtr).takeUnretainedValue()
+        }
+        service.setCharacteristics(characteristics)
+    } else {
+        service.setCharacteristics(nil)
+    }
 }
 
 @_cdecl("cb4u_mutable_characteristic_new")
