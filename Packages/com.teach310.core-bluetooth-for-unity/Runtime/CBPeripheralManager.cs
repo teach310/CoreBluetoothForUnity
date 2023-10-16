@@ -8,6 +8,7 @@ namespace CoreBluetooth
         void DidUpdateState(CBPeripheralManager peripheral);
         void DidAddService(CBPeripheralManager peripheral, CBService service, CBError error) { }
         void DidStartAdvertising(CBPeripheralManager peripheral, CBError error) { }
+        void DidSubscribeToCharacteristic(CBPeripheralManager peripheral, CBCentral central, CBCharacteristic characteristic) { }
         void DidReceiveReadRequest(CBPeripheralManager peripheral, CBATTRequest request) { }
         void DidReceiveWriteRequests(CBPeripheralManager peripheral, CBATTRequest[] requests) { }
     }
@@ -95,6 +96,22 @@ namespace CoreBluetooth
             }
         }
 
+        public bool UpdateValue(byte[] value, CBMutableCharacteristic characteristic, CBCentral[] subscribedCentrals = null)
+        {
+            ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
+            SafeNativeCentralHandle[] subscribedCentralHandles = null;
+            if (subscribedCentrals != null)
+            {
+                subscribedCentralHandles = new SafeNativeCentralHandle[subscribedCentrals.Length];
+                for (int i = 0; i < subscribedCentrals.Length; i++)
+                {
+                    subscribedCentralHandles[i] = subscribedCentrals[i].Handle;
+                }
+            }
+
+            return _nativePeripheralManagerProxy.UpdateValue(value, characteristic.Handle, subscribedCentralHandles);
+        }
+
         public void RespondToRequest(CBATTRequest request, CBATTError result)
         {
             ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
@@ -113,6 +130,18 @@ namespace CoreBluetooth
                 return central;
             }
             return null;
+        }
+
+        CBCentral FindOrCreateCentral(SafeNativeCentralHandle centralHandle)
+        {
+            var central = new CBCentral(centralHandle);
+            if (_centrals.TryGetValue(central.Identifier, out var foundCentral))
+            {
+                central.Dispose();
+                return foundCentral;
+            }
+            _centrals.Add(central.Identifier, central);
+            return central;
         }
 
         CBCharacteristic IPeripheralManagerData.FindCharacteristic(string serviceUUID, string characteristicUUID)
@@ -146,6 +175,16 @@ namespace CoreBluetooth
         {
             if (_disposed) return;
             _delegate?.DidStartAdvertising(this, error);
+        }
+
+        void INativePeripheralManagerDelegate.DidSubscribeToCharacteristic(SafeNativeCentralHandle centralHandle, string serviceUUID, string characteristicUUID)
+        {
+            if (_disposed) return;
+
+            var central = FindOrCreateCentral(centralHandle);
+
+            var characteristic = ((IPeripheralManagerData)this).FindCharacteristic(serviceUUID, characteristicUUID);
+            _delegate?.DidSubscribeToCharacteristic(this, central, characteristic);
         }
 
         void INativePeripheralManagerDelegate.DidReceiveReadRequest(SafeNativeATTRequestHandle requestHandle)

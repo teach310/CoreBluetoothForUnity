@@ -272,6 +272,7 @@ public func cb4u_peripheral_manager_release(_ peripheralManagerPtr: UnsafeRawPoi
 public typealias CB4UPeripheralManagerDidUpdateStateHandler = @convention(c) (UnsafeRawPointer, Int32) -> Void
 public typealias CB4UPeripheralManagerDidAddServiceHandler = @convention(c) (UnsafeRawPointer, UnsafePointer<CChar>, Int32) -> Void
 public typealias CB4UPeripheralManagerDidStartAdvertisingHandler = @convention(c) (UnsafeRawPointer, Int32) -> Void
+public typealias CB4UPeripheralManagerDidSubscribeToCharacteristicHandler = @convention(c) (UnsafeRawPointer, UnsafeRawPointer, UnsafePointer<CChar>, UnsafePointer<CChar>) -> Void
 public typealias CB4UPeripheralManagerDidReceiveReadRequestHandler = @convention(c) (UnsafeRawPointer, UnsafeRawPointer) -> Void
 public typealias CB4UPeripheralManagerDidReceiveWriteRequestsHandler = @convention(c) (UnsafeRawPointer, UnsafeRawPointer) -> Void
 
@@ -281,6 +282,7 @@ public func cb4u_peripheral_manager_register_handlers(
     _ didUpdateStateHandler: @escaping CB4UPeripheralManagerDidUpdateStateHandler,
     _ didAddServiceHandler: @escaping CB4UPeripheralManagerDidAddServiceHandler,
     _ didStartAdvertisingHandler: @escaping CB4UPeripheralManagerDidStartAdvertisingHandler,
+    _ didSubscribeToCharacteristicHandler: @escaping CB4UPeripheralManagerDidSubscribeToCharacteristicHandler,
     _ didReceiveReadRequestHandler: @escaping CB4UPeripheralManagerDidReceiveReadRequestHandler,
     _ didReceiveWriteRequestsHandler: @escaping CB4UPeripheralManagerDidReceiveWriteRequestsHandler
 ) {
@@ -289,6 +291,7 @@ public func cb4u_peripheral_manager_register_handlers(
     instance.didUpdateStateHandler = didUpdateStateHandler
     instance.didAddServiceHandler = didAddServiceHandler
     instance.didStartAdvertisingHandler = didStartAdvertisingHandler
+    instance.didSubscribeToCharacteristicHandler = didSubscribeToCharacteristicHandler
     instance.didReceiveReadRequestHandler = didReceiveReadRequestHandler
     instance.didReceiveWriteRequestsHandler = didReceiveWriteRequestsHandler
 }
@@ -324,6 +327,31 @@ public func cb4u_peripheral_manager_is_advertising(_ peripheralPtr: UnsafeRawPoi
     let instance = Unmanaged<CB4UPeripheralManager>.fromOpaque(peripheralPtr).takeUnretainedValue()
     
     return instance.isAdvertising
+}
+
+@_cdecl("cb4u_peripheral_manager_update_value")
+public func cb4u_peripheral_manager_update_value(
+    _ peripheralPtr: UnsafeRawPointer,
+    _ valueBytes: UnsafePointer<UInt8>,
+    _ valueLength: Int32,
+    _ characteristicPtr: UnsafeRawPointer,
+    _ subscribedCentralsPtr: UnsafePointer<UnsafeRawPointer>?,
+    _ subscribedCentralsCount: Int32
+) -> Bool {
+    let instance = Unmanaged<CB4UPeripheralManager>.fromOpaque(peripheralPtr).takeUnretainedValue()
+    let characteristic = Unmanaged<CB4UMutableCharacteristic>.fromOpaque(characteristicPtr).takeUnretainedValue()
+    
+    let data = Data(bytes: valueBytes, count: Int(valueLength))
+    var centrals: [CB4UCentral]? = nil
+
+    if let subscribedCentralsPtr = subscribedCentralsPtr {
+        centrals = (0..<Int(subscribedCentralsCount)).map { index -> CB4UCentral in
+            let centralPtr = subscribedCentralsPtr[index]
+            return Unmanaged<CB4UCentral>.fromOpaque(centralPtr).takeUnretainedValue()
+        }
+    }
+
+    return instance.updateValue(data, for: characteristic, onSubscribedCentrals: centrals)
 }
 
 @_cdecl("cb4u_peripheral_manager_respond_to_request")

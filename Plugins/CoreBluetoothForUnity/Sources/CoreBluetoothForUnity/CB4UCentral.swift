@@ -1,7 +1,7 @@
 import CoreBluetooth
 
 public class CB4UCentral {
-    private var central : CBCentral!
+    var central : CBCentral!
     
     public init(central: CBCentral) {
         self.central = central

@@ -1,4 +1,6 @@
 
+using System;
+
 namespace CoreBluetooth
 {
     internal class NativePeripheralManagerProxy
@@ -47,6 +49,32 @@ namespace CoreBluetooth
         }
 
         internal bool IsAdvertising => NativeMethods.cb4u_peripheral_manager_is_advertising(_handle);
+
+        internal bool UpdateValue(byte[] value, SafeNativeMutableCharacteristicHandle characteristic, SafeNativeCentralHandle[] subscribedCentrals = null)
+        {
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+            IntPtr[] subscribedCentralsPtr = null;
+            if (subscribedCentrals != null)
+            {
+                subscribedCentralsPtr = new IntPtr[subscribedCentrals.Length];
+                for (int i = 0; i < subscribedCentrals.Length; i++)
+                {
+                    subscribedCentralsPtr[i] = subscribedCentrals[i].DangerousGetHandle();
+                }
+            }
+
+            return NativeMethods.cb4u_peripheral_manager_update_value(
+                _handle,
+                value,
+                value.Length,
+                characteristic,
+                subscribedCentralsPtr,
+                subscribedCentrals?.Length ?? 0
+            );
+        }
 
         internal void RespondToRequest(CBATTRequest request, CBATTError result)
         {

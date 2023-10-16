@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
 
 namespace CoreBluetooth
@@ -9,6 +10,7 @@ namespace CoreBluetooth
         void DidUpdateState(CBManagerState state) { }
         void DidAddService(string serviceUUID, CBError error) { }
         void DidStartAdvertising(CBError error) { }
+        void DidSubscribeToCharacteristic(SafeNativeCentralHandle central, string serviceUUID, string characteristicUUID) { }
         void DidReceiveReadRequest(SafeNativeATTRequestHandle request) { }
         void DidReceiveWriteRequests(SafeNativeATTRequestsHandle requests) { }
     }
@@ -33,6 +35,7 @@ namespace CoreBluetooth
                 DidUpdateState,
                 DidAddService,
                 DidStartAdvertising,
+                DidSubscribeToCharacteristic,
                 DidReceiveReadRequest,
                 DidReceiveWriteRequests
             );
@@ -57,6 +60,7 @@ namespace CoreBluetooth
                 DidUpdateState,
                 DidAddService,
                 DidStartAdvertising,
+                DidSubscribeToCharacteristic,
                 DidReceiveReadRequest,
                 DidReceiveWriteRequests
             );
@@ -87,6 +91,16 @@ namespace CoreBluetooth
         internal static void DidStartAdvertising(IntPtr peripheralPtr, int errorCode)
         {
             GetDelegate(peripheralPtr)?.DidStartAdvertising(CBError.CreateOrNullFromCode(errorCode));
+        }
+
+        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralManagerDidSubscribeToCharacteristicHandler))]
+        internal static void DidSubscribeToCharacteristic(IntPtr peripheralPtr, IntPtr centralPtr, IntPtr serviceUUIDPtr, IntPtr characteristicUUIDPtr)
+        {
+            GetDelegate(peripheralPtr)?.DidSubscribeToCharacteristic(
+                new SafeNativeCentralHandle(centralPtr),
+                Marshal.PtrToStringUTF8(serviceUUIDPtr),
+                Marshal.PtrToStringUTF8(characteristicUUIDPtr)
+            );
         }
 
         [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralManagerDidReceiveReadRequestHandler))]
