@@ -96,6 +96,22 @@ namespace CoreBluetooth
             }
         }
 
+        public bool UpdateValue(byte[] value, CBMutableCharacteristic characteristic, CBCentral[] subscribedCentrals = null)
+        {
+            ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
+            SafeNativeCentralHandle[] subscribedCentralHandles = null;
+            if (subscribedCentrals != null)
+            {
+                subscribedCentralHandles = new SafeNativeCentralHandle[subscribedCentrals.Length];
+                for (int i = 0; i < subscribedCentrals.Length; i++)
+                {
+                    subscribedCentralHandles[i] = subscribedCentrals[i].Handle;
+                }
+            }
+
+            return _nativePeripheralManagerProxy.UpdateValue(value, characteristic.Handle, subscribedCentralHandles);
+        }
+
         public void RespondToRequest(CBATTRequest request, CBATTError result)
         {
             ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
