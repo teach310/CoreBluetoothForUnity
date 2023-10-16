@@ -8,6 +8,7 @@ namespace CoreBluetooth
         void DidUpdateState(CBPeripheralManager peripheral);
         void DidAddService(CBPeripheralManager peripheral, CBService service, CBError error) { }
         void DidStartAdvertising(CBPeripheralManager peripheral, CBError error) { }
+        void DidSubscribeToCharacteristic(CBPeripheralManager peripheral, CBCentral central, CBCharacteristic characteristic) { }
         void DidReceiveReadRequest(CBPeripheralManager peripheral, CBATTRequest request) { }
         void DidReceiveWriteRequests(CBPeripheralManager peripheral, CBATTRequest[] requests) { }
     }
@@ -115,6 +116,18 @@ namespace CoreBluetooth
             return null;
         }
 
+        CBCentral FindOrCreateCentral(SafeNativeCentralHandle centralHandle)
+        {
+            var central = new CBCentral(centralHandle);
+            if (_centrals.TryGetValue(central.Identifier, out var foundCentral))
+            {
+                central.Dispose();
+                return foundCentral;
+            }
+            _centrals.Add(central.Identifier, central);
+            return central;
+        }
+
         CBCharacteristic IPeripheralManagerData.FindCharacteristic(string serviceUUID, string characteristicUUID)
         {
             if (_services.TryGetValue(serviceUUID, out var service))
@@ -146,6 +159,16 @@ namespace CoreBluetooth
         {
             if (_disposed) return;
             _delegate?.DidStartAdvertising(this, error);
+        }
+
+        void INativePeripheralManagerDelegate.DidSubscribeToCharacteristic(SafeNativeCentralHandle centralHandle, string serviceUUID, string characteristicUUID)
+        {
+            if (_disposed) return;
+
+            var central = FindOrCreateCentral(centralHandle);
+
+            var characteristic = ((IPeripheralManagerData)this).FindCharacteristic(serviceUUID, characteristicUUID);
+            _delegate?.DidSubscribeToCharacteristic(this, central, characteristic);
         }
 
         void INativePeripheralManagerDelegate.DidReceiveReadRequest(SafeNativeATTRequestHandle requestHandle)
