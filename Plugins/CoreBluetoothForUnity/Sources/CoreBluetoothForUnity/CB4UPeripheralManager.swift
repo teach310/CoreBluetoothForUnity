@@ -50,6 +50,10 @@ public class CB4UPeripheralManager : NSObject {
         return peripheralManager.isAdvertising
     }
 
+    public func updateValue(_ value: Data, for characteristic: CB4UMutableCharacteristic, onSubscribedCentrals centrals: [CB4UCentral]?) -> Bool {
+        return peripheralManager.updateValue(value, for: characteristic.characteristic, onSubscribedCentrals: centrals?.map { $0.central })
+    }
+
     public func respond(to request: CB4UATTRequest, withResult result: CBATTError.Code) {
         peripheralManager.respond(to: request.request, withResult: result)
     }

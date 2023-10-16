@@ -329,6 +329,31 @@ public func cb4u_peripheral_manager_is_advertising(_ peripheralPtr: UnsafeRawPoi
     return instance.isAdvertising
 }
 
+@_cdecl("cb4u_peripheral_manager_update_value")
+public func cb4u_peripheral_manager_update_value(
+    _ peripheralPtr: UnsafeRawPointer,
+    _ valueBytes: UnsafePointer<UInt8>,
+    _ valueLength: Int32,
+    _ characteristicPtr: UnsafeRawPointer,
+    _ subscribedCentralsPtr: UnsafePointer<UnsafeRawPointer>?,
+    _ subscribedCentralsCount: Int32
+) -> Bool {
+    let instance = Unmanaged<CB4UPeripheralManager>.fromOpaque(peripheralPtr).takeUnretainedValue()
+    let characteristic = Unmanaged<CB4UMutableCharacteristic>.fromOpaque(characteristicPtr).takeUnretainedValue()
+    
+    let data = Data(bytes: valueBytes, count: Int(valueLength))
+    var centrals: [CB4UCentral]? = nil
+
+    if let subscribedCentralsPtr = subscribedCentralsPtr {
+        centrals = (0..<Int(subscribedCentralsCount)).map { index -> CB4UCentral in
+            let centralPtr = subscribedCentralsPtr[index]
+            return Unmanaged<CB4UCentral>.fromOpaque(centralPtr).takeUnretainedValue()
+        }
+    }
+
+    return instance.updateValue(data, for: characteristic, onSubscribedCentrals: centrals)
+}
+
 @_cdecl("cb4u_peripheral_manager_respond_to_request")
 public func cb4u_peripheral_manager_respond_to_request(_ peripheralPtr: UnsafeRawPointer, _ requestPtr: UnsafeRawPointer, _ result: Int32) {
     let instance = Unmanaged<CB4UPeripheralManager>.fromOpaque(peripheralPtr).takeUnretainedValue()
