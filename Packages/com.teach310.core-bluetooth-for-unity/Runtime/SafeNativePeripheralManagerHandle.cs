@@ -82,9 +82,12 @@ namespace CoreBluetooth
         }
 
         [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralManagerDidAddServiceHandler))]
-        internal static void DidAddService(IntPtr peripheralPtr, string serviceUUID, int errorCode)
+        internal static void DidAddService(IntPtr peripheralPtr, IntPtr serviceUUIDPtr, int errorCode)
         {
-            GetDelegate(peripheralPtr)?.DidAddService(serviceUUID, CBError.CreateOrNullFromCode(errorCode));
+            GetDelegate(peripheralPtr)?.DidAddService(
+                Marshal.PtrToStringUTF8(serviceUUIDPtr),
+                CBError.CreateOrNullFromCode(errorCode)
+            );
         }
 
         [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralManagerDidStartAdvertisingHandler))]
