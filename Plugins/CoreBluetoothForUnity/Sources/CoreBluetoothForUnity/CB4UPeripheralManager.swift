@@ -7,6 +7,7 @@ public class CB4UPeripheralManager : NSObject {
     public var didUpdateStateHandler: CB4UCentralManagerDidUpdateStateHandler?
     public var didAddServiceHandler: CB4UPeripheralManagerDidAddServiceHandler?
     public var didStartAdvertisingHandler: CB4UPeripheralManagerDidStartAdvertisingHandler?
+    public var didSubscribeToCharacteristicHandler: CB4UPeripheralManagerDidSubscribeToCharacteristicHandler?
     public var didReceiveReadRequestHandler: CB4UPeripheralManagerDidReceiveReadRequestHandler?
     public var didReceiveWriteRequestsHandler: CB4UPeripheralManagerDidReceiveWriteRequestsHandler?
     
@@ -72,6 +73,20 @@ extension CB4UPeripheralManager : CBPeripheralManagerDelegate {
     
     public func peripheralManagerDidStartAdvertising(_ peripheral: CBPeripheralManager, error: Error?) {
         didStartAdvertisingHandler?(selfPointer(), errorToCode(error))
+    }
+
+    public func peripheralManager(_ peripheral: CBPeripheralManager, central: CBCentral, didSubscribeTo characteristic: CBCharacteristic) {
+        let central = CB4UCentral(central: central)
+        let centralPtr = Unmanaged.passRetained(central).toOpaque()
+        
+        let serviceId = characteristic.service?.uuid.uuidString ?? ""
+        let characteristicId = characteristic.uuid.uuidString
+
+        serviceId.withCString { (serviceIdCString) in
+            characteristicId.withCString { (characteristicIdCString) in
+                didSubscribeToCharacteristicHandler?(selfPointer(), centralPtr, serviceIdCString, characteristicIdCString)
+            }
+        }
     }
 
     public func peripheralManager(_ peripheral: CBPeripheralManager, didReceiveRead request: CBATTRequest) {

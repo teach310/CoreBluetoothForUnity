@@ -272,6 +272,7 @@ public func cb4u_peripheral_manager_release(_ peripheralManagerPtr: UnsafeRawPoi
 public typealias CB4UPeripheralManagerDidUpdateStateHandler = @convention(c) (UnsafeRawPointer, Int32) -> Void
 public typealias CB4UPeripheralManagerDidAddServiceHandler = @convention(c) (UnsafeRawPointer, UnsafePointer<CChar>, Int32) -> Void
 public typealias CB4UPeripheralManagerDidStartAdvertisingHandler = @convention(c) (UnsafeRawPointer, Int32) -> Void
+public typealias CB4UPeripheralManagerDidSubscribeToCharacteristicHandler = @convention(c) (UnsafeRawPointer, UnsafeRawPointer, UnsafePointer<CChar>, UnsafePointer<CChar>) -> Void
 public typealias CB4UPeripheralManagerDidReceiveReadRequestHandler = @convention(c) (UnsafeRawPointer, UnsafeRawPointer) -> Void
 public typealias CB4UPeripheralManagerDidReceiveWriteRequestsHandler = @convention(c) (UnsafeRawPointer, UnsafeRawPointer) -> Void
 
@@ -281,6 +282,7 @@ public func cb4u_peripheral_manager_register_handlers(
     _ didUpdateStateHandler: @escaping CB4UPeripheralManagerDidUpdateStateHandler,
     _ didAddServiceHandler: @escaping CB4UPeripheralManagerDidAddServiceHandler,
     _ didStartAdvertisingHandler: @escaping CB4UPeripheralManagerDidStartAdvertisingHandler,
+    _ didSubscribeToCharacteristicHandler: @escaping CB4UPeripheralManagerDidSubscribeToCharacteristicHandler,
     _ didReceiveReadRequestHandler: @escaping CB4UPeripheralManagerDidReceiveReadRequestHandler,
     _ didReceiveWriteRequestsHandler: @escaping CB4UPeripheralManagerDidReceiveWriteRequestsHandler
 ) {
@@ -289,6 +291,7 @@ public func cb4u_peripheral_manager_register_handlers(
     instance.didUpdateStateHandler = didUpdateStateHandler
     instance.didAddServiceHandler = didAddServiceHandler
     instance.didStartAdvertisingHandler = didStartAdvertisingHandler
+    instance.didSubscribeToCharacteristicHandler = didSubscribeToCharacteristicHandler
     instance.didReceiveReadRequestHandler = didReceiveReadRequestHandler
     instance.didReceiveWriteRequestsHandler = didReceiveWriteRequestsHandler
 }
