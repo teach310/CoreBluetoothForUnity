@@ -157,7 +157,7 @@ namespace CoreBluetooth
         internal static extern void cb4u_peripheral_manager_release(IntPtr handle);
 
         internal delegate void CB4UPeripheralManagerDidUpdateStateHandler(IntPtr peripheralManagerPtr, CBManagerState state);
-        internal delegate void CB4UPeripheralManagerDidAddServiceHandler(IntPtr peripheralManagerPtr, string serviceUUID, int errorCode);
+        internal delegate void CB4UPeripheralManagerDidAddServiceHandler(IntPtr peripheralManagerPtr, IntPtr serviceUUIDPtr, int errorCode);
         internal delegate void CB4UPeripheralManagerDidStartAdvertisingHandler(IntPtr peripheralManagerPtr, int errorCode);
         internal delegate void CB4UPeripheralManagerDidSubscribeToCharacteristicHandler(IntPtr peripheralManagerPtr, IntPtr centralPtr, IntPtr serviceUUIDPtr, IntPtr characteristicUUIDPtr);
         internal delegate void CB4UPeripheralManagerDidReceiveReadRequestHandler(IntPtr peripheralManagerPtr, IntPtr requestPtr);
