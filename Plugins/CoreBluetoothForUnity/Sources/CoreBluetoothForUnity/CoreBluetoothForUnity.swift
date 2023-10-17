@@ -273,6 +273,7 @@ public typealias CB4UPeripheralManagerDidUpdateStateHandler = @convention(c) (Un
 public typealias CB4UPeripheralManagerDidAddServiceHandler = @convention(c) (UnsafeRawPointer, UnsafePointer<CChar>, Int32) -> Void
 public typealias CB4UPeripheralManagerDidStartAdvertisingHandler = @convention(c) (UnsafeRawPointer, Int32) -> Void
 public typealias CB4UPeripheralManagerDidSubscribeToCharacteristicHandler = @convention(c) (UnsafeRawPointer, UnsafeRawPointer, UnsafePointer<CChar>, UnsafePointer<CChar>) -> Void
+public typealias CB4UPeripheralManagerDidUnsubscribeFromCharacteristicHandler = @convention(c) (UnsafeRawPointer, UnsafeRawPointer, UnsafePointer<CChar>, UnsafePointer<CChar>) -> Void
 public typealias CB4UPeripheralManagerDidReceiveReadRequestHandler = @convention(c) (UnsafeRawPointer, UnsafeRawPointer) -> Void
 public typealias CB4UPeripheralManagerDidReceiveWriteRequestsHandler = @convention(c) (UnsafeRawPointer, UnsafeRawPointer) -> Void
 
@@ -283,6 +284,7 @@ public func cb4u_peripheral_manager_register_handlers(
     _ didAddServiceHandler: @escaping CB4UPeripheralManagerDidAddServiceHandler,
     _ didStartAdvertisingHandler: @escaping CB4UPeripheralManagerDidStartAdvertisingHandler,
     _ didSubscribeToCharacteristicHandler: @escaping CB4UPeripheralManagerDidSubscribeToCharacteristicHandler,
+    _ didUnsubscribeFromCharacteristicHandler: @escaping CB4UPeripheralManagerDidUnsubscribeFromCharacteristicHandler,
     _ didReceiveReadRequestHandler: @escaping CB4UPeripheralManagerDidReceiveReadRequestHandler,
     _ didReceiveWriteRequestsHandler: @escaping CB4UPeripheralManagerDidReceiveWriteRequestsHandler
 ) {
@@ -292,6 +294,7 @@ public func cb4u_peripheral_manager_register_handlers(
     instance.didAddServiceHandler = didAddServiceHandler
     instance.didStartAdvertisingHandler = didStartAdvertisingHandler
     instance.didSubscribeToCharacteristicHandler = didSubscribeToCharacteristicHandler
+    instance.didUnsubscribeFromCharacteristicHandler = didUnsubscribeFromCharacteristicHandler
     instance.didReceiveReadRequestHandler = didReceiveReadRequestHandler
     instance.didReceiveWriteRequestsHandler = didReceiveWriteRequestsHandler
 }
