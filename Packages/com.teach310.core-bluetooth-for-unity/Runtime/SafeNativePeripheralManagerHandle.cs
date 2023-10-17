@@ -53,19 +53,6 @@ namespace CoreBluetooth
             return true;
         }
 
-        static void RegisterHandlers(SafeNativePeripheralManagerHandle handle)
-        {
-            NativeMethods.cb4u_peripheral_manager_register_handlers(
-                handle,
-                DidUpdateState,
-                DidAddService,
-                DidStartAdvertising,
-                DidSubscribeToCharacteristic,
-                DidReceiveReadRequest,
-                DidReceiveWriteRequests
-            );
-        }
-
         static INativePeripheralManagerDelegate GetDelegate(IntPtr peripheralPtr)
         {
             if (!s_peripheralManagerDelegateMap.TryGetValue(peripheralPtr, out var peripheralManagerDelegate))
