@@ -12,6 +12,7 @@ namespace CoreBluetooth
         void DidStartAdvertising(CBError error) { }
         void DidSubscribeToCharacteristic(SafeNativeCentralHandle central, string serviceUUID, string characteristicUUID) { }
         void DidUnsubscribeFromCharacteristic(SafeNativeCentralHandle central, string serviceUUID, string characteristicUUID) { }
+        void IsReadyToUpdateSubscribers() { }
         void DidReceiveReadRequest(SafeNativeATTRequestHandle request) { }
         void DidReceiveWriteRequests(SafeNativeATTRequestsHandle requests) { }
     }
@@ -38,6 +39,7 @@ namespace CoreBluetooth
                 DidStartAdvertising,
                 DidSubscribeToCharacteristic,
                 DidUnsubscribeFromCharacteristic,
+                IsReadyToUpdateSubscribers,
                 DidReceiveReadRequest,
                 DidReceiveWriteRequests
             );
@@ -103,6 +105,12 @@ namespace CoreBluetooth
                 Marshal.PtrToStringUTF8(serviceUUIDPtr),
                 Marshal.PtrToStringUTF8(characteristicUUIDPtr)
             );
+        }
+
+        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralManagerIsReadyToUpdateSubscribersHandler))]
+        internal static void IsReadyToUpdateSubscribers(IntPtr peripheralPtr)
+        {
+            GetDelegate(peripheralPtr)?.IsReadyToUpdateSubscribers();
         }
 
         [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralManagerDidReceiveReadRequestHandler))]
