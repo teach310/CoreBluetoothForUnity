@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -12,44 +13,57 @@ namespace CoreBluetooth
         Disconnecting
     }
 
-    internal interface INativePeripheral
-    {
-        void DiscoverServices(string[] serviceUUIDs);
-        void DiscoverCharacteristics(string[] characteristicUUIDs, CBService service);
-        void ReadValue(CBCharacteristic characteristic);
-        void WriteValue(byte[] data, CBCharacteristic characteristic, CBCharacteristicWriteType type);
-        void SetNotifyValue(bool enabled, CBCharacteristic characteristic);
-        CBPeripheralState State { get; }
-    }
-
     public interface ICBPeripheralDelegate
     {
-        void DiscoveredService(CBPeripheral peripheral, CBError error) { }
-        void DiscoveredCharacteristic(CBPeripheral peripheral, CBService service, CBError error) { }
-        void UpdatedCharacteristicValue(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error) { }
-        void WroteCharacteristicValue(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error) { }
-        void UpdatedNotificationState(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error) { }
+        void DidDiscoverServices(CBPeripheral peripheral, CBError error) { }
+        void DidDiscoverCharacteristics(CBPeripheral peripheral, CBService service, CBError error) { }
+        void DidUpdateValueForCharacteristic(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error) { }
+        void DidWriteValueForCharacteristic(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error) { }
+        void DidUpdateNotificationStateForCharacteristic(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error) { }
     }
 
     /// <summary>
     /// A remote peripheral device.
     /// https://developer.apple.com/documentation/corebluetooth/cbperipheral
     /// </summary>
-    public class CBPeripheral
+    public class CBPeripheral : INativePeripheralDelegate, IDisposable
     {
-        public string Identifier { get; }
-        public string Name { get; }
+        bool _disposed = false;
+        internal SafeNativePeripheralHandle Handle { get; }
+        NativePeripheralProxy _nativePeripheral = null;
+
+        string _identifier = null;
+        public string Identifier
+        {
+            get
+            {
+                ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
+
+                if (_identifier == null)
+                {
+                    _identifier = _nativePeripheral.Identifier;
+                }
+                return _identifier;
+            }
+        }
+
+        public string Name
+        {
+            get
+            {
+                ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
+                return _nativePeripheral.Name;
+            }
+        }
+
         public ICBPeripheralDelegate Delegate { get; set; }
         List<CBService> _services = new List<CBService>();
         public ReadOnlyCollection<CBService> Services { get; }
 
-        INativePeripheral _nativePeripheral;
-
-        internal CBPeripheral(string id, string name, INativePeripheral nativePeripheral)
+        internal CBPeripheral(SafeNativePeripheralHandle nativePeripheral)
         {
-            this.Identifier = id;
-            this.Name = name;
-            this._nativePeripheral = nativePeripheral;
+            Handle = nativePeripheral;
+            _nativePeripheral = new NativePeripheralProxy(Handle, this);
             this.Services = _services.AsReadOnly();
         }
 
@@ -92,7 +106,14 @@ namespace CoreBluetooth
         /// <summary>
         /// The connection state of the peripheral.
         /// </summary>
-        public CBPeripheralState State => _nativePeripheral.State;
+        public CBPeripheralState State
+        {
+            get
+            {
+                ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
+                return _nativePeripheral.State;
+            }
+        }
 
         internal CBCharacteristic FindCharacteristic(string serviceUUID, string characteristicUUID)
         {
@@ -103,42 +124,82 @@ namespace CoreBluetooth
 
             var service = Services.FirstOrDefault(s => s.UUID == serviceUUID);
             if (service == null) return null;
-            return service.Characteristics.FirstOrDefault(c => c.UUID == characteristicUUID);
+            return service.FindCharacteristic(characteristicUUID);
         }
 
-        internal void DidDiscoverServices(CBService[] services, CBError error)
+        CBCharacteristic FindOrInitializeCharacteristic(CBService service, string characteristicUUID)
         {
+            var characteristic = service.FindCharacteristic(characteristicUUID);
+            if (characteristic == null)
+            {
+                var nativeCharacteristicProxy = new NativeCharacteristicProxy(service.UUID, characteristicUUID, service.Peripheral.Handle);
+                characteristic = new CBCharacteristic(characteristicUUID, nativeCharacteristicProxy);
+            }
+            return characteristic;
+        }
+
+        void INativePeripheralDelegate.DidDiscoverServices(string[] serviceUUIDs, CBError error)
+        {
+            if (_disposed) return;
+            var services = serviceUUIDs.Select(uuid =>
+            {
+                return _services.FirstOrDefault(s => s.UUID == uuid) ?? new CBService(uuid, this);
+            }).ToArray();
             _services.Clear();
             _services.AddRange(services);
-            Delegate?.DiscoveredService(this, error);
+
+            Delegate?.DidDiscoverServices(this, error);
         }
 
-        internal void DidDiscoverCharacteristics(CBCharacteristic[] characteristics, CBService service, CBError error)
+        void INativePeripheralDelegate.DidDiscoverCharacteristics(string serviceUUID, string[] characteristicUUIDs, CBError error)
         {
+            if (_disposed) return;
+            var service = _services.FirstOrDefault(s => s.UUID == serviceUUID);
+            if (service == null) return;
+            var characteristics = characteristicUUIDs.Select(uuid => FindOrInitializeCharacteristic(service, uuid)).ToArray();
             service.UpdateCharacteristics(characteristics);
-            Delegate?.DiscoveredCharacteristic(this, service, error);
+            Delegate?.DidDiscoverCharacteristics(this, service, error);
         }
 
-        internal void DidUpdateValueForCharacteristic(CBCharacteristic characteristic, byte[] data, CBError error)
+        void INativePeripheralDelegate.DidUpdateValueForCharacteristic(string serviceUUID, string characteristicUUID, byte[] data, CBError error)
         {
+            if (_disposed) return;
+            var characteristic = FindCharacteristic(serviceUUID, characteristicUUID);
+            if (characteristic == null) return;
             characteristic.UpdateValue(data);
-            Delegate?.UpdatedCharacteristicValue(this, characteristic, error);
+            Delegate?.DidUpdateValueForCharacteristic(this, characteristic, error);
         }
 
-        internal void DidWriteValueForCharacteristic(CBCharacteristic characteristic, CBError error)
+        void INativePeripheralDelegate.DidWriteValueForCharacteristic(string serviceUUID, string characteristicUUID, CBError error)
         {
-            Delegate?.WroteCharacteristicValue(this, characteristic, error);
+            if (_disposed) return;
+            var characteristic = FindCharacteristic(serviceUUID, characteristicUUID);
+            if (characteristic == null) return;
+
+            Delegate?.DidWriteValueForCharacteristic(this, characteristic, error);
         }
 
-        internal void DidUpdateNotificationStateForCharacteristic(CBCharacteristic characteristic, bool isNotifying, CBError error)
+        void INativePeripheralDelegate.DidUpdateNotificationStateForCharacteristic(string serviceUUID, string characteristicUUID, bool isNotifying, CBError error)
         {
+            if (_disposed) return;
+            var characteristic = FindCharacteristic(serviceUUID, characteristicUUID);
+            if (characteristic == null) return;
             characteristic.UpdateIsNotifying(isNotifying);
-            Delegate?.UpdatedNotificationState(this, characteristic, error);
+            Delegate?.DidUpdateNotificationStateForCharacteristic(this, characteristic, error);
         }
 
         public override string ToString()
         {
             return $"CBPeripheral: identifier = {Identifier}, name = {Name}, state = {State}";
+        }
+
+        public void Dispose()
+        {
+            if (_disposed) return;
+
+            Handle?.Dispose();
+
+            _disposed = true;
         }
     }
 }

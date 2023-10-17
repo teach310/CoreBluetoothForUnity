@@ -10,18 +10,18 @@ namespace CoreBluetooth
     /// </summary>
     public interface ICBCentralManagerDelegate
     {
-        void ConnectedPeripheral(CBCentralManager central, CBPeripheral peripheral) { }
-        void DisconnectedPeripheral(CBCentralManager central, CBPeripheral peripheral, CBError error) { }
-        void FailedToConnect(CBCentralManager central, CBPeripheral peripheral, CBError error) { }
-        void DiscoveredPeripheral(CBCentralManager central, CBPeripheral peripheral, int rssi) { }
-        void UpdatedState(CBCentralManager central);
+        void DidConnectPeripheral(CBCentralManager central, CBPeripheral peripheral) { }
+        void DidDisconnectPeripheral(CBCentralManager central, CBPeripheral peripheral, CBError error) { }
+        void DidFailToConnectPeripheral(CBCentralManager central, CBPeripheral peripheral, CBError error) { }
+        void DidDiscoverPeripheral(CBCentralManager central, CBPeripheral peripheral, int rssi) { }
+        void DidUpdateState(CBCentralManager central);
     }
 
     /// <summary>
     /// An object that scans for, discovers, connects to, and manages peripherals.
     /// https://developer.apple.com/documentation/corebluetooth/cbcentralmanager
     /// </summary>
-    public class CBCentralManager : IDisposable
+    public class CBCentralManager : CBManager, INativeCentralManagerDelegate, IDisposable
     {
         bool _disposed = false;
         SafeNativeCentralManagerHandle _handle;
@@ -40,44 +40,25 @@ namespace CoreBluetooth
             }
         }
 
-        public CBManagerState State { get; private set; } = CBManagerState.Unknown;
-
         NativeCentralManagerProxy _nativeCentralManagerProxy;
 
-        CBCentralManager() { }
-
-        ~CBCentralManager() => Dispose(false);
-
-        public static CBCentralManager Create(ICBCentralManagerDelegate centralDelegate = null)
+        public CBCentralManager(ICBCentralManagerDelegate centralDelegate = null)
         {
-            var instance = new CBCentralManager();
-            instance._handle = SafeNativeCentralManagerHandle.Create(instance);
-            instance.Delegate = centralDelegate;
-            instance._nativeCentralManagerProxy = new NativeCentralManagerProxy(instance._handle);
-            return instance;
-        }
-
-        void ThrowIfPeripheralNotDiscovered(CBPeripheral peripheral)
-        {
-            if (!_peripherals.ContainsKey(peripheral.Identifier))
-            {
-                throw new ArgumentException($"Peripheral {peripheral} is not discovered.");
-            }
+            _handle = SafeNativeCentralManagerHandle.Create();
+            Delegate = centralDelegate;
+            _nativeCentralManagerProxy = new NativeCentralManagerProxy(_handle, this);
         }
 
         public void Connect(CBPeripheral peripheral)
         {
             ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
-            ThrowIfPeripheralNotDiscovered(peripheral);
-
-            _nativeCentralManagerProxy.Connect(peripheral.Identifier);
+            _nativeCentralManagerProxy.Connect(peripheral);
         }
 
         public void CancelPeripheralConnection(CBPeripheral peripheral)
         {
             ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
-            ThrowIfPeripheralNotDiscovered(peripheral);
-            _nativeCentralManagerProxy.CancelPeripheralConnection(peripheral.Identifier);
+            _nativeCentralManagerProxy.CancelPeripheralConnection(peripheral);
         }
 
         public void ScanForPeripherals(string[] serviceUUIDs = null)
@@ -111,141 +92,54 @@ namespace CoreBluetooth
             return peripheral;
         }
 
-        CBCharacteristic GetCharacteristic(CBPeripheral peripheral, string serviceUUID, string characteristicUUID)
-        {
-            var characteristic = peripheral.FindCharacteristic(serviceUUID, characteristicUUID);
-            if (characteristic == null)
-            {
-                UnityEngine.Debug.LogError($"Characteristic {characteristicUUID} not found.");
-                return null;
-            }
-            return characteristic;
-        }
-
-        internal void DidConnect(string peripheralId)
+        void INativeCentralManagerDelegate.DidConnect(string peripheralId)
         {
             if (_disposed) return;
             var peripheral = GetPeripheral(peripheralId);
             if (peripheral == null) return;
-            Delegate?.ConnectedPeripheral(this, peripheral);
+            Delegate?.DidConnectPeripheral(this, peripheral);
         }
 
-        internal void DidDisconnectPeripheral(string peripheralId, CBError error)
+        void INativeCentralManagerDelegate.DidDisconnectPeripheral(string peripheralId, CBError error)
         {
             if (_disposed) return;
             var peripheral = GetPeripheral(peripheralId);
             if (peripheral == null) return;
-            Delegate?.DisconnectedPeripheral(this, peripheral, error);
+            Delegate?.DidDisconnectPeripheral(this, peripheral, error);
         }
 
-        internal void DidFailToConnect(string peripheralId, CBError error)
+        void INativeCentralManagerDelegate.DidFailToConnect(string peripheralId, CBError error)
         {
             if (_disposed) return;
             var peripheral = GetPeripheral(peripheralId);
             if (peripheral == null) return;
-            Delegate?.FailedToConnect(this, peripheral, error);
+            Delegate?.DidFailToConnectPeripheral(this, peripheral, error);
         }
 
-        internal void DidDiscoverPeripheral(string peripheralId, string peripheralName, int rssi)
+        void INativeCentralManagerDelegate.DidDiscoverPeripheral(SafeNativePeripheralHandle peripheralHandle, int rssi)
         {
             if (_disposed) return;
 
-            if (!_peripherals.TryGetValue(peripheralId, out var peripheral))
-            {
-                var nativePeriphalProxy = new NativePeripheralProxy(peripheralId, _handle);
-                peripheral = new CBPeripheral(peripheralId, peripheralName, nativePeriphalProxy);
-                _peripherals.Add(peripheralId, peripheral);
-            }
-            Delegate?.DiscoveredPeripheral(this, peripheral, rssi);
+            var peripheral = new CBPeripheral(peripheralHandle);
+            _peripherals.Add(peripheral.Identifier, peripheral);
+            Delegate?.DidDiscoverPeripheral(this, peripheral, rssi);
         }
 
-        internal void DidUpdateState(CBManagerState state)
+        void INativeCentralManagerDelegate.DidUpdateState(CBManagerState state)
         {
             if (_disposed) return;
             this.State = state;
-            Delegate?.UpdatedState(this);
-        }
-
-        internal void PeripheralDidDiscoverServices(string peripheralId, string[] serviceUUIDs, CBError error)
-        {
-            if (_disposed) return;
-            var peripheral = GetPeripheral(peripheralId);
-            if (peripheral == null) return;
-
-            var services = serviceUUIDs.Select(uuid => new CBService(uuid, peripheral)).ToArray();
-            peripheral.DidDiscoverServices(services, error);
-        }
-
-        internal void PeripheralDidDiscoverCharacteristics(string peripheralId, string serviceUUID, string[] characteristicUUIDs, CBError error)
-        {
-            if (_disposed) return;
-            var peripheral = GetPeripheral(peripheralId);
-            if (peripheral == null) return;
-
-            var service = peripheral.Services.FirstOrDefault(s => s.UUID == serviceUUID);
-            if (service == null)
-            {
-                UnityEngine.Debug.LogError($"Service {serviceUUID} not found.");
-                return;
-            }
-
-            var characteristics = characteristicUUIDs.Select(uuid =>
-            {
-                var nativeCharacteristicProxy = new NativeCharacteristicProxy(peripheralId, serviceUUID, uuid, _handle);
-                return new CBCharacteristic(uuid, service, nativeCharacteristicProxy);
-            }).ToArray();
-            peripheral.DidDiscoverCharacteristics(characteristics, service, error);
-        }
-
-        internal void PeripheralDidUpdateValueForCharacteristic(string peripheralId, string serviceUUID, string characteristicUUID, byte[] data, CBError error)
-        {
-            if (_disposed) return;
-            var peripheral = GetPeripheral(peripheralId);
-            if (peripheral == null) return;
-
-            var characteristic = GetCharacteristic(peripheral, serviceUUID, characteristicUUID);
-            if (characteristic == null) return;
-
-            peripheral.DidUpdateValueForCharacteristic(characteristic, data, error);
-        }
-
-        internal void PeripheralDidWriteValueForCharacteristic(string peripheralId, string serviceUUID, string characteristicUUID, CBError error)
-        {
-            if (_disposed) return;
-            var peripheral = GetPeripheral(peripheralId);
-            if (peripheral == null) return;
-
-            var characteristic = GetCharacteristic(peripheral, serviceUUID, characteristicUUID);
-            if (characteristic == null) return;
-
-            peripheral.DidWriteValueForCharacteristic(characteristic, error);
-        }
-
-        internal void PeripheralDidUpdateNotificationStateForCharacteristic(string peripheralId, string serviceUUID, string characteristicUUID, bool isNotifying, CBError error)
-        {
-            if (_disposed) return;
-            var peripheral = GetPeripheral(peripheralId);
-            if (peripheral == null) return;
-
-            var characteristic = GetCharacteristic(peripheral, serviceUUID, characteristicUUID);
-            if (characteristic == null) return;
-
-            peripheral.DidUpdateNotificationStateForCharacteristic(characteristic, isNotifying, error);
+            Delegate?.DidUpdateState(this);
         }
 
         public void Dispose()
         {
-            Dispose(true);
-            System.GC.SuppressFinalize(this);
-        }
-
-        void Dispose(bool disposing)
-        {
             if (_disposed) return;
 
-            if (_handle != null && !_handle.IsInvalid)
+            _handle?.Dispose();
+            foreach (var peripheral in _peripherals.Values)
             {
-                _handle.Dispose();
+                peripheral.Dispose();
             }
 
             _disposed = true;

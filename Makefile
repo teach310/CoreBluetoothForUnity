@@ -11,6 +11,14 @@ help:
 
 .PHONY: format
 format:
+	dotnet format CoreBluetooth.csproj
+
+.PHONY: format/test
+format/test:
+	dotnet format CoreBluetooth.Tests.csproj
+
+.PHONY: format/all
+format/all:
 	dotnet format CoreBluetoothForUnity.sln
 
 .PHONY: package/build
@@ -20,5 +28,5 @@ package/build:
 
 .PHONY: plugins/build
 plugins/build:
-	make -C Plugins/CoreBluetoothForUnity bundle
+	make -C Plugins/CoreBluetoothForUnity dylib
 	make -C Plugins/CoreBluetoothForUnity framework

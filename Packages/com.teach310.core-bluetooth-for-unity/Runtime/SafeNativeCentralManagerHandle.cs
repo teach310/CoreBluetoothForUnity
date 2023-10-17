@@ -1,69 +1,75 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Microsoft.Win32.SafeHandles;
 
 namespace CoreBluetooth
 {
-    public class SafeNativeCentralManagerHandle : SafeHandle
+    internal interface INativeCentralManagerDelegate
     {
-        static Dictionary<IntPtr, CBCentralManager> s_centralManagerMap = new Dictionary<IntPtr, CBCentralManager>();
+        void DidConnect(string peripheralId) { }
+        void DidDisconnectPeripheral(string peripheralId, CBError error) { }
+        void DidFailToConnect(string peripheralId, CBError error) { }
+        void DidDiscoverPeripheral(SafeNativePeripheralHandle peripheral, int rssi) { }
+        void DidUpdateState(CBManagerState state) { }
+    }
 
-        public override bool IsInvalid => handle == IntPtr.Zero;
+    internal class SafeNativeCentralManagerHandle : SafeHandleZeroOrMinusOneIsInvalid
+    {
+        static Dictionary<IntPtr, INativeCentralManagerDelegate> s_centralManagerDelegateMap = new Dictionary<IntPtr, INativeCentralManagerDelegate>();
 
-        SafeNativeCentralManagerHandle(IntPtr handle) : base(handle, true) { }
+        SafeNativeCentralManagerHandle() : base(true) { }
 
-        internal static SafeNativeCentralManagerHandle Create(CBCentralManager centralManager)
+        internal static SafeNativeCentralManagerHandle Create()
         {
-            var handle = NativeMethods.cb4u_central_manager_new();
-            var instance = new SafeNativeCentralManagerHandle(handle);
-            RegisterHandlers(instance);
-            s_centralManagerMap.Add(handle, centralManager);
+            var instance = NativeMethods.cb4u_central_manager_new();
+            instance.RegisterHandlers();
             return instance;
         }
 
-        protected override bool ReleaseHandle()
-        {
-            s_centralManagerMap.Remove(handle);
-            NativeMethods.cb4u_central_manager_release(handle);
-            return true;
-        }
-
-        static void RegisterHandlers(SafeNativeCentralManagerHandle handle)
+        void RegisterHandlers()
         {
             NativeMethods.cb4u_central_manager_register_handlers(
-                handle,
+                this,
                 DidConnect,
                 DidDisconnectPeripheral,
                 DidFailToConnect,
                 DidDiscoverPeripheral,
-                DidUpdateState,
-                PeripheralDidDiscoverServices,
-                PeripheralDidDiscoverCharacteristics,
-                PeripheralDidUpdateValueForCharacteristic,
-                PeripheralDidWriteValueForCharacteristic,
-                PeripheralDidUpdateNotificationStateForCharacteristic
+                DidUpdateState
             );
         }
 
-        static CBCentralManager GetCentralManager(IntPtr centralPtr)
+        internal void SetDelegate(INativeCentralManagerDelegate centralManagerDelegate)
         {
-            if (!s_centralManagerMap.TryGetValue(centralPtr, out var centralManager))
+            s_centralManagerDelegateMap[handle] = centralManagerDelegate;
+        }
+
+        protected override bool ReleaseHandle()
+        {
+            s_centralManagerDelegateMap.Remove(handle);
+            NativeMethods.cb4u_central_manager_release(handle);
+            return true;
+        }
+
+        static INativeCentralManagerDelegate GetDelegate(IntPtr centralPtr)
+        {
+            if (!s_centralManagerDelegateMap.TryGetValue(centralPtr, out var centralManagerDelegate))
             {
-                UnityEngine.Debug.LogError("CBCentralManager instance not found.");
+                return null;
             }
-            return centralManager;
+            return centralManagerDelegate;
         }
 
         [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UCentralManagerDidConnectHandler))]
         internal static void DidConnect(IntPtr centralPtr, IntPtr peripheralIdPtr)
         {
-            GetCentralManager(centralPtr)?.DidConnect(Marshal.PtrToStringUTF8(peripheralIdPtr));
+            GetDelegate(centralPtr)?.DidConnect(Marshal.PtrToStringUTF8(peripheralIdPtr));
         }
 
         [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UCentralManagerDidDisconnectPeripheralHandler))]
         internal static void DidDisconnectPeripheral(IntPtr centralPtr, IntPtr peripheralIdPtr, int errorCode)
         {
-            GetCentralManager(centralPtr)?.DidDisconnectPeripheral(
+            GetDelegate(centralPtr)?.DidDisconnectPeripheral(
                 Marshal.PtrToStringUTF8(peripheralIdPtr),
                 CBError.CreateOrNullFromCode(errorCode)
             );
@@ -72,18 +78,17 @@ namespace CoreBluetooth
         [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UCentralManagerDidFailToConnectHandler))]
         internal static void DidFailToConnect(IntPtr centralPtr, IntPtr peripheralIdPtr, int errorCode)
         {
-            GetCentralManager(centralPtr)?.DidFailToConnect(
+            GetDelegate(centralPtr)?.DidFailToConnect(
                 Marshal.PtrToStringUTF8(peripheralIdPtr),
                 CBError.CreateOrNullFromCode(errorCode)
             );
         }
 
         [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UCentralManagerDidDiscoverPeripheralHandler))]
-        internal static void DidDiscoverPeripheral(IntPtr centralPtr, IntPtr peripheralIdPtr, IntPtr peripheralNamePtr, int rssi)
+        internal static void DidDiscoverPeripheral(IntPtr centralPtr, IntPtr peripheralPtr, int rssi)
         {
-            GetCentralManager(centralPtr)?.DidDiscoverPeripheral(
-                Marshal.PtrToStringUTF8(peripheralIdPtr),
-                Marshal.PtrToStringUTF8(peripheralNamePtr),
+            GetDelegate(centralPtr)?.DidDiscoverPeripheral(
+                new SafeNativePeripheralHandle(peripheralPtr),
                 rssi
             );
         }
@@ -91,78 +96,7 @@ namespace CoreBluetooth
         [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UCentralManagerDidUpdateStateHandler))]
         internal static void DidUpdateState(IntPtr centralPtr, CBManagerState state)
         {
-            GetCentralManager(centralPtr)?.DidUpdateState(state);
-        }
-
-        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralDidDiscoverServicesHandler))]
-        internal static void PeripheralDidDiscoverServices(IntPtr centralPtr, IntPtr peripheralIdPtr, IntPtr commaSeparatedServiceUUIDsPtr, int errorCode)
-        {
-            string commaSeparatedServiceUUIDs = Marshal.PtrToStringUTF8(commaSeparatedServiceUUIDsPtr);
-            if (string.IsNullOrEmpty(commaSeparatedServiceUUIDs))
-            {
-                throw new ArgumentException("commaSeparatedServiceUUIDs is null or empty.");
-            }
-
-            GetCentralManager(centralPtr)?.PeripheralDidDiscoverServices(
-                Marshal.PtrToStringUTF8(peripheralIdPtr),
-                commaSeparatedServiceUUIDs.Split(','),
-                CBError.CreateOrNullFromCode(errorCode)
-            );
-        }
-
-        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralDidDiscoverCharacteristicsHandler))]
-        internal static void PeripheralDidDiscoverCharacteristics(IntPtr centralPtr, IntPtr peripheralIdPtr, IntPtr serviceUUIDPtr, IntPtr commaSeparatedCharacteristicUUIDsPtr, int errorCode)
-        {
-            string commaSeparatedCharacteristicUUIDs = Marshal.PtrToStringUTF8(commaSeparatedCharacteristicUUIDsPtr);
-            if (string.IsNullOrEmpty(commaSeparatedCharacteristicUUIDs))
-            {
-                throw new ArgumentException("commaSeparatedCharacteristicUUIDs is null or empty.");
-            }
-
-            GetCentralManager(centralPtr)?.PeripheralDidDiscoverCharacteristics(
-                Marshal.PtrToStringUTF8(peripheralIdPtr),
-                Marshal.PtrToStringUTF8(serviceUUIDPtr),
-                commaSeparatedCharacteristicUUIDs.Split(','),
-                CBError.CreateOrNullFromCode(errorCode)
-            );
-        }
-
-        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralDidUpdateValueForCharacteristicHandler))]
-        internal static void PeripheralDidUpdateValueForCharacteristic(IntPtr centralPtr, IntPtr peripheralIdPtr, IntPtr serviceUUIDPtr, IntPtr characteristicUUIDPtr, IntPtr dataPtr, int dataLength, int errorCode)
-        {
-            var dataBytes = new byte[dataLength];
-            Marshal.Copy(dataPtr, dataBytes, 0, dataLength);
-
-            GetCentralManager(centralPtr)?.PeripheralDidUpdateValueForCharacteristic(
-                Marshal.PtrToStringUTF8(peripheralIdPtr),
-                Marshal.PtrToStringUTF8(serviceUUIDPtr),
-                Marshal.PtrToStringUTF8(characteristicUUIDPtr),
-                dataBytes,
-                CBError.CreateOrNullFromCode(errorCode)
-            );
-        }
-
-        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralDidWriteValueForCharacteristicHandler))]
-        internal static void PeripheralDidWriteValueForCharacteristic(IntPtr centralPtr, IntPtr peripheralIdPtr, IntPtr serviceUUIDPtr, IntPtr characteristicUUIDPtr, int errorCode)
-        {
-            GetCentralManager(centralPtr)?.PeripheralDidWriteValueForCharacteristic(
-                Marshal.PtrToStringUTF8(peripheralIdPtr),
-                Marshal.PtrToStringUTF8(serviceUUIDPtr),
-                Marshal.PtrToStringUTF8(characteristicUUIDPtr),
-                CBError.CreateOrNullFromCode(errorCode)
-            );
-        }
-
-        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralDidUpdateNotificationStateForCharacteristicHandler))]
-        internal static void PeripheralDidUpdateNotificationStateForCharacteristic(IntPtr centralPtr, IntPtr peripheralIdPtr, IntPtr serviceUUIDPtr, IntPtr characteristicUUIDPtr, int notificationState, int errorCode)
-        {
-            GetCentralManager(centralPtr)?.PeripheralDidUpdateNotificationStateForCharacteristic(
-                Marshal.PtrToStringUTF8(peripheralIdPtr),
-                Marshal.PtrToStringUTF8(serviceUUIDPtr),
-                Marshal.PtrToStringUTF8(characteristicUUIDPtr),
-                notificationState == 1,
-                CBError.CreateOrNullFromCode(errorCode)
-            );
+            GetDelegate(centralPtr)?.DidUpdateState(state);
         }
     }
 }

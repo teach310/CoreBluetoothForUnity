@@ -9,46 +9,44 @@ namespace CoreBluetoothTests
 {
     public class CBCentralManagerDelegateMock : ICBCentralManagerDelegate
     {
-        public CBManagerState state { get; private set; } = CBManagerState.Unknown;
+        public CBManagerState State { get; private set; } = CBManagerState.Unknown;
 
-        public void UpdatedState(CBCentralManager central) => state = central.State;
+        public void DidUpdateState(CBCentralManager central) => State = central.State;
     }
 
-    public class CBCentralManagerTests
+    public class CBCentralManagerTests : CBTests
     {
-        string validUUID1 = "EA521290-A651-4FA0-A958-0CE73F4DAE55";
-
         [Test]
         public void Create()
         {
-            using var centralManager = CBCentralManager.Create();
+            using var centralManager = new CBCentralManager();
             Assert.That(centralManager, Is.Not.Null);
         }
 
         [Test]
         public void Release()
         {
-            CBCentralManager centralManager;
-            using (centralManager = CBCentralManager.Create()) { }
+            var centralManager = new CBCentralManager();
+            centralManager.Dispose();
             var delegateMock = new CBCentralManagerDelegateMock();
             Assert.That(() => centralManager.Delegate = delegateMock, Throws.TypeOf<System.ObjectDisposedException>());
         }
 
         [UnityTest]
-        public IEnumerator DidUpdateState_CalledOnCreateAsync()
+        public IEnumerator DidUpdateState_CalledAfterNewAsync()
         {
             var delegateMock = new CBCentralManagerDelegateMock();
-            using var centralManager = CBCentralManager.Create(delegateMock);
-            Assert.That(delegateMock.state, Is.EqualTo(CBManagerState.Unknown));
+            using var centralManager = new CBCentralManager(delegateMock);
+            Assert.That(delegateMock.State, Is.EqualTo(CBManagerState.Unknown));
 
-            yield return WaitUntilWithTimeout(() => delegateMock.state != CBManagerState.Unknown, 1f);
-            Assert.That(delegateMock.state, Is.Not.EqualTo(CBManagerState.Unknown));
+            yield return WaitUntilWithTimeout(() => delegateMock.State != CBManagerState.Unknown, 1f);
+            Assert.That(delegateMock.State, Is.Not.EqualTo(CBManagerState.Unknown));
         }
 
         [UnityTest]
         public IEnumerator ScanForPeripherals_InvalidServiceUUID_Throw()
         {
-            using var centralManager = CBCentralManager.Create();
+            using var centralManager = new CBCentralManager();
             yield return WaitUntilWithTimeout(() => centralManager.State != CBManagerState.Unknown, 1f);
             if (centralManager.State != CBManagerState.PoweredOn) yield break;
 
@@ -58,7 +56,7 @@ namespace CoreBluetoothTests
         [UnityTest]
         public IEnumerator ScanStartStop()
         {
-            using var centralManager = CBCentralManager.Create();
+            using var centralManager = new CBCentralManager();
             yield return WaitUntilWithTimeout(() => centralManager.State != CBManagerState.Unknown, 1f);
             if (centralManager.State != CBManagerState.PoweredOn) yield break;
 
@@ -69,16 +67,6 @@ namespace CoreBluetoothTests
 
             centralManager.StopScan();
             Assert.That(centralManager.IsScanning, Is.False);
-        }
-
-        IEnumerator WaitUntilWithTimeout(Func<bool> predicate, float timeout)
-        {
-            var elapsedTime = 0f;
-            while (!predicate() && elapsedTime < timeout)
-            {
-                elapsedTime += Time.deltaTime;
-                yield return null;
-            }
         }
     }
 }

@@ -6,21 +6,20 @@ namespace CoreBluetooth
     {
         readonly SafeNativeCentralManagerHandle _handle;
 
-        internal NativeCentralManagerProxy(SafeNativeCentralManagerHandle handle)
+        internal NativeCentralManagerProxy(SafeNativeCentralManagerHandle handle, INativeCentralManagerDelegate centralManagerDelegate)
         {
             _handle = handle;
+            _handle.SetDelegate(centralManagerDelegate);
         }
 
-        internal void Connect(string peripheralId)
+        internal void Connect(CBPeripheral peripheral)
         {
-            int result = NativeMethods.cb4u_central_manager_connect(_handle, peripheralId);
-            ExceptionUtils.ThrowIfPeripheralNotFound(result, peripheralId);
+            NativeMethods.cb4u_central_manager_connect(_handle, peripheral.Handle);
         }
 
-        internal void CancelPeripheralConnection(string peripheralId)
+        internal void CancelPeripheralConnection(CBPeripheral peripheral)
         {
-            int result = NativeMethods.cb4u_central_manager_cancel_peripheral_connection(_handle, peripheralId);
-            ExceptionUtils.ThrowIfPeripheralNotFound(result, peripheralId);
+            NativeMethods.cb4u_central_manager_cancel_peripheral_connection(_handle, peripheral.Handle);
         }
 
         internal void ScanForPeripherals(string[] serviceUUIDs = null)

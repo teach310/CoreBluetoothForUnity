@@ -23,39 +23,45 @@ namespace CoreBluetooth
         WithoutResponse
     }
 
-    internal interface INativeCharacteristic
-    {
-        CBCharacteristicProperties Properties { get; }
-    }
-
     /// <summary>
     /// A characteristic of a remote peripheral’s service.
     /// https://developer.apple.com/documentation/corebluetooth/cbcharacteristic
     /// </summary>
     public class CBCharacteristic
     {
+        static readonly string s_notImplementedExceptionMessage = "Not available on 'CBCharacteristic', only available on CBMutableCharacteristic.";
+
         public string UUID { get; }
 
         /// <summary>
         /// The service to which this characteristic belongs.
         /// </summary>
-        public CBService Service { get; }
+        public CBService Service { get; private set; }
+        internal void UpdateService(CBService service) => Service = service;
 
-        public byte[] Value { get; private set; }
-        internal void UpdateValue(byte[] value) => Value = value;
+        byte[] _value = null;
+        public virtual byte[] Value
+        {
+            get => _value;
+            set => throw new NotImplementedException(s_notImplementedExceptionMessage);
+        }
+        internal void UpdateValue(byte[] value) => _value = value;
 
-        public CBCharacteristicProperties Properties => _nativeCharacteristic.Properties;
+        public virtual CBCharacteristicProperties Properties
+        {
+            get => _nativeCharacteristic.Properties;
+            set => throw new NotImplementedException(s_notImplementedExceptionMessage);
+        }
 
-        public bool IsNotifying { get; private set; }
+        public bool IsNotifying { get; private set; } = false;
         internal void UpdateIsNotifying(bool isNotifying) => IsNotifying = isNotifying;
 
-        INativeCharacteristic _nativeCharacteristic;
+        NativeCharacteristicProxy _nativeCharacteristic;
 
-        internal CBCharacteristic(string uuid, CBService service, INativeCharacteristic nativeCharacteristic)
+        internal CBCharacteristic(string uuid, NativeCharacteristicProxy nativeCharacteristic)
         {
             this.UUID = uuid;
-            this.Service = service;
-            this._nativeCharacteristic = nativeCharacteristic;
+            _nativeCharacteristic = nativeCharacteristic;
         }
 
         public override string ToString()

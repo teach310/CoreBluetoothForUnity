@@ -10,26 +10,27 @@ namespace CoreBluetooth
     {
         public enum Code
         {
-            unknown = 0,
-            invalidParameters = 1,
-            invalidHandle = 2,
-            notConnected = 3,
-            outOfSpace = 4,
-            operationCancelled = 5,
-            connectionTimeout = 6,
-            peripheralDisconnected = 7,
-            uuidNotAllowed = 8,
-            alreadyAdvertising = 9,
-            connectionFailed = 10,
-            connectionLimitReached = 11,
-            operationNotSupported = 13
+            Unknown = 0,
+            InvalidParameters = 1,
+            InvalidHandle = 2,
+            NotConnected = 3,
+            OutOfSpace = 4,
+            OperationCancelled = 5,
+            ConnectionTimeout = 6,
+            PeripheralDisconnected = 7,
+            UUIDNotAllowed = 8,
+            AlreadyAdvertising = 9,
+            ConnectionFailed = 10,
+            ConnectionLimitReached = 11,
+            UnkownDevice = 12,
+            OperationNotSupported = 13
         }
 
-        public CBError.Code errorCode { get; }
+        public CBError.Code ErrorCode { get; }
 
         public CBError(Code errorCode)
         {
-            this.errorCode = errorCode;
+            this.ErrorCode = errorCode;
         }
 
         internal static CBError CreateOrNullFromCode(int code)
@@ -42,13 +43,13 @@ namespace CoreBluetooth
             }
             else
             {
-                return new CBError(Code.unknown);
+                return new CBError(Code.Unknown);
             }
         }
 
         public override string ToString()
         {
-            return $"CBError: {errorCode}";
+            return $"CBError: {ErrorCode}";
         }
     }
 }

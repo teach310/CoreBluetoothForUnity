@@ -2,9 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:CB4UBundle/CB4UBundle.xcodeproj">
-   </FileRef>
-   <FileRef
       location = "group:CB4UNativeApp/CB4UNativeApp.xcodeproj">
    </FileRef>
    <FileRef
