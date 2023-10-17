@@ -274,6 +274,7 @@ public typealias CB4UPeripheralManagerDidAddServiceHandler = @convention(c) (Uns
 public typealias CB4UPeripheralManagerDidStartAdvertisingHandler = @convention(c) (UnsafeRawPointer, Int32) -> Void
 public typealias CB4UPeripheralManagerDidSubscribeToCharacteristicHandler = @convention(c) (UnsafeRawPointer, UnsafeRawPointer, UnsafePointer<CChar>, UnsafePointer<CChar>) -> Void
 public typealias CB4UPeripheralManagerDidUnsubscribeFromCharacteristicHandler = @convention(c) (UnsafeRawPointer, UnsafeRawPointer, UnsafePointer<CChar>, UnsafePointer<CChar>) -> Void
+public typealias CB4UPeripheralManagerIsReadyToUpdateSubscribersHandler = @convention(c) (UnsafeRawPointer) -> Void
 public typealias CB4UPeripheralManagerDidReceiveReadRequestHandler = @convention(c) (UnsafeRawPointer, UnsafeRawPointer) -> Void
 public typealias CB4UPeripheralManagerDidReceiveWriteRequestsHandler = @convention(c) (UnsafeRawPointer, UnsafeRawPointer) -> Void
 
@@ -285,6 +286,7 @@ public func cb4u_peripheral_manager_register_handlers(
     _ didStartAdvertisingHandler: @escaping CB4UPeripheralManagerDidStartAdvertisingHandler,
     _ didSubscribeToCharacteristicHandler: @escaping CB4UPeripheralManagerDidSubscribeToCharacteristicHandler,
     _ didUnsubscribeFromCharacteristicHandler: @escaping CB4UPeripheralManagerDidUnsubscribeFromCharacteristicHandler,
+    _ isReadyToUpdateSubscribersHandler: @escaping CB4UPeripheralManagerIsReadyToUpdateSubscribersHandler,
     _ didReceiveReadRequestHandler: @escaping CB4UPeripheralManagerDidReceiveReadRequestHandler,
     _ didReceiveWriteRequestsHandler: @escaping CB4UPeripheralManagerDidReceiveWriteRequestsHandler
 ) {
@@ -295,6 +297,7 @@ public func cb4u_peripheral_manager_register_handlers(
     instance.didStartAdvertisingHandler = didStartAdvertisingHandler
     instance.didSubscribeToCharacteristicHandler = didSubscribeToCharacteristicHandler
     instance.didUnsubscribeFromCharacteristicHandler = didUnsubscribeFromCharacteristicHandler
+    instance.isReadyToUpdateSubscribersHandler = isReadyToUpdateSubscribersHandler
     instance.didReceiveReadRequestHandler = didReceiveReadRequestHandler
     instance.didReceiveWriteRequestsHandler = didReceiveWriteRequestsHandler
 }
@@ -346,14 +349,14 @@ public func cb4u_peripheral_manager_update_value(
     
     let data = Data(bytes: valueBytes, count: Int(valueLength))
     var centrals: [CB4UCentral]? = nil
-
+    
     if let subscribedCentralsPtr = subscribedCentralsPtr {
         centrals = (0..<Int(subscribedCentralsCount)).map { index -> CB4UCentral in
             let centralPtr = subscribedCentralsPtr[index]
             return Unmanaged<CB4UCentral>.fromOpaque(centralPtr).takeUnretainedValue()
         }
     }
-
+    
     return instance.updateValue(data, for: characteristic, onSubscribedCentrals: centrals)
 }
 

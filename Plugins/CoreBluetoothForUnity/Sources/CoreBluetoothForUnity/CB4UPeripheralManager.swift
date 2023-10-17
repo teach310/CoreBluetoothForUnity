@@ -9,6 +9,7 @@ public class CB4UPeripheralManager : NSObject {
     public var didStartAdvertisingHandler: CB4UPeripheralManagerDidStartAdvertisingHandler?
     public var didSubscribeToCharacteristicHandler: CB4UPeripheralManagerDidSubscribeToCharacteristicHandler?
     public var didUnsubscribeFromCharacteristicHandler: CB4UPeripheralManagerDidUnsubscribeFromCharacteristicHandler?
+    public var isReadyToUpdateSubscribersHandler: CB4UPeripheralManagerIsReadyToUpdateSubscribersHandler?
     public var didReceiveReadRequestHandler: CB4UPeripheralManagerDidReceiveReadRequestHandler?
     public var didReceiveWriteRequestsHandler: CB4UPeripheralManagerDidReceiveWriteRequestsHandler?
     
@@ -106,6 +107,10 @@ extension CB4UPeripheralManager : CBPeripheralManagerDelegate {
                 didUnsubscribeFromCharacteristicHandler?(selfPointer(), centralPtr, serviceIdCString, characteristicIdCString)
             }
         }
+    }
+    
+    public func peripheralManagerIsReady(toUpdateSubscribers peripheral: CBPeripheralManager) {
+        isReadyToUpdateSubscribersHandler?(selfPointer())
     }
     
     public func peripheralManager(_ peripheral: CBPeripheralManager, didReceiveRead request: CBATTRequest) {
