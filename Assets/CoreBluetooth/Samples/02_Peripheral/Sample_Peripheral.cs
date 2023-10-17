@@ -68,6 +68,12 @@ namespace CoreBluetoothSample
             _central = central;
         }
 
+        public void DidUnsubscribeFromCharacteristic(CBPeripheralManager peripheral, CBCentral central, CBCharacteristic characteristic)
+        {
+            Debug.Log($"[DidUnsubscribeFromCharacteristic] peripheral: {peripheral}  central: {central}  characteristic: {characteristic}");
+            _central = null;
+        }
+
         public void DidReceiveReadRequest(CBPeripheralManager peripheral, CBATTRequest request)
         {
             if (request.Characteristic.UUID != characteristicUUID)
