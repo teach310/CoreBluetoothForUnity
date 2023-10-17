@@ -11,6 +11,7 @@ namespace CoreBluetooth
         void DidAddService(string serviceUUID, CBError error) { }
         void DidStartAdvertising(CBError error) { }
         void DidSubscribeToCharacteristic(SafeNativeCentralHandle central, string serviceUUID, string characteristicUUID) { }
+        void DidUnsubscribeFromCharacteristic(SafeNativeCentralHandle central, string serviceUUID, string characteristicUUID) { }
         void DidReceiveReadRequest(SafeNativeATTRequestHandle request) { }
         void DidReceiveWriteRequests(SafeNativeATTRequestsHandle requests) { }
     }
@@ -36,6 +37,7 @@ namespace CoreBluetooth
                 DidAddService,
                 DidStartAdvertising,
                 DidSubscribeToCharacteristic,
+                DidUnsubscribeFromCharacteristic,
                 DidReceiveReadRequest,
                 DidReceiveWriteRequests
             );
@@ -87,6 +89,16 @@ namespace CoreBluetooth
         internal static void DidSubscribeToCharacteristic(IntPtr peripheralPtr, IntPtr centralPtr, IntPtr serviceUUIDPtr, IntPtr characteristicUUIDPtr)
         {
             GetDelegate(peripheralPtr)?.DidSubscribeToCharacteristic(
+                new SafeNativeCentralHandle(centralPtr),
+                Marshal.PtrToStringUTF8(serviceUUIDPtr),
+                Marshal.PtrToStringUTF8(characteristicUUIDPtr)
+            );
+        }
+
+        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralManagerDidUnsubscribeFromCharacteristicHandler))]
+        internal static void DidUnsubscribeFromCharacteristic(IntPtr peripheralPtr, IntPtr centralPtr, IntPtr serviceUUIDPtr, IntPtr characteristicUUIDPtr)
+        {
+            GetDelegate(peripheralPtr)?.DidUnsubscribeFromCharacteristic(
                 new SafeNativeCentralHandle(centralPtr),
                 Marshal.PtrToStringUTF8(serviceUUIDPtr),
                 Marshal.PtrToStringUTF8(characteristicUUIDPtr)

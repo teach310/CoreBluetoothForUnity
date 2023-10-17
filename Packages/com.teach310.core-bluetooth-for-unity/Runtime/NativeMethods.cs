@@ -160,6 +160,7 @@ namespace CoreBluetooth
         internal delegate void CB4UPeripheralManagerDidAddServiceHandler(IntPtr peripheralManagerPtr, IntPtr serviceUUIDPtr, int errorCode);
         internal delegate void CB4UPeripheralManagerDidStartAdvertisingHandler(IntPtr peripheralManagerPtr, int errorCode);
         internal delegate void CB4UPeripheralManagerDidSubscribeToCharacteristicHandler(IntPtr peripheralManagerPtr, IntPtr centralPtr, IntPtr serviceUUIDPtr, IntPtr characteristicUUIDPtr);
+        internal delegate void CB4UPeripheralManagerDidUnsubscribeFromCharacteristicHandler(IntPtr peripheralManagerPtr, IntPtr centralPtr, IntPtr serviceUUIDPtr, IntPtr characteristicUUIDPtr);
         internal delegate void CB4UPeripheralManagerDidReceiveReadRequestHandler(IntPtr peripheralManagerPtr, IntPtr requestPtr);
         internal delegate void CB4UPeripheralManagerDidReceiveWriteRequestsHandler(IntPtr peripheralManagerPtr, IntPtr requestsPtr);
 
@@ -170,6 +171,7 @@ namespace CoreBluetooth
             CB4UPeripheralManagerDidAddServiceHandler didAddServiceHandler,
             CB4UPeripheralManagerDidStartAdvertisingHandler didStartAdvertisingHandler,
             CB4UPeripheralManagerDidSubscribeToCharacteristicHandler didSubscribeToCharacteristicHandler,
+            CB4UPeripheralManagerDidUnsubscribeFromCharacteristicHandler didUnsubscribeFromCharacteristicHandler,
             CB4UPeripheralManagerDidReceiveReadRequestHandler didReceiveReadRequestHandler,
             CB4UPeripheralManagerDidReceiveWriteRequestsHandler didReceiveWriteRequestsHandler
         );
