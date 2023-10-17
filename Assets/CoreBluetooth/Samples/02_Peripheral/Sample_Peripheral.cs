@@ -74,6 +74,11 @@ namespace CoreBluetoothSample
             _central = null;
         }
 
+        public void IsReadyToUpdateSubscribers(CBPeripheralManager peripheral)
+        {
+            Debug.Log($"[IsReadyToUpdateSubscribers] {peripheral}");
+        }
+
         public void DidReceiveReadRequest(CBPeripheralManager peripheral, CBATTRequest request)
         {
             if (request.Characteristic.UUID != characteristicUUID)

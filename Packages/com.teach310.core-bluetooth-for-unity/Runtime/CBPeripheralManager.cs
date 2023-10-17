@@ -10,6 +10,7 @@ namespace CoreBluetooth
         void DidStartAdvertising(CBPeripheralManager peripheral, CBError error) { }
         void DidSubscribeToCharacteristic(CBPeripheralManager peripheral, CBCentral central, CBCharacteristic characteristic) { }
         void DidUnsubscribeFromCharacteristic(CBPeripheralManager peripheral, CBCentral central, CBCharacteristic characteristic) { }
+        void IsReadyToUpdateSubscribers(CBPeripheralManager peripheral) { }
         void DidReceiveReadRequest(CBPeripheralManager peripheral, CBATTRequest request) { }
         void DidReceiveWriteRequests(CBPeripheralManager peripheral, CBATTRequest[] requests) { }
     }
@@ -196,6 +197,12 @@ namespace CoreBluetooth
 
             var characteristic = ((IPeripheralManagerData)this).FindCharacteristic(serviceUUID, characteristicUUID);
             _delegate?.DidUnsubscribeFromCharacteristic(this, central, characteristic);
+        }
+
+        void INativePeripheralManagerDelegate.IsReadyToUpdateSubscribers()
+        {
+            if (_disposed) return;
+            _delegate?.IsReadyToUpdateSubscribers(this);
         }
 
         void INativePeripheralManagerDelegate.DidReceiveReadRequest(SafeNativeATTRequestHandle requestHandle)
