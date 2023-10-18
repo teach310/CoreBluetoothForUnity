@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace CoreBluetoothSample
 {
-    public class Sample_Peripheral : MonoBehaviour, ICBPeripheralManagerDelegate
+    public class SampleDebug_Peripheral : MonoBehaviour, ICBPeripheralManagerDelegate
     {
         CBPeripheralManager peripheralManager;
 

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace CoreBluetoothSample
 {
-    public class Sample_Central : MonoBehaviour, ICBCentralManagerDelegate, ICBPeripheralDelegate
+    public class SampleDebug_Central : MonoBehaviour, ICBCentralManagerDelegate, ICBPeripheralDelegate
     {
         CBCentralManager centralManager;
 
