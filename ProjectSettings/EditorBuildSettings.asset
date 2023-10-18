@@ -5,10 +5,13 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/CoreBluetooth/Samples/01_Central/Sample_CentralScene.unity
+  - enabled: 1
+    path: Assets/CoreBluetooth/Samples/12_Debug/SampleDebug_HomeScene.unity
+    guid: 23e434e4762674c2992cc53e7057e164
+  - enabled: 1
+    path: Assets/CoreBluetooth/Samples/12_Debug/SampleDebug_CentralScene.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   - enabled: 1
-    path: Assets/CoreBluetooth/Samples/02_Peripheral/Sample_PeripheralScene.unity
+    path: Assets/CoreBluetooth/Samples/12_Debug/SampleDebug_PeripheralScene.unity
     guid: 2b27971a874f5470fb58333560169398
   m_configObjects: {}
