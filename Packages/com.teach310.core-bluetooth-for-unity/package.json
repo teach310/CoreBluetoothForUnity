@@ -1,6 +1,6 @@
 {
   "name": "com.teach310.core-bluetooth-for-unity",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "displayName": "CoreBluetooth",
   "description": "Provides native Apple CoreBluetooth integration for use with Unity.",
   "unity": "2022.3",
