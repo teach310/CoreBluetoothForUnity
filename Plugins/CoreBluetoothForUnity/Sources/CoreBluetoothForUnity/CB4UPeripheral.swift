@@ -80,6 +80,10 @@ public class CB4UPeripheral : NSObject {
         }
     }
     
+    public func maximumWriteValueLength(_ writeType: CBCharacteristicWriteType) -> Int32 {
+        return Int32(peripheral.maximumWriteValueLength(for: writeType))
+    }
+    
     public func setNotifyValue(_ serviceUUID: CBUUID, _ characteristicUUID: CBUUID, _ enabled: Bool) -> Int32 {
         return actionForCharacteristic(serviceUUID, characteristicUUID) { (service, characteristic) -> Void in
             peripheral.setNotifyValue(enabled, for: characteristic)
@@ -97,7 +101,7 @@ extension CB4UPeripheral : CBPeripheralDelegate {
     
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
         let commaSeparatedServiceIds = peripheral.services?.map { $0.uuid.uuidString }.joined(separator: ",") ?? ""
-
+        
         commaSeparatedServiceIds.withCString { (commaSeparatedServiceIdsCString) in
             didDiscoverServicesHandler?(selfPointer(), commaSeparatedServiceIdsCString, errorToCode(error))
         }
@@ -106,7 +110,7 @@ extension CB4UPeripheral : CBPeripheralDelegate {
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
         let serviceId = service.uuid.uuidString
         let commaSeparatedCharacteristicIds = service.characteristics?.map { $0.uuid.uuidString }.joined(separator: ",") ?? ""
-
+        
         serviceId.withCString { (serviceIdCString) in
             commaSeparatedCharacteristicIds.withCString { (commaSeparatedCharacteristicIdsCString) in
                 didDiscoverCharacteristicsHandler?(selfPointer(), serviceIdCString, commaSeparatedCharacteristicIdsCString, errorToCode(error))

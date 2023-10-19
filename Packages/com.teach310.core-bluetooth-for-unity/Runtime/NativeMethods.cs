@@ -133,6 +133,9 @@ namespace CoreBluetooth
         );
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern int cb4u_peripheral_maximum_write_value_length(SafeNativePeripheralHandle handle, int writeType);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern int cb4u_peripheral_set_notify_value(
             SafeNativePeripheralHandle handle,
             [MarshalAs(UnmanagedType.LPStr), In] string serviceUUID,
