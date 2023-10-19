@@ -229,6 +229,16 @@ public func cb4u_peripheral_write_characteristic_value(
     return instance.writeCharacteristicValue(CBUUID(string: String(cString: serviceUUID)), CBUUID(string: String(cString: characteristicUUID)), data, CBCharacteristicWriteType(rawValue: Int(writeType))!)
 }
 
+@_cdecl("cb4u_peripheral_maximum_write_value_length")
+public func cb4u_peripheral_maximum_write_value_length(
+    _ peripheralPtr: UnsafeRawPointer,
+    _ writeType: Int32
+) -> Int32 {
+    let instance = Unmanaged<CB4UPeripheral>.fromOpaque(peripheralPtr).takeUnretainedValue()
+    
+    return Int32(instance.maximumWriteValueLength(CBCharacteristicWriteType(rawValue: Int(writeType))!))
+}
+
 @_cdecl("cb4u_peripheral_set_notify_value")
 public func cb4u_peripheral_set_notify_value(
     _ peripheralPtr: UnsafeRawPointer,
