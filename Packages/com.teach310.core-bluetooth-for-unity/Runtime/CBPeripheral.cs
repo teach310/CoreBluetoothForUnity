@@ -96,6 +96,14 @@ namespace CoreBluetooth
         }
 
         /// <summary>
+        /// The maximum amount of data, in bytes, you can send to a characteristic in a single write type.
+        /// </summary>
+        public int GetMaximumWriteValueLength(CBCharacteristicWriteType type)
+        {
+            return _nativePeripheral.GetMaximumWriteValueLength(type);
+        }
+
+        /// <summary>
         /// Sets notifications or indications for the value of a specified characteristic.
         /// </summary>
         public void SetNotifyValue(bool enabled, CBCharacteristic characteristic)

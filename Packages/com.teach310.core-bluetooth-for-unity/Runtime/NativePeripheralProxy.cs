@@ -106,6 +106,11 @@ namespace CoreBluetooth
             ExceptionUtils.ThrowIfCharacteristicNotFound(result, characteristic.UUID);
         }
 
+        internal int GetMaximumWriteValueLength(CBCharacteristicWriteType writeType)
+        {
+            return NativeMethods.cb4u_peripheral_maximum_write_value_length(_handle, (int)writeType);
+        }
+
         internal void SetNotifyValue(bool enabled, CBCharacteristic characteristic)
         {
             int result = NativeMethods.cb4u_peripheral_set_notify_value(
