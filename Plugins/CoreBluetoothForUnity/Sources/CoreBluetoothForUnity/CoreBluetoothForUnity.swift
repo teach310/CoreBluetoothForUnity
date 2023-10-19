@@ -258,6 +258,13 @@ public func cb4u_peripheral_state(_ peripheralPtr: UnsafeRawPointer) -> Int32 {
     return Int32(instance.state.rawValue)
 }
 
+@_cdecl("cb4u_peripheral_can_send_write_without_response")
+public func cb4u_peripheral_can_send_write_without_response(_ peripheralPtr: UnsafeRawPointer) -> Bool {
+    let instance = Unmanaged<CB4UPeripheral>.fromOpaque(peripheralPtr).takeUnretainedValue()
+    
+    return instance.canSendWriteWithoutResponse
+}
+
 @_cdecl("cb4u_peripheral_characteristic_properties")
 public func cb4u_peripheral_characteristic_properties(
     _ peripheralPtr: UnsafeRawPointer,

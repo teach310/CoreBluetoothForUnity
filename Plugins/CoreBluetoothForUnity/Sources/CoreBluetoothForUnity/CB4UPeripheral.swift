@@ -93,6 +93,10 @@ public class CB4UPeripheral : NSObject {
     public var state: CBPeripheralState {
         return peripheral.state
     }
+    
+    public var canSendWriteWithoutResponse: Bool {
+        return peripheral.canSendWriteWithoutResponse
+    }
 }
 
 extension CB4UPeripheral : CBPeripheralDelegate {
