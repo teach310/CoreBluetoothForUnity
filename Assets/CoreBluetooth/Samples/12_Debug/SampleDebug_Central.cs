@@ -42,6 +42,7 @@ namespace CoreBluetoothSample
         public void DidConnectPeripheral(CBCentralManager central, CBPeripheral peripheral)
         {
             Debug.Log($"[DidConnectPeripheral] peripheral: {peripheral}");
+            Debug.Log($"[DidConnectPeripheral] mtu: {peripheral.GetMaximumWriteValueLength(CBCharacteristicWriteType.WithResponse)}");
             peripheral.DiscoverServices(new string[] { _serviceUUID });
         }
 
