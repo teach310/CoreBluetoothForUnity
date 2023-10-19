@@ -125,6 +125,11 @@ namespace CoreBluetoothSample
             }
         }
 
+        public void IsReadyToSendWriteWithoutResponse(CBPeripheral peripheral)
+        {
+            Debug.Log($"[IsReadyToSendWriteWithoutResponse] {peripheral}");
+        }
+
         public void DidUpdateNotificationStateForCharacteristic(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error)
         {
             Debug.Log($"[DidUpdateNotificationStateForCharacteristic] characteristic: {characteristic}");
@@ -149,9 +154,14 @@ namespace CoreBluetoothSample
                 return;
             }
 
+            if (!_peripheral.CanSendWriteWithoutResponse)
+            {
+                Debug.Log("CanSendWriteWithoutResponse is false.");
+                return;
+            }
             var value = UnityEngine.Random.Range(100, 1000).ToString();
             var data = Encoding.UTF8.GetBytes(value);
-            _peripheral.WriteValue(data, _remoteCharacteristic, CBCharacteristicWriteType.WithResponse);
+            _peripheral.WriteValue(data, _remoteCharacteristic, CBCharacteristicWriteType.WithoutResponse);
         }
 
         public void OnClickRead()

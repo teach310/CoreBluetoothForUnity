@@ -19,6 +19,7 @@ namespace CoreBluetooth
         void DidDiscoverCharacteristics(CBPeripheral peripheral, CBService service, CBError error) { }
         void DidUpdateValueForCharacteristic(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error) { }
         void DidWriteValueForCharacteristic(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error) { }
+        void IsReadyToSendWriteWithoutResponse(CBPeripheral peripheral) { }
         void DidUpdateNotificationStateForCharacteristic(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error) { }
     }
 
@@ -71,27 +72,44 @@ namespace CoreBluetooth
         /// Discovers the specified services of the peripheral.
         /// If the servicesUUIDs parameter is nil, this method returns all of the peripheral’s available services. This is much slower than providing an array of service UUIDs to search for.
         /// </summary>
-        public void DiscoverServices(string[] serviceUUIDs = null) => _nativePeripheral.DiscoverServices(serviceUUIDs);
+        public void DiscoverServices(string[] serviceUUIDs = null)
+        {
+            ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
+            _nativePeripheral.DiscoverServices(serviceUUIDs);
+        }
 
         /// <summary>
         /// Discovers the specified characteristics of a service.
         /// </summary>
-        public void DiscoverCharacteristics(string[] characteristicUUIDs, CBService service) => _nativePeripheral.DiscoverCharacteristics(characteristicUUIDs, service);
+        public void DiscoverCharacteristics(string[] characteristicUUIDs, CBService service)
+        {
+            ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
+            _nativePeripheral.DiscoverCharacteristics(characteristicUUIDs, service);
+        }
 
         /// <summary>
         /// Discover all characteristics in a service (slow).
         /// </summary>
-        public void DiscoverCharacteristics(CBService service) => DiscoverCharacteristics(null, service);
+        public void DiscoverCharacteristics(CBService service)
+        {
+            ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
+            DiscoverCharacteristics(null, service);
+        }
 
         /// <summary>
         /// Retrieves the value of a specified characteristic.
         /// When you call this method to read the value of a characteristic, the peripheral calls the peripheral(_:didUpdateValueFor:error:) method of its delegate object.
         /// If the peripheral successfully reads the value of the characteristic, you can access it through the characteristic’s value property.
         /// </summary>
-        public void ReadValue(CBCharacteristic characteristic) => _nativePeripheral.ReadValue(characteristic);
+        public void ReadValue(CBCharacteristic characteristic)
+        {
+            ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
+            _nativePeripheral.ReadValue(characteristic);
+        }
 
         public void WriteValue(byte[] data, CBCharacteristic characteristic, CBCharacteristicWriteType type)
         {
+            ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
             _nativePeripheral.WriteValue(data, characteristic, type);
         }
 
@@ -100,6 +118,7 @@ namespace CoreBluetooth
         /// </summary>
         public int GetMaximumWriteValueLength(CBCharacteristicWriteType type)
         {
+            ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
             return _nativePeripheral.GetMaximumWriteValueLength(type);
         }
 
@@ -108,6 +127,7 @@ namespace CoreBluetooth
         /// </summary>
         public void SetNotifyValue(bool enabled, CBCharacteristic characteristic)
         {
+            ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
             _nativePeripheral.SetNotifyValue(enabled, characteristic);
         }
 
@@ -120,6 +140,15 @@ namespace CoreBluetooth
             {
                 ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
                 return _nativePeripheral.State;
+            }
+        }
+
+        public bool CanSendWriteWithoutResponse
+        {
+            get
+            {
+                ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
+                return _nativePeripheral.CanSendWriteWithoutResponse;
             }
         }
 
@@ -185,6 +214,12 @@ namespace CoreBluetooth
             if (characteristic == null) return;
 
             Delegate?.DidWriteValueForCharacteristic(this, characteristic, error);
+        }
+
+        void INativePeripheralDelegate.IsReadyToSendWriteWithoutResponse()
+        {
+            if (_disposed) return;
+            Delegate?.IsReadyToSendWriteWithoutResponse(this);
         }
 
         void INativePeripheralDelegate.DidUpdateNotificationStateForCharacteristic(string serviceUUID, string characteristicUUID, bool isNotifying, CBError error)

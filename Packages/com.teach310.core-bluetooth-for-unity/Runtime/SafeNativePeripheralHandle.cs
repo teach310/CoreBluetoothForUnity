@@ -10,6 +10,7 @@ namespace CoreBluetooth
         void DidDiscoverCharacteristics(string serviceUUID, string[] characteristicUUIDs, CBError error) { }
         void DidUpdateValueForCharacteristic(string serviceUUID, string characteristicUUID, byte[] data, CBError error) { }
         void DidWriteValueForCharacteristic(string serviceUUID, string characteristicUUID, CBError error) { }
+        void IsReadyToSendWriteWithoutResponse() { }
         void DidUpdateNotificationStateForCharacteristic(string serviceUUID, string characteristicUUID, bool enabled, CBError error) { }
     }
 
@@ -32,6 +33,7 @@ namespace CoreBluetooth
                 DidDiscoverCharacteristics,
                 DidUpdateValueForCharacteristic,
                 DidWriteValueForCharacteristic,
+                IsReadyToSendWriteWithoutResponse,
                 DidUpdateNotificationStateForCharacteristic
             );
         }
@@ -110,6 +112,12 @@ namespace CoreBluetooth
                 Marshal.PtrToStringUTF8(characteristicUUIDPtr),
                 CBError.CreateOrNullFromCode(errorCode)
             );
+        }
+
+        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralIsReadyToSendWriteWithoutResponseHandler))]
+        internal static void IsReadyToSendWriteWithoutResponse(IntPtr peripheralPtr)
+        {
+            GetDelegate(peripheralPtr)?.IsReadyToSendWriteWithoutResponse();
         }
 
         [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralDidUpdateNotificationStateForCharacteristicHandler))]
