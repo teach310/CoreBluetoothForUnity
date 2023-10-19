@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace CoreBluetoothEditor
 {
-    public class BuildPostProcessor : IPostprocessBuildWithReport
+    public class BuildPostprocessor : IPostprocessBuildWithReport
     {
         public int callbackOrder { get { return 1; } }
 
