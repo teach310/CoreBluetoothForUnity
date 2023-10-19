@@ -4,26 +4,26 @@ using UnityEngine;
 
 namespace CoreBluetoothSample
 {
-    public class Sample_Central : MonoBehaviour, ICBCentralManagerDelegate, ICBPeripheralDelegate
+    public class SampleDebug_Central : MonoBehaviour, ICBCentralManagerDelegate, ICBPeripheralDelegate
     {
-        CBCentralManager centralManager;
-
         // See the following for generating UUIDs:
         // https://www.uuidgenerator.net/
-        string serviceUUID = "068C47B7-FC04-4D47-975A-7952BE1A576F";
-        string characteristicUUID = "E3737B3F-A08D-405B-B32D-35A8F6C64C5D";
-        CBPeripheral peripheral;
-        CBCharacteristic remoteCharacteristic;
+        string _serviceUUID = "068C47B7-FC04-4D47-975A-7952BE1A576F";
+        string _characteristicUUID = "E3737B3F-A08D-405B-B32D-35A8F6C64C5D";
+
+        CBCentralManager _centralManager;
+        CBPeripheral _peripheral;
+        CBCharacteristic _remoteCharacteristic;
 
         void Start()
         {
-            centralManager = new CBCentralManager(this);
+            _centralManager = new CBCentralManager(this);
         }
 
         public void DidDiscoverPeripheral(CBCentralManager central, CBPeripheral peripheral, int rssi)
         {
             Debug.Log($"[DidDiscoverPeripheral] peripheral: {peripheral}  rssi: {rssi}");
-            this.peripheral = peripheral;
+            _peripheral = peripheral;
             peripheral.Delegate = this;
             central.StopScan();
             central.Connect(peripheral);
@@ -35,14 +35,14 @@ namespace CoreBluetoothSample
             if (central.State == CBManagerState.PoweredOn)
             {
                 Debug.Log($"[DidUpdateState] Start scanning for peripherals...");
-                central.ScanForPeripherals(new string[] { serviceUUID });
+                central.ScanForPeripherals(new string[] { _serviceUUID });
             }
         }
 
         public void DidConnectPeripheral(CBCentralManager central, CBPeripheral peripheral)
         {
             Debug.Log($"[DidConnectPeripheral] peripheral: {peripheral}");
-            peripheral.DiscoverServices(new string[] { serviceUUID });
+            peripheral.DiscoverServices(new string[] { _serviceUUID });
         }
 
         public void DidDisconnectPeripheral(CBCentralManager central, CBPeripheral peripheral, CBError error)
@@ -67,7 +67,7 @@ namespace CoreBluetoothSample
             foreach (var service in peripheral.Services)
             {
                 Debug.Log($"[DidDiscoverServices] service: {service}, start discovering characteristics...");
-                peripheral.DiscoverCharacteristics(new string[] { characteristicUUID }, service);
+                peripheral.DiscoverCharacteristics(new string[] { _characteristicUUID }, service);
             }
         }
 
@@ -84,9 +84,9 @@ namespace CoreBluetoothSample
             {
                 Debug.Log($"[DidDiscoverCharacteristics] characteristic: {characteristic}");
 
-                if (characteristic.UUID == characteristicUUID)
+                if (characteristic.UUID == _characteristicUUID)
                 {
-                    remoteCharacteristic = characteristic;
+                    _remoteCharacteristic = characteristic;
                 }
 
                 if (characteristic.Properties.HasFlag(CBCharacteristicProperties.Notify))
@@ -136,13 +136,13 @@ namespace CoreBluetoothSample
 
         public void OnClickWrite()
         {
-            if (peripheral == null)
+            if (_peripheral == null)
             {
                 Debug.Log("peripheral is null.");
                 return;
             }
 
-            if (remoteCharacteristic == null)
+            if (_remoteCharacteristic == null)
             {
                 Debug.Log("remoteCharacteristic is null.");
                 return;
@@ -150,32 +150,32 @@ namespace CoreBluetoothSample
 
             var value = UnityEngine.Random.Range(100, 1000).ToString();
             var data = Encoding.UTF8.GetBytes(value);
-            peripheral.WriteValue(data, remoteCharacteristic, CBCharacteristicWriteType.WithResponse);
+            _peripheral.WriteValue(data, _remoteCharacteristic, CBCharacteristicWriteType.WithResponse);
         }
 
         public void OnClickRead()
         {
-            if (peripheral == null)
+            if (_peripheral == null)
             {
                 Debug.Log("peripheral is null.");
                 return;
             }
 
-            if (remoteCharacteristic == null)
+            if (_remoteCharacteristic == null)
             {
                 Debug.Log("remoteCharacteristic is null.");
                 return;
             }
 
-            peripheral.ReadValue(remoteCharacteristic);
+            _peripheral.ReadValue(_remoteCharacteristic);
         }
 
         void OnDestroy()
         {
-            if (centralManager != null)
+            if (_centralManager != null)
             {
-                centralManager.Dispose();
-                centralManager = null;
+                _centralManager.Dispose();
+                _centralManager = null;
             }
         }
     }
