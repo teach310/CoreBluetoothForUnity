@@ -132,5 +132,13 @@ namespace CoreBluetooth
                 return (CBPeripheralState)state;
             }
         }
+
+        internal bool CanSendWriteWithoutResponse
+        {
+            get
+            {
+                return NativeMethods.cb4u_peripheral_can_send_write_without_response(_handle);
+            }
+        }
     }
 }

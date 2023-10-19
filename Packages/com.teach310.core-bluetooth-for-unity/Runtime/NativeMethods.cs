@@ -147,6 +147,10 @@ namespace CoreBluetooth
         internal static extern int cb4u_peripheral_state(SafeNativePeripheralHandle handle);
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        [return: MarshalAs(UnmanagedType.I1)]
+        internal static extern bool cb4u_peripheral_can_send_write_without_response(SafeNativePeripheralHandle handle);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern int cb4u_peripheral_characteristic_properties(
             SafeNativePeripheralHandle handle,
             [MarshalAs(UnmanagedType.LPStr), In] string serviceUUID,
