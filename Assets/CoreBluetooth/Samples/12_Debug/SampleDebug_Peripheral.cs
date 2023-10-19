@@ -32,7 +32,7 @@ namespace CoreBluetoothSample
                 var service = new CBMutableService(_serviceUUID, true);
                 _characteristic = new CBMutableCharacteristic(
                     _characteristicUUID,
-                    CBCharacteristicProperties.Read | CBCharacteristicProperties.Write | CBCharacteristicProperties.Notify,
+                    CBCharacteristicProperties.Read | CBCharacteristicProperties.WriteWithoutResponse | CBCharacteristicProperties.Notify,
                     null,
                     CBAttributePermissions.Readable | CBAttributePermissions.Writeable
                 );
