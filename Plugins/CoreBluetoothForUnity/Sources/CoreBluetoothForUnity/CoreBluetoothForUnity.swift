@@ -116,6 +116,7 @@ public typealias CB4UPeripheralDidDiscoverServicesHandler = @convention(c) (Unsa
 public typealias CB4UPeripheralDidDiscoverCharacteristicsHandler = @convention(c) (UnsafeRawPointer, UnsafePointer<CChar>, UnsafePointer<CChar>, Int32) -> Void
 public typealias CB4UPeripheralDidUpdateValueForCharacteristicHandler = @convention(c) (UnsafeRawPointer, UnsafePointer<CChar>, UnsafePointer<CChar>, UnsafePointer<UInt8>, Int32, Int32) -> Void
 public typealias CB4UPeripheralDidWriteValueForCharacteristicHandler = @convention(c) (UnsafeRawPointer, UnsafePointer<CChar>, UnsafePointer<CChar>, Int32) -> Void
+public typealias CB4UPeripheralIsReadyToSendWriteWithoutResponseHandler = @convention(c) (UnsafeRawPointer) -> Void
 public typealias CB4UPeripheralDidUpdateNotificationStateForCharacteristicHandler = @convention(c) (UnsafeRawPointer, UnsafePointer<CChar>, UnsafePointer<CChar>, Int32, Int32) -> Void
 
 @_cdecl("cb4u_peripheral_register_handlers")
@@ -125,6 +126,7 @@ public func cb4u_peripheral_register_handlers(
     _ didDiscoverCharacteristicsHandler: @escaping CB4UPeripheralDidDiscoverCharacteristicsHandler,
     _ didUpdateValueForCharacteristicHandler: @escaping CB4UPeripheralDidUpdateValueForCharacteristicHandler,
     _ didWriteValueForCharacteristicHandler: @escaping CB4UPeripheralDidWriteValueForCharacteristicHandler,
+    _ isReadyToSendWriteWithoutResponseHandler: @escaping CB4UPeripheralIsReadyToSendWriteWithoutResponseHandler,
     _ didUpdateNotificationStateForCharacteristicHandler: @escaping CB4UPeripheralDidUpdateNotificationStateForCharacteristicHandler
 ) {
     let instance = Unmanaged<CB4UPeripheral>.fromOpaque(peripheralPtr).takeUnretainedValue()
@@ -133,6 +135,7 @@ public func cb4u_peripheral_register_handlers(
     instance.didDiscoverCharacteristicsHandler = didDiscoverCharacteristicsHandler
     instance.didUpdateValueForCharacteristicHandler = didUpdateValueForCharacteristicHandler
     instance.didWriteValueForCharacteristicHandler = didWriteValueForCharacteristicHandler
+    instance.isReadyToSendWriteWithoutResponseHandler = isReadyToSendWriteWithoutResponseHandler
     instance.didUpdateNotificationStateForCharacteristicHandler = didUpdateNotificationStateForCharacteristicHandler
 }
 

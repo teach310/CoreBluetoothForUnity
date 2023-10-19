@@ -7,6 +7,7 @@ public class CB4UPeripheral : NSObject {
     public var didDiscoverCharacteristicsHandler: CB4UPeripheralDidDiscoverCharacteristicsHandler?
     public var didUpdateValueForCharacteristicHandler: CB4UPeripheralDidUpdateValueForCharacteristicHandler?
     public var didWriteValueForCharacteristicHandler: CB4UPeripheralDidWriteValueForCharacteristicHandler?
+    public var isReadyToSendWriteWithoutResponseHandler: CB4UPeripheralIsReadyToSendWriteWithoutResponseHandler?
     public var didUpdateNotificationStateForCharacteristicHandler: CB4UPeripheralDidUpdateNotificationStateForCharacteristicHandler?
     
     let success: Int32 = 0
@@ -146,6 +147,10 @@ extension CB4UPeripheral : CBPeripheralDelegate {
                 didWriteValueForCharacteristicHandler?(selfPointer(), serviceIdCString, characteristicIdCString, errorToCode(error))
             }
         }
+    }
+    
+    public func peripheralIsReady(toSendWriteWithoutResponse peripheral: CBPeripheral) {
+        isReadyToSendWriteWithoutResponseHandler?(selfPointer())
     }
     
     public func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
