@@ -22,9 +22,14 @@
   },
   "samples": [
     {
-      "displayName": "Central",
+      "displayName": "BuildPostprocessor",
+      "description": "This is a sample build postprocessor that will automatically update Info.plist",
+      "path": "Samples~/11_BuildPostprocessor"
+    },
+    {
+      "displayName": "Debug",
       "description": "This sample demonstrates how to use CoreBluetooth to scan for and connect to peripherals.",
-      "path": "Samples~/01_Central"
+      "path": "Samples~/12_Debug"
     }
   ]
 }
