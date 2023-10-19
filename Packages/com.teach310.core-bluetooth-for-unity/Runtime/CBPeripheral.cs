@@ -19,6 +19,7 @@ namespace CoreBluetooth
         void DidDiscoverCharacteristics(CBPeripheral peripheral, CBService service, CBError error) { }
         void DidUpdateValueForCharacteristic(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error) { }
         void DidWriteValueForCharacteristic(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error) { }
+        void IsReadyToSendWriteWithoutResponse(CBPeripheral peripheral) { }
         void DidUpdateNotificationStateForCharacteristic(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error) { }
     }
 
@@ -213,6 +214,12 @@ namespace CoreBluetooth
             if (characteristic == null) return;
 
             Delegate?.DidWriteValueForCharacteristic(this, characteristic, error);
+        }
+
+        void INativePeripheralDelegate.IsReadyToSendWriteWithoutResponse()
+        {
+            if (_disposed) return;
+            Delegate?.IsReadyToSendWriteWithoutResponse(this);
         }
 
         void INativePeripheralDelegate.DidUpdateNotificationStateForCharacteristic(string serviceUUID, string characteristicUUID, bool isNotifying, CBError error)
