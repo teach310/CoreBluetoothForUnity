@@ -8,20 +8,20 @@ namespace CoreBluetoothSample
 {
     public class SampleDebug_Peripheral : MonoBehaviour, ICBPeripheralManagerDelegate
     {
-        CBPeripheralManager peripheralManager;
+        string _serviceUUID = "068C47B7-FC04-4D47-975A-7952BE1A576F";
+        string _characteristicUUID = "E3737B3F-A08D-405B-B32D-35A8F6C64C5D";
 
-        string serviceUUID = "068C47B7-FC04-4D47-975A-7952BE1A576F";
-        string characteristicUUID = "E3737B3F-A08D-405B-B32D-35A8F6C64C5D";
-
-        List<IDisposable> disposables = new List<IDisposable>();
+        CBPeripheralManager _peripheralManager;
         CBCentral _central = null;
         CBMutableCharacteristic _characteristic = null;
-        byte[] value = null;
+
+        List<IDisposable> _disposables = new List<IDisposable>();
+        byte[] _value = null;
 
         void Start()
         {
-            peripheralManager = new CBPeripheralManager(this);
-            disposables.Add(peripheralManager);
+            _peripheralManager = new CBPeripheralManager(this);
+            _disposables.Add(_peripheralManager);
         }
 
         public void DidUpdateState(CBPeripheralManager peripheral)
@@ -29,17 +29,17 @@ namespace CoreBluetoothSample
             Debug.Log($"[DidUpdateState] {peripheral.State}");
             if (peripheral.State == CBManagerState.PoweredOn)
             {
-                var service = new CBMutableService(serviceUUID, true);
+                var service = new CBMutableService(_serviceUUID, true);
                 _characteristic = new CBMutableCharacteristic(
-                    characteristicUUID,
+                    _characteristicUUID,
                     CBCharacteristicProperties.Read | CBCharacteristicProperties.Write | CBCharacteristicProperties.Notify,
                     null,
                     CBAttributePermissions.Readable | CBAttributePermissions.Writeable
                 );
                 service.Characteristics = new CBCharacteristic[] { _characteristic };
                 peripheral.AddService(service);
-                disposables.Add(service);
-                disposables.Add(_characteristic);
+                _disposables.Add(service);
+                _disposables.Add(_characteristic);
             }
         }
 
@@ -51,7 +51,7 @@ namespace CoreBluetoothSample
                 var options = new StartAdvertisingOptions()
                 {
                     LocalName = "Unity",
-                    ServiceUUIDs = new string[] { serviceUUID }
+                    ServiceUUIDs = new string[] { _serviceUUID }
                 };
                 peripheral.StartAdvertising(options);
             }
@@ -81,20 +81,20 @@ namespace CoreBluetoothSample
 
         public void DidReceiveReadRequest(CBPeripheralManager peripheral, CBATTRequest request)
         {
-            if (request.Characteristic.UUID != characteristicUUID)
+            if (request.Characteristic.UUID != _characteristicUUID)
             {
                 peripheral.RespondToRequest(request, CBATTError.AttributeNotFound);
                 return;
             }
 
-            int valueLength = value?.Length ?? 0;
+            int valueLength = _value?.Length ?? 0;
             if (request.Offset > valueLength)
             {
                 peripheral.RespondToRequest(request, CBATTError.InvalidOffset);
                 return;
             }
 
-            request.Value = value ?? new byte[0];
+            request.Value = _value ?? new byte[0];
             peripheral.RespondToRequest(request, CBATTError.Success);
             Debug.Log($"[DidReceiveReadRequest] {System.Text.Encoding.UTF8.GetString(request.Value)}");
         }
@@ -104,12 +104,12 @@ namespace CoreBluetoothSample
             var firstRequest = requests[0];
             foreach (var request in requests)
             {
-                if (request.Characteristic.UUID != characteristicUUID)
+                if (request.Characteristic.UUID != _characteristicUUID)
                 {
                     peripheral.RespondToRequest(firstRequest, CBATTError.AttributeNotFound);
                     return;
                 }
-                int valueLength = value?.Length ?? 0;
+                int valueLength = _value?.Length ?? 0;
                 if (request.Offset > valueLength)
                 {
                     peripheral.RespondToRequest(firstRequest, CBATTError.InvalidOffset);
@@ -117,7 +117,7 @@ namespace CoreBluetoothSample
                 }
             }
 
-            value = firstRequest.Value;
+            _value = firstRequest.Value;
             peripheral.RespondToRequest(firstRequest, CBATTError.Success);
             Debug.Log($"[DidReceiveWriteRequests] {System.Text.Encoding.UTF8.GetString(firstRequest.Value)}");
         }
@@ -131,14 +131,14 @@ namespace CoreBluetoothSample
 
             var value = UnityEngine.Random.Range(100, 1000).ToString();
             var data = Encoding.UTF8.GetBytes(value);
-            this.value = data;
+            _value = data;
 
-            peripheralManager.UpdateValue(this.value, _characteristic, new CBCentral[] { _central });
+            _peripheralManager.UpdateValue(_value, _characteristic, new CBCentral[] { _central });
         }
 
         void OnDestroy()
         {
-            foreach (var disposable in disposables)
+            foreach (var disposable in _disposables)
             {
                 disposable.Dispose();
             }
