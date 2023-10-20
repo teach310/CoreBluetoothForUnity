@@ -77,6 +77,7 @@ namespace CoreBluetooth
         internal delegate void CB4UPeripheralIsReadyToSendWriteWithoutResponseHandler(IntPtr peripheralPtr);
         internal delegate void CB4UPeripheralDidUpdateNotificationStateForCharacteristicHandler(IntPtr peripheralPtr, IntPtr serviceUUIDPtr, IntPtr characteristicUUIDPtr, int notificationState, int errorCode);
         internal delegate void CB4UPeripheralDidReadRSSIHandler(IntPtr peripheralPtr, int rssi, int errorCode);
+        internal delegate void CB4UPeripheralDidUpdateNameHandler(IntPtr peripheralPtr);
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void cb4u_peripheral_register_handlers(
@@ -87,7 +88,8 @@ namespace CoreBluetooth
             CB4UPeripheralDidWriteValueForCharacteristicHandler didWriteValueForCharacteristicHandler,
             CB4UPeripheralIsReadyToSendWriteWithoutResponseHandler isReadyToSendWriteWithoutResponseHandler,
             CB4UPeripheralDidUpdateNotificationStateForCharacteristicHandler didUpdateNotificationStateForCharacteristicHandler,
-            CB4UPeripheralDidReadRSSIHandler didReadRSSIHandler
+            CB4UPeripheralDidReadRSSIHandler didReadRSSIHandler,
+            CB4UPeripheralDidUpdateNameHandler didUpdateNameHandler
         );
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
