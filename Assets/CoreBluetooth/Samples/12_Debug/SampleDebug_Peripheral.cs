@@ -136,6 +136,11 @@ namespace CoreBluetoothSample
             _peripheralManager.UpdateValue(_value, _characteristic, new CBCentral[] { _central });
         }
 
+        public void OnClickRemoveAllServices()
+        {
+            _peripheralManager.RemoveAllServices();
+        }
+
         void OnDestroy()
         {
             foreach (var disposable in _disposables)
