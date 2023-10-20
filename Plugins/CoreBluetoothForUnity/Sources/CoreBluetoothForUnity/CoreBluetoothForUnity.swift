@@ -343,6 +343,21 @@ public func cb4u_peripheral_manager_add_service(_ peripheralPtr: UnsafeRawPointe
     instance.add(service)
 }
 
+@_cdecl("cb4u_peripheral_manager_remove_service")
+public func cb4u_peripheral_manager_remove_service(_ peripheralPtr: UnsafeRawPointer, _ servicePtr: UnsafeRawPointer) {
+    let instance = Unmanaged<CB4UPeripheralManager>.fromOpaque(peripheralPtr).takeUnretainedValue()
+    let service = Unmanaged<CB4UMutableService>.fromOpaque(servicePtr).takeUnretainedValue()
+    
+    instance.remove(service)
+}
+
+@_cdecl("cb4u_peripheral_manager_remove_all_services")
+public func cb4u_peripheral_manager_remove_all_services(_ peripheralPtr: UnsafeRawPointer) {
+    let instance = Unmanaged<CB4UPeripheralManager>.fromOpaque(peripheralPtr).takeUnretainedValue()
+    
+    instance.removeAllServices()
+}
+
 @_cdecl("cb4u_peripheral_manager_start_advertising")
 public func cb4u_peripheral_manager_start_advertising(_ peripheralPtr: UnsafeRawPointer, _ localName: UnsafePointer<CChar>?, _ serviceUUIDs: UnsafePointer<UnsafePointer<CChar>?>, _ serviceUUIDsCount: Int32) {
     let serviceUUIDsArray = (0..<Int(serviceUUIDsCount)).map { index -> CBUUID in
