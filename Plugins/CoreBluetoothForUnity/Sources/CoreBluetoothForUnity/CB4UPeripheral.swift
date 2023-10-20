@@ -9,6 +9,7 @@ public class CB4UPeripheral : NSObject {
     public var didWriteValueForCharacteristicHandler: CB4UPeripheralDidWriteValueForCharacteristicHandler?
     public var isReadyToSendWriteWithoutResponseHandler: CB4UPeripheralIsReadyToSendWriteWithoutResponseHandler?
     public var didUpdateNotificationStateForCharacteristicHandler: CB4UPeripheralDidUpdateNotificationStateForCharacteristicHandler?
+    public var didReadRSSIHandler: CB4UPeripheralDidReadRSSIHandler?
     
     let success: Int32 = 0
     let serviceNotFound: Int32 = -2
@@ -98,6 +99,10 @@ public class CB4UPeripheral : NSObject {
     public var canSendWriteWithoutResponse: Bool {
         return peripheral.canSendWriteWithoutResponse
     }
+    
+    public func readRSSI() {
+        peripheral.readRSSI()
+    }
 }
 
 extension CB4UPeripheral : CBPeripheralDelegate {
@@ -163,5 +168,9 @@ extension CB4UPeripheral : CBPeripheralDelegate {
                 didUpdateNotificationStateForCharacteristicHandler?(selfPointer(), serviceIdCString, characteristicIdCString, Int32(notificationState), errorToCode(error))
             }
         }
+    }
+    
+    public func peripheral(_ peripheral: CBPeripheral, didReadRSSI RSSI: NSNumber, error: Error?) {
+        didReadRSSIHandler?(selfPointer(), Int32(RSSI.intValue), errorToCode(error))
     }
 }
