@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Text;
 using CoreBluetooth;
 using UnityEngine;
@@ -153,6 +154,12 @@ namespace CoreBluetoothSample
         public void DidUpdateName(CBPeripheral peripheral)
         {
             Debug.Log($"[DidUpdateName] {peripheral}");
+        }
+
+        public void DidModifyServices(CBPeripheral peripheral, CBService[] services)
+        {
+            var serviceIds = services.Select(s => s.UUID.ToString()).ToArray();
+            Debug.Log($"[DidModifyServices] services count: {services.Length}  serviceIds: {string.Join(", ", serviceIds)}");
         }
 
         public void OnClickWrite()

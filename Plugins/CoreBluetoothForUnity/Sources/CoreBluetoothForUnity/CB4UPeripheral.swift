@@ -11,6 +11,7 @@ public class CB4UPeripheral : NSObject {
     public var didUpdateNotificationStateForCharacteristicHandler: CB4UPeripheralDidUpdateNotificationStateForCharacteristicHandler?
     public var didReadRSSIHandler: CB4UPeripheralDidReadRSSIHandler?
     public var didUpdateNameHandler: CB4UPeripheralDidUpdateNameHandler?
+    public var didModifyServicesHandler: CB4UPeripheralDidModifyServicesHandler?
     
     let success: Int32 = 0
     let serviceNotFound: Int32 = -2
@@ -177,5 +178,13 @@ extension CB4UPeripheral : CBPeripheralDelegate {
     
     public func peripheralDidUpdateName(_ peripheral: CBPeripheral) {
         didUpdateNameHandler?(selfPointer())
+    }
+    
+    public func peripheral(_ peripheral: CBPeripheral, didModifyServices invalidatedServices: [CBService]) {
+        let commaSeparatedServiceIds = invalidatedServices.map { $0.uuid.uuidString }.joined(separator: ",")
+        
+        commaSeparatedServiceIds.withCString { (commaSeparatedServiceIdsCString) in
+            didModifyServicesHandler?(selfPointer(), commaSeparatedServiceIdsCString)
+        }
     }
 }

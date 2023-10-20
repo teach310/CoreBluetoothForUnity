@@ -78,6 +78,7 @@ namespace CoreBluetooth
         internal delegate void CB4UPeripheralDidUpdateNotificationStateForCharacteristicHandler(IntPtr peripheralPtr, IntPtr serviceUUIDPtr, IntPtr characteristicUUIDPtr, int notificationState, int errorCode);
         internal delegate void CB4UPeripheralDidReadRSSIHandler(IntPtr peripheralPtr, int rssi, int errorCode);
         internal delegate void CB4UPeripheralDidUpdateNameHandler(IntPtr peripheralPtr);
+        internal delegate void CB4UPeripheralDidModifyServicesHandler(IntPtr peripheralPtr, IntPtr commaSeparatedServiceUUIDsPtr);
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void cb4u_peripheral_register_handlers(
@@ -89,7 +90,8 @@ namespace CoreBluetooth
             CB4UPeripheralIsReadyToSendWriteWithoutResponseHandler isReadyToSendWriteWithoutResponseHandler,
             CB4UPeripheralDidUpdateNotificationStateForCharacteristicHandler didUpdateNotificationStateForCharacteristicHandler,
             CB4UPeripheralDidReadRSSIHandler didReadRSSIHandler,
-            CB4UPeripheralDidUpdateNameHandler didUpdateNameHandler
+            CB4UPeripheralDidUpdateNameHandler didUpdateNameHandler,
+            CB4UPeripheralDidModifyServicesHandler didModifyServicesHandler
         );
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
@@ -199,6 +201,15 @@ namespace CoreBluetooth
             SafeNativePeripheralManagerHandle peripheralHandle,
             SafeNativeMutableServiceHandle serviceHandle
         );
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void cb4u_peripheral_manager_remove_service(
+            SafeNativePeripheralManagerHandle peripheralHandle,
+            SafeNativeMutableServiceHandle serviceHandle
+        );
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void cb4u_peripheral_manager_remove_all_services(SafeNativePeripheralManagerHandle peripheralHandle);
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void cb4u_peripheral_manager_start_advertising(

@@ -120,6 +120,7 @@ public typealias CB4UPeripheralIsReadyToSendWriteWithoutResponseHandler = @conve
 public typealias CB4UPeripheralDidUpdateNotificationStateForCharacteristicHandler = @convention(c) (UnsafeRawPointer, UnsafePointer<CChar>, UnsafePointer<CChar>, Int32, Int32) -> Void
 public typealias CB4UPeripheralDidReadRSSIHandler = @convention(c) (UnsafeRawPointer, Int32, Int32) -> Void
 public typealias CB4UPeripheralDidUpdateNameHandler = @convention(c) (UnsafeRawPointer) -> Void
+public typealias CB4UPeripheralDidModifyServicesHandler = @convention(c) (UnsafeRawPointer, UnsafePointer<CChar>) -> Void
 
 @_cdecl("cb4u_peripheral_register_handlers")
 public func cb4u_peripheral_register_handlers(
@@ -131,7 +132,8 @@ public func cb4u_peripheral_register_handlers(
     _ isReadyToSendWriteWithoutResponseHandler: @escaping CB4UPeripheralIsReadyToSendWriteWithoutResponseHandler,
     _ didUpdateNotificationStateForCharacteristicHandler: @escaping CB4UPeripheralDidUpdateNotificationStateForCharacteristicHandler,
     _ didReadRSSIHandler: @escaping CB4UPeripheralDidReadRSSIHandler,
-    _ didUpdateNameHandler: @escaping CB4UPeripheralDidUpdateNameHandler
+    _ didUpdateNameHandler: @escaping CB4UPeripheralDidUpdateNameHandler,
+    _ didModifyServicesHandler: @escaping CB4UPeripheralDidModifyServicesHandler
 ) {
     let instance = Unmanaged<CB4UPeripheral>.fromOpaque(peripheralPtr).takeUnretainedValue()
     
@@ -143,6 +145,7 @@ public func cb4u_peripheral_register_handlers(
     instance.didUpdateNotificationStateForCharacteristicHandler = didUpdateNotificationStateForCharacteristicHandler
     instance.didReadRSSIHandler = didReadRSSIHandler
     instance.didUpdateNameHandler = didUpdateNameHandler
+    instance.didModifyServicesHandler = didModifyServicesHandler
 }
 
 @_cdecl("cb4u_peripheral_identifier")
@@ -341,6 +344,21 @@ public func cb4u_peripheral_manager_add_service(_ peripheralPtr: UnsafeRawPointe
     let service = Unmanaged<CB4UMutableService>.fromOpaque(servicePtr).takeUnretainedValue()
     
     instance.add(service)
+}
+
+@_cdecl("cb4u_peripheral_manager_remove_service")
+public func cb4u_peripheral_manager_remove_service(_ peripheralPtr: UnsafeRawPointer, _ servicePtr: UnsafeRawPointer) {
+    let instance = Unmanaged<CB4UPeripheralManager>.fromOpaque(peripheralPtr).takeUnretainedValue()
+    let service = Unmanaged<CB4UMutableService>.fromOpaque(servicePtr).takeUnretainedValue()
+    
+    instance.remove(service)
+}
+
+@_cdecl("cb4u_peripheral_manager_remove_all_services")
+public func cb4u_peripheral_manager_remove_all_services(_ peripheralPtr: UnsafeRawPointer) {
+    let instance = Unmanaged<CB4UPeripheralManager>.fromOpaque(peripheralPtr).takeUnretainedValue()
+    
+    instance.removeAllServices()
 }
 
 @_cdecl("cb4u_peripheral_manager_start_advertising")

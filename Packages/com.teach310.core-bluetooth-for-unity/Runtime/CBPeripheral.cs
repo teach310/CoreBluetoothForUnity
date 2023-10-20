@@ -23,6 +23,7 @@ namespace CoreBluetooth
         void DidUpdateNotificationStateForCharacteristic(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error) { }
         void DidReadRSSI(CBPeripheral peripheral, int rssi, CBError error) { }
         void DidUpdateName(CBPeripheral peripheral) { }
+        void DidModifyServices(CBPeripheral peripheral, CBService[] services) { }
     }
 
     /// <summary>
@@ -252,6 +253,23 @@ namespace CoreBluetooth
         {
             if (_disposed) return;
             Delegate?.DidUpdateName(this);
+        }
+
+        void INativePeripheralDelegate.DidModifyServices(string[] invalidatedServiceUUIDs)
+        {
+            if (_disposed) return;
+            List<CBService> invalidatedServices = new List<CBService>();
+            foreach (var uuid in invalidatedServiceUUIDs)
+            {
+                var service = _services.FirstOrDefault(s => s.UUID == uuid);
+                if (service != null)
+                {
+                    invalidatedServices.Add(service);
+                    _services.Remove(service);
+                }
+            }
+
+            Delegate?.DidModifyServices(this, invalidatedServices.ToArray());
         }
 
         public override string ToString()

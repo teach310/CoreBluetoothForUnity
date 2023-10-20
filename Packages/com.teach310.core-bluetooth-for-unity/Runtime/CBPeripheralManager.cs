@@ -74,7 +74,26 @@ namespace CoreBluetooth
 
             _addingServiceUUIDs.Add(service.UUID);
             _services.Add(service.UUID, service);
-            _nativePeripheralManagerProxy.AddService(service);
+            _nativePeripheralManagerProxy.AddService(service.Handle);
+        }
+
+        public void RemoveService(CBMutableService service)
+        {
+            ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
+            if (!_services.ContainsKey(service.UUID))
+            {
+                throw new ArgumentException($"Service {service} is not added.");
+            }
+
+            _services.Remove(service.UUID);
+            _nativePeripheralManagerProxy.RemoveService(service.Handle);
+        }
+
+        public void RemoveAllServices()
+        {
+            ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
+            _services.Clear();
+            _nativePeripheralManagerProxy.RemoveAllServices();
         }
 
         public void StartAdvertising(StartAdvertisingOptions options = null)

@@ -14,6 +14,7 @@ namespace CoreBluetooth
         void DidUpdateNotificationStateForCharacteristic(string serviceUUID, string characteristicUUID, bool enabled, CBError error) { }
         void DidReadRSSI(int rssi, CBError error) { }
         void DidUpdateName() { }
+        void DidModifyServices(string[] invalidatedServiceUUIDs) { }
     }
 
     internal class SafeNativePeripheralHandle : SafeHandle
@@ -38,7 +39,8 @@ namespace CoreBluetooth
                 IsReadyToSendWriteWithoutResponse,
                 DidUpdateNotificationStateForCharacteristic,
                 DidReadRSSI,
-                DidUpdateName
+                DidUpdateName,
+                DidModifyServices
             );
         }
 
@@ -148,6 +150,20 @@ namespace CoreBluetooth
         internal static void DidUpdateName(IntPtr peripheralPtr)
         {
             GetDelegate(peripheralPtr)?.DidUpdateName();
+        }
+
+        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralDidModifyServicesHandler))]
+        internal static void DidModifyServices(IntPtr peripheralPtr, IntPtr commaSeparatedServiceUUIDsPtr)
+        {
+            string commaSeparatedServiceUUIDs = Marshal.PtrToStringUTF8(commaSeparatedServiceUUIDsPtr);
+            if (string.IsNullOrEmpty(commaSeparatedServiceUUIDs))
+            {
+                throw new ArgumentException("commaSeparatedServiceUUIDs is null or empty.");
+            }
+
+            GetDelegate(peripheralPtr)?.DidModifyServices(
+                commaSeparatedServiceUUIDs.Split(',')
+            );
         }
     }
 }

@@ -40,6 +40,14 @@ public class CB4UPeripheralManager : NSObject {
         peripheralManager.add(service.service)
     }
     
+    public func remove(_ service: CB4UMutableService) {
+        peripheralManager.remove(service.service)
+    }
+    
+    public func removeAllServices() {
+        peripheralManager.removeAllServices()
+    }
+    
     public func startAdvertising(_ options: StartAdvertisingOptions?) {
         peripheralManager.startAdvertising(options?.advertisementData())
     }
