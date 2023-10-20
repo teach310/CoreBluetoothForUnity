@@ -21,6 +21,7 @@ namespace CoreBluetooth
         void DidWriteValueForCharacteristic(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error) { }
         void IsReadyToSendWriteWithoutResponse(CBPeripheral peripheral) { }
         void DidUpdateNotificationStateForCharacteristic(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error) { }
+        void DidReadRSSI(CBPeripheral peripheral, int rssi, CBError error) { }
     }
 
     /// <summary>
@@ -152,6 +153,15 @@ namespace CoreBluetooth
             }
         }
 
+        /// <summary>
+        /// Retrieves the current RSSI value for the peripheral while connected to the central manager.
+        /// </summary>
+        public void ReadRSSI()
+        {
+            ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
+            _nativePeripheral.ReadRSSI();
+        }
+
         internal CBCharacteristic FindCharacteristic(string serviceUUID, string characteristicUUID)
         {
             if (string.IsNullOrEmpty(serviceUUID))
@@ -229,6 +239,12 @@ namespace CoreBluetooth
             if (characteristic == null) return;
             characteristic.UpdateIsNotifying(isNotifying);
             Delegate?.DidUpdateNotificationStateForCharacteristic(this, characteristic, error);
+        }
+
+        void INativePeripheralDelegate.DidReadRSSI(int rssi, CBError error)
+        {
+            if (_disposed) return;
+            Delegate?.DidReadRSSI(this, rssi, error);
         }
 
         public override string ToString()

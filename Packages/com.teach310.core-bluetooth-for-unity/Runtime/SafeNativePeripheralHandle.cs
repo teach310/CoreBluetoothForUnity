@@ -12,6 +12,7 @@ namespace CoreBluetooth
         void DidWriteValueForCharacteristic(string serviceUUID, string characteristicUUID, CBError error) { }
         void IsReadyToSendWriteWithoutResponse() { }
         void DidUpdateNotificationStateForCharacteristic(string serviceUUID, string characteristicUUID, bool enabled, CBError error) { }
+        void DidReadRSSI(int rssi, CBError error) { }
     }
 
     internal class SafeNativePeripheralHandle : SafeHandle
@@ -34,7 +35,8 @@ namespace CoreBluetooth
                 DidUpdateValueForCharacteristic,
                 DidWriteValueForCharacteristic,
                 IsReadyToSendWriteWithoutResponse,
-                DidUpdateNotificationStateForCharacteristic
+                DidUpdateNotificationStateForCharacteristic,
+                DidReadRSSI
             );
         }
 
@@ -127,6 +129,15 @@ namespace CoreBluetooth
                 Marshal.PtrToStringUTF8(serviceUUIDPtr),
                 Marshal.PtrToStringUTF8(characteristicUUIDPtr),
                 notificationState == 1,
+                CBError.CreateOrNullFromCode(errorCode)
+            );
+        }
+
+        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralDidReadRSSIHandler))]
+        internal static void DidReadRSSI(IntPtr peripheralPtr, int rssi, int errorCode)
+        {
+            GetDelegate(peripheralPtr)?.DidReadRSSI(
+                rssi,
                 CBError.CreateOrNullFromCode(errorCode)
             );
         }

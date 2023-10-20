@@ -140,6 +140,16 @@ namespace CoreBluetoothSample
             }
         }
 
+        public void DidReadRSSI(CBPeripheral peripheral, int rssi, CBError error)
+        {
+            Debug.Log($"[DidReadRSSI] rssi: {rssi}");
+            if (error != null)
+            {
+                Debug.LogError($"[DidReadRSSI] error: {error}");
+                return;
+            }
+        }
+
         public void OnClickWrite()
         {
             if (_peripheral == null)
@@ -179,6 +189,17 @@ namespace CoreBluetoothSample
             }
 
             _peripheral.ReadValue(_remoteCharacteristic);
+        }
+
+        public void OnClickReadRSSI()
+        {
+            if (_peripheral == null)
+            {
+                Debug.Log("peripheral is null.");
+                return;
+            }
+
+            _peripheral.ReadRSSI();
         }
 
         void OnDestroy()

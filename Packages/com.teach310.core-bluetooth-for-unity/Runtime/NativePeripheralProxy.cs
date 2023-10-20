@@ -140,5 +140,10 @@ namespace CoreBluetooth
                 return NativeMethods.cb4u_peripheral_can_send_write_without_response(_handle);
             }
         }
+
+        internal void ReadRSSI()
+        {
+            NativeMethods.cb4u_peripheral_read_rssi(_handle);
+        }
     }
 }
