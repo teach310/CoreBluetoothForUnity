@@ -150,6 +150,11 @@ namespace CoreBluetoothSample
             }
         }
 
+        public void DidUpdateName(CBPeripheral peripheral)
+        {
+            Debug.Log($"[DidUpdateName] {peripheral}");
+        }
+
         public void OnClickWrite()
         {
             if (_peripheral == null)
