@@ -201,6 +201,15 @@ namespace CoreBluetooth
         );
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void cb4u_peripheral_manager_remove_service(
+            SafeNativePeripheralManagerHandle peripheralHandle,
+            SafeNativeMutableServiceHandle serviceHandle
+        );
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void cb4u_peripheral_manager_remove_all_services(SafeNativePeripheralManagerHandle peripheralHandle);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void cb4u_peripheral_manager_start_advertising(
             SafeNativePeripheralManagerHandle peripheralHandle,
             [MarshalAs(UnmanagedType.LPStr), In] string localName,

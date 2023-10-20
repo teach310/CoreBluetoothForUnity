@@ -13,9 +13,19 @@ namespace CoreBluetooth
             _handle.SetDelegate(peripheralManagerDelegate);
         }
 
-        internal void AddService(CBMutableService service)
+        internal void AddService(SafeNativeMutableServiceHandle service)
         {
-            NativeMethods.cb4u_peripheral_manager_add_service(_handle, service.Handle);
+            NativeMethods.cb4u_peripheral_manager_add_service(_handle, service);
+        }
+
+        internal void RemoveService(SafeNativeMutableServiceHandle service)
+        {
+            NativeMethods.cb4u_peripheral_manager_remove_service(_handle, service);
+        }
+
+        internal void RemoveAllServices()
+        {
+            NativeMethods.cb4u_peripheral_manager_remove_all_services(_handle);
         }
 
         internal void StartAdvertising(StartAdvertisingOptions options = null)
