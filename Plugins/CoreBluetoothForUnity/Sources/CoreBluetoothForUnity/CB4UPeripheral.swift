@@ -10,6 +10,7 @@ public class CB4UPeripheral : NSObject {
     public var isReadyToSendWriteWithoutResponseHandler: CB4UPeripheralIsReadyToSendWriteWithoutResponseHandler?
     public var didUpdateNotificationStateForCharacteristicHandler: CB4UPeripheralDidUpdateNotificationStateForCharacteristicHandler?
     public var didReadRSSIHandler: CB4UPeripheralDidReadRSSIHandler?
+    public var didUpdateNameHandler: CB4UPeripheralDidUpdateNameHandler?
     
     let success: Int32 = 0
     let serviceNotFound: Int32 = -2
@@ -172,5 +173,9 @@ extension CB4UPeripheral : CBPeripheralDelegate {
     
     public func peripheral(_ peripheral: CBPeripheral, didReadRSSI RSSI: NSNumber, error: Error?) {
         didReadRSSIHandler?(selfPointer(), Int32(RSSI.intValue), errorToCode(error))
+    }
+    
+    public func peripheralDidUpdateName(_ peripheral: CBPeripheral) {
+        didUpdateNameHandler?(selfPointer())
     }
 }

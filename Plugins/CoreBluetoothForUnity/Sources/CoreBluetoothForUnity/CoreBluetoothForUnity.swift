@@ -119,6 +119,7 @@ public typealias CB4UPeripheralDidWriteValueForCharacteristicHandler = @conventi
 public typealias CB4UPeripheralIsReadyToSendWriteWithoutResponseHandler = @convention(c) (UnsafeRawPointer) -> Void
 public typealias CB4UPeripheralDidUpdateNotificationStateForCharacteristicHandler = @convention(c) (UnsafeRawPointer, UnsafePointer<CChar>, UnsafePointer<CChar>, Int32, Int32) -> Void
 public typealias CB4UPeripheralDidReadRSSIHandler = @convention(c) (UnsafeRawPointer, Int32, Int32) -> Void
+public typealias CB4UPeripheralDidUpdateNameHandler = @convention(c) (UnsafeRawPointer) -> Void
 
 @_cdecl("cb4u_peripheral_register_handlers")
 public func cb4u_peripheral_register_handlers(
@@ -129,7 +130,8 @@ public func cb4u_peripheral_register_handlers(
     _ didWriteValueForCharacteristicHandler: @escaping CB4UPeripheralDidWriteValueForCharacteristicHandler,
     _ isReadyToSendWriteWithoutResponseHandler: @escaping CB4UPeripheralIsReadyToSendWriteWithoutResponseHandler,
     _ didUpdateNotificationStateForCharacteristicHandler: @escaping CB4UPeripheralDidUpdateNotificationStateForCharacteristicHandler,
-    _ didReadRSSIHandler: @escaping CB4UPeripheralDidReadRSSIHandler
+    _ didReadRSSIHandler: @escaping CB4UPeripheralDidReadRSSIHandler,
+    _ didUpdateNameHandler: @escaping CB4UPeripheralDidUpdateNameHandler
 ) {
     let instance = Unmanaged<CB4UPeripheral>.fromOpaque(peripheralPtr).takeUnretainedValue()
     
@@ -140,6 +142,7 @@ public func cb4u_peripheral_register_handlers(
     instance.isReadyToSendWriteWithoutResponseHandler = isReadyToSendWriteWithoutResponseHandler
     instance.didUpdateNotificationStateForCharacteristicHandler = didUpdateNotificationStateForCharacteristicHandler
     instance.didReadRSSIHandler = didReadRSSIHandler
+    instance.didUpdateNameHandler = didUpdateNameHandler
 }
 
 @_cdecl("cb4u_peripheral_identifier")
