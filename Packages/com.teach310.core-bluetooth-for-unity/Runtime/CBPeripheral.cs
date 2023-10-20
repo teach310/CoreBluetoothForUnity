@@ -22,6 +22,7 @@ namespace CoreBluetooth
         void IsReadyToSendWriteWithoutResponse(CBPeripheral peripheral) { }
         void DidUpdateNotificationStateForCharacteristic(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error) { }
         void DidReadRSSI(CBPeripheral peripheral, int rssi, CBError error) { }
+        void DidUpdateName(CBPeripheral peripheral) { }
     }
 
     /// <summary>
@@ -245,6 +246,12 @@ namespace CoreBluetooth
         {
             if (_disposed) return;
             Delegate?.DidReadRSSI(this, rssi, error);
+        }
+
+        void INativePeripheralDelegate.DidUpdateName()
+        {
+            if (_disposed) return;
+            Delegate?.DidUpdateName(this);
         }
 
         public override string ToString()
