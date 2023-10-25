@@ -34,5 +34,14 @@ namespace CoreBluetooth.Foundation
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void ns_string_get_cstring_and_length(SafeNSStringHandle handle, out IntPtr ptr, out int length);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern SafeNSMutableDictionaryHandle ns_mutable_dictionary_new();
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern IntPtr ns_mutable_dictionary_get_value(SafeNSMutableDictionaryHandle handle, SafeNSObjectHandle key);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern void ns_mutable_dictionary_set_value(SafeNSMutableDictionaryHandle handle, SafeNSObjectHandle key, SafeNSObjectHandle value);
     }
 }
