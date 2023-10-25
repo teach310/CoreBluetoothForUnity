@@ -52,3 +52,34 @@ public func ns_string_get_cstring_and_length(_ handle: UnsafeRawPointer, _ ptr: 
         length.pointee = 0
     }
 }
+
+@_cdecl("ns_mutable_dictionary_new")
+public func ns_mutable_dictionary_new() -> UnsafeMutableRawPointer {
+    let instance = NSMutableDictionary()
+    return Unmanaged.passRetained(instance).toOpaque()
+}
+
+@_cdecl("ns_mutable_dictionary_get_value")
+public func ns_mutable_dictionary_get_value(_ handle: UnsafeRawPointer, _ keyPtr: UnsafeRawPointer) -> UnsafeMutableRawPointer? {
+    let instance = Unmanaged<NSMutableDictionary>.fromOpaque(handle).takeUnretainedValue()
+
+    let key = Unmanaged<NSObject>.fromOpaque(keyPtr).takeUnretainedValue()
+    if let value = instance[key] as? NSObject {
+        return Unmanaged.passRetained(value).toOpaque()
+    }
+
+    return nil
+}
+
+@_cdecl("ns_mutable_dictionary_set_value")
+public func ns_mutable_dictionary_set_value(_ handle: UnsafeRawPointer, _ keyPtr: UnsafeRawPointer, _ valuePtr: UnsafeRawPointer?) {
+    let instance = Unmanaged<NSMutableDictionary>.fromOpaque(handle).takeUnretainedValue()
+
+    let key = Unmanaged<NSObject>.fromOpaque(keyPtr).takeUnretainedValue()
+    if let valuePtr = valuePtr {
+        let value = Unmanaged<NSObject>.fromOpaque(valuePtr).takeUnretainedValue()
+        instance[key] = value
+    } else {
+        instance[key] = nil
+    }
+}
