@@ -28,3 +28,27 @@ public func ns_number_int_value(_ handle: UnsafeRawPointer) -> Int32 {
     let instance = Unmanaged<NSNumber>.fromOpaque(handle).takeUnretainedValue()
     return instance.int32Value
 }
+
+@_cdecl("ns_string_new")
+public func ns_string_new(_ str: UnsafePointer<CChar>) -> UnsafeMutableRawPointer {
+    let nsstring = NSString(utf8String: str)!
+    return Unmanaged.passRetained(nsstring).toOpaque()
+}
+
+@_cdecl("ns_string_length_of_bytes_utf8")
+public func ns_string_length_of_bytes_utf8(_ handle: UnsafeRawPointer) -> Int32 {
+    let nsstring = Unmanaged<NSString>.fromOpaque(handle).takeUnretainedValue()
+    return Int32(nsstring.lengthOfBytes(using: String.Encoding.utf8.rawValue))
+}
+
+@_cdecl("ns_string_get_cstring_and_length")
+public func ns_string_get_cstring_and_length(_ handle: UnsafeRawPointer, _ ptr: UnsafeMutablePointer<UnsafePointer<CChar>?>, _ length: UnsafeMutablePointer<Int32>) {
+    let nsstring = Unmanaged<NSString>.fromOpaque(handle).takeUnretainedValue()
+    if let cstring = nsstring.utf8String {
+        ptr.pointee = UnsafePointer(cstring)
+        length.pointee = Int32(strlen(cstring))
+    } else {
+        ptr.pointee = nil
+        length.pointee = 0
+    }
+}
