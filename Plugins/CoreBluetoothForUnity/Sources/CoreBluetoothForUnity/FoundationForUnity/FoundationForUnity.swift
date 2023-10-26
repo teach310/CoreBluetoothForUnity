@@ -53,6 +53,29 @@ public func ns_string_get_cstring_and_length(_ handle: UnsafeRawPointer, _ ptr: 
     }
 }
 
+@_cdecl("ns_array_new")
+public func ns_array_new(_ values: UnsafePointer<UnsafeRawPointer?>, _ count: Int32) -> UnsafeMutableRawPointer {
+    let instance = NSMutableArray()
+    for i in 0..<count {
+        let value = Unmanaged<NSObject>.fromOpaque(values[Int(i)]!).takeUnretainedValue()
+        instance.add(value)
+    }
+    return Unmanaged.passRetained(instance).toOpaque()
+}
+
+@_cdecl("ns_array_count")
+public func ns_array_count(_ handle: UnsafeRawPointer) -> Int32 {
+    let instance = Unmanaged<NSArray>.fromOpaque(handle).takeUnretainedValue()
+    return Int32(instance.count)
+}
+
+@_cdecl("ns_array_get_at_index")
+public func ns_array_get_at_index(_ handle: UnsafeRawPointer, _ index: Int32) -> UnsafeMutableRawPointer {
+    let instance = Unmanaged<NSArray>.fromOpaque(handle).takeUnretainedValue()
+    let value = instance[Int(index)] as! NSObject
+    return Unmanaged.passRetained(value).toOpaque()
+}
+
 @_cdecl("ns_mutable_dictionary_new")
 public func ns_mutable_dictionary_new() -> UnsafeMutableRawPointer {
     let instance = NSMutableDictionary()
