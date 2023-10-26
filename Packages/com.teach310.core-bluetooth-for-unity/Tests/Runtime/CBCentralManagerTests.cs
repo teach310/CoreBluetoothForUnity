@@ -24,6 +24,14 @@ namespace CoreBluetoothTests
         }
 
         [Test]
+        public void CreateWithOptions()
+        {
+            var options = new CBCentralInitOptions() { ShowPowerAlert = true };
+            using var centralManager = new CBCentralManager(null, options);
+            Assert.That(centralManager, Is.Not.Null);
+        }
+
+        [Test]
         public void Release()
         {
             var centralManager = new CBCentralManager();
