@@ -28,8 +28,14 @@ public func cb4u_central_maximum_update_value_length(_ centralPtr: UnsafeRawPoin
 }
 
 @_cdecl("cb4u_central_manager_new")
-public func cb4u_central_manager_new() -> UnsafeMutableRawPointer {
-    return Unmanaged.passRetained(CB4UCentralManager()).toOpaque()
+public func cb4u_central_manager_new(_ optionsPtr: UnsafeRawPointer?) -> UnsafeMutableRawPointer {
+    var options: [String: Any]? = nil
+    if let optionsPtr = optionsPtr {
+        let nsMutableDictionary = Unmanaged<NSMutableDictionary>.fromOpaque(optionsPtr).takeUnretainedValue()
+        options = nsMutableDictionary as? [String: Any]
+    }
+    
+    return Unmanaged.passRetained(CB4UCentralManager(options)).toOpaque()
 }
 
 @_cdecl("cb4u_central_manager_release")
