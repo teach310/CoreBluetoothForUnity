@@ -18,7 +18,8 @@ namespace CoreBluetoothSample
 
         void Start()
         {
-            _centralManager = new CBCentralManager(this);
+            var initOptions = new CBCentralInitOptions() { ShowPowerAlert = true };
+            _centralManager = new CBCentralManager(this, initOptions);
         }
 
         public void DidDiscoverPeripheral(CBCentralManager central, CBPeripheral peripheral, int rssi)

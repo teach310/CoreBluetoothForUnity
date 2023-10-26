@@ -11,10 +11,10 @@ public class CB4UCentralManager : NSObject {
     public var didDiscoverPeripheralHandler: CB4UCentralManagerDidDiscoverPeripheralHandler?
     public var didUpdateStateHandler: CB4UCentralManagerDidUpdateStateHandler?
     
-    public override init() {
+    public init(_ options: [String: Any]? = nil) {
         super.init()
         
-        centralManager = CBCentralManager(delegate: self, queue: nil)
+        centralManager = CBCentralManager(delegate: self, queue: nil, options: options)
     }
     
     func selfPointer() -> UnsafeMutableRawPointer {

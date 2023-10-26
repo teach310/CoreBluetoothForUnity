@@ -42,9 +42,17 @@ namespace CoreBluetooth
 
         NativeCentralManagerProxy _nativeCentralManagerProxy;
 
-        public CBCentralManager(ICBCentralManagerDelegate centralDelegate = null)
+        public CBCentralManager(ICBCentralManagerDelegate centralDelegate = null, CBCentralInitOptions options = null)
         {
-            _handle = SafeNativeCentralManagerHandle.Create();
+            if (options == null)
+            {
+                _handle = SafeNativeCentralManagerHandle.Create();
+            }
+            else
+            {
+                using var optionsDict = options.ToNativeDictionary();
+                _handle = SafeNativeCentralManagerHandle.Create(optionsDict.Handle);
+            }
             Delegate = centralDelegate;
             _nativeCentralManagerProxy = new NativeCentralManagerProxy(_handle, this);
         }

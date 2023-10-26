@@ -20,11 +20,21 @@ namespace CoreBluetooth
 
         SafeNativeCentralManagerHandle() : base(true) { }
 
-        internal static SafeNativeCentralManagerHandle Create()
+        static SafeNativeCentralManagerHandle Create(IntPtr options)
         {
-            var instance = NativeMethods.cb4u_central_manager_new();
+            var instance = NativeMethods.cb4u_central_manager_new(options);
             instance.RegisterHandlers();
             return instance;
+        }
+
+        internal static SafeNativeCentralManagerHandle Create(Foundation.SafeNSMutableDictionaryHandle options)
+        {
+            return Create(options.DangerousGetHandle());
+        }
+
+        internal static SafeNativeCentralManagerHandle Create()
+        {
+            return Create(IntPtr.Zero);
         }
 
         void RegisterHandlers()

@@ -25,7 +25,7 @@ namespace CoreBluetooth
         internal static extern int cb4u_central_maximum_update_value_length(SafeNativeCentralHandle handle);
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern SafeNativeCentralManagerHandle cb4u_central_manager_new();
+        internal static extern SafeNativeCentralManagerHandle cb4u_central_manager_new(IntPtr options);
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void cb4u_central_manager_release(IntPtr handle);
