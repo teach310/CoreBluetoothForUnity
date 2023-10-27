@@ -77,12 +77,7 @@ namespace CoreBluetooth
             for (var i = 0; i < peripheralHandles.Length; i++)
             {
                 var peripheral = new CBPeripheral(peripheralHandles[i]);
-                if (_peripherals.ContainsKey(peripheral.Identifier))
-                {
-                    _peripherals[peripheral.Identifier].Dispose();
-                }
-
-                _peripherals[peripheral.Identifier] = peripheral;
+                SetPeripheral(peripheral);
                 result[i] = peripheral;
             }
             return result;
@@ -119,6 +114,16 @@ namespace CoreBluetooth
             return peripheral;
         }
 
+        void SetPeripheral(CBPeripheral peripheral)
+        {
+            if (_peripherals.ContainsKey(peripheral.Identifier))
+            {
+                _peripherals[peripheral.Identifier].Dispose();
+            }
+
+            _peripherals[peripheral.Identifier] = peripheral;
+        }
+
         void INativeCentralManagerDelegate.DidConnect(string peripheralId)
         {
             if (_disposed) return;
@@ -148,7 +153,7 @@ namespace CoreBluetooth
             if (_disposed) return;
 
             var peripheral = new CBPeripheral(peripheralHandle);
-            _peripherals.Add(peripheral.Identifier, peripheral);
+            SetPeripheral(peripheral);
             Delegate?.DidDiscoverPeripheral(this, peripheral, rssi);
         }
 
