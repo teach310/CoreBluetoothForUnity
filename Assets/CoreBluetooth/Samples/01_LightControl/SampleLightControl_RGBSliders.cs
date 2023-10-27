@@ -16,6 +16,7 @@ namespace CoreBluetoothSample
         [SerializeField] Text _blueLabel;
 
         Color32 _color = Color.white;
+        public Color32 Value => _color;
 
         UnityEvent<Color32> _onColorChanged = new UnityEvent<Color32>();
         public UnityEvent<Color32> OnColorChanged => _onColorChanged;
