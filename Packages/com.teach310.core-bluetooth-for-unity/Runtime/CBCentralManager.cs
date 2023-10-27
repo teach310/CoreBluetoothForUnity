@@ -69,6 +69,25 @@ namespace CoreBluetooth
             _nativeCentralManagerProxy.CancelPeripheralConnection(peripheral);
         }
 
+        public CBPeripheral[] RetrievePeripherals(params string[] peripheralIds)
+        {
+            ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
+            var peripheralHandles = _nativeCentralManagerProxy.RetrievePeripherals(peripheralIds);
+            var result = new CBPeripheral[peripheralHandles.Length];
+            for (var i = 0; i < peripheralHandles.Length; i++)
+            {
+                var peripheral = new CBPeripheral(peripheralHandles[i]);
+                if (_peripherals.ContainsKey(peripheral.Identifier))
+                {
+                    _peripherals[peripheral.Identifier].Dispose();
+                }
+
+                _peripherals[peripheral.Identifier] = peripheral;
+                result[i] = peripheral;
+            }
+            return result;
+        }
+
         public void ScanForPeripherals(string[] serviceUUIDs = null)
         {
             ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);

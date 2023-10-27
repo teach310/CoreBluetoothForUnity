@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
+using CoreBluetooth.Foundation;
 
 namespace CoreBluetooth
 {
@@ -51,6 +52,13 @@ namespace CoreBluetooth
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern int cb4u_central_manager_cancel_peripheral_connection(SafeNativeCentralManagerHandle handle, SafeNativePeripheralHandle peripheralHandle);
+
+        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
+        internal static extern SafeNSArrayHandle cb4u_central_manager_retrieve_peripherals(
+            SafeNativeCentralManagerHandle handle,
+            [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPStr, SizeParamIndex = 2)] string[] peripheralIds,
+            int peripheralIdsCount
+        );
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void cb4u_central_manager_scan_for_peripherals(

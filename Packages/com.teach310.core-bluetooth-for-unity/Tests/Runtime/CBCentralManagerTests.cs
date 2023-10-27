@@ -76,5 +76,17 @@ namespace CoreBluetoothTests
             centralManager.StopScan();
             Assert.That(centralManager.IsScanning, Is.False);
         }
+
+        [UnityTest]
+        public IEnumerator RetrievePeripherals()
+        {
+            using var centralManager = new CBCentralManager();
+            yield return WaitUntilWithTimeout(() => centralManager.State != CBManagerState.Unknown, 1f);
+            if (centralManager.State != CBManagerState.PoweredOn) yield break;
+
+            var peripherals = centralManager.RetrievePeripherals(validUUID1);
+            Assert.That(peripherals, Is.Not.Null);
+            Assert.That(peripherals.Length, Is.EqualTo(0));
+        }
     }
 }
