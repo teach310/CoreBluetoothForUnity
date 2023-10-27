@@ -41,6 +41,17 @@ public class CB4UCentralManager : NSObject {
     public func cancelPeripheralConnection(peripheral: CB4UPeripheral) {
         centralManager.cancelPeripheralConnection(peripheral.peripheral)
     }
+
+    public func retrievePeripherals(withIdentifiers identifiers: [UUID]) -> NSMutableArray {
+        let peripherals = centralManager.retrievePeripherals(withIdentifiers: identifiers)
+        let array = NSMutableArray()
+        for peripheral in peripherals {
+            let cb4u_peripheral = CB4UPeripheral(peripheral: peripheral)
+            peripheral.delegate = cb4u_peripheral
+            array.add(cb4u_peripheral)
+        }
+        return array
+    }
     
     public func scanForPeripherals(withServices serviceUUIDs: [CBUUID]?) {
         centralManager.scanForPeripherals(withServices: serviceUUIDs)

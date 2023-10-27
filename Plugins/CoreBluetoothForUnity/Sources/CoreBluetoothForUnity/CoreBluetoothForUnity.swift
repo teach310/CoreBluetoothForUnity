@@ -83,6 +83,26 @@ public func cb4u_central_manager_cancel_peripheral_connection(_ centralPtr: Unsa
     instance.cancelPeripheralConnection(peripheral: peripheral)
 }
 
+@_cdecl("cb4u_central_manager_retrieve_peripherals")
+public func cb4u_central_manager_retrieve_peripherals(
+    _ centralPtr: UnsafeRawPointer,
+    _ peripheralIds: UnsafePointer<UnsafePointer<CChar>?>,
+    _ peripheralIdsCount: Int32
+) -> UnsafeMutableRawPointer {
+    let instance = Unmanaged<CB4UCentralManager>.fromOpaque(centralPtr).takeUnretainedValue()
+    
+    let peripheralIdsArray = (0..<Int(peripheralIdsCount)).compactMap { index -> UUID? in
+        let uuidString = String(cString: peripheralIds[index]!)
+        guard let uuid = UUID(uuidString: uuidString) else {
+            return nil
+        }
+        return uuid
+    }
+    
+    let peripherals = instance.retrievePeripherals(withIdentifiers: peripheralIdsArray)
+    return Unmanaged.passRetained(peripherals).toOpaque()
+}
+
 @_cdecl("cb4u_central_manager_scan_for_peripherals")
 public func cb4u_central_manager_scan_for_peripherals(
     _ centralPtr: UnsafeRawPointer,
