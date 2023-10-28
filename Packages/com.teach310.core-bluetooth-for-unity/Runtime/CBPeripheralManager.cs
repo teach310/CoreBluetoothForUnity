@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace CoreBluetooth
 {
@@ -39,6 +40,11 @@ namespace CoreBluetooth
             }
         }
 
+        /// <summary>
+        /// ICBPeripheralManagerDelegate callbacks will be called in this context.
+        /// </summary>
+        public SynchronizationContext CallbackContext { get; set; }
+
         // key: centralId
         Dictionary<string, CBCentral> _centrals = new Dictionary<string, CBCentral>();
 
@@ -53,6 +59,7 @@ namespace CoreBluetooth
             _handle = SafeNativePeripheralManagerHandle.Create();
             Delegate = peripheralDelegate;
             _nativePeripheralManagerProxy = new NativePeripheralManagerProxy(_handle, this);
+            CallbackContext = SynchronizationContext.Current;
         }
 
         void AddATTRequestDisposable(IDisposable disposable)
@@ -176,68 +183,92 @@ namespace CoreBluetooth
 
         void INativePeripheralManagerDelegate.DidUpdateState(CBManagerState state)
         {
-            if (_disposed) return;
-            State = state;
-            _delegate?.DidUpdateState(this);
+            CallbackContext.Post(_ =>
+            {
+                if (_disposed) return;
+                State = state;
+                _delegate?.DidUpdateState(this);
+            }, null);
         }
 
         void INativePeripheralManagerDelegate.DidAddService(string serviceUUID, CBError error)
         {
-            if (_disposed) return;
-            if (!_addingServiceUUIDs.Remove(serviceUUID))
+            CallbackContext.Post(_ =>
             {
-                return;
-            }
+                if (_disposed) return;
+                if (!_addingServiceUUIDs.Remove(serviceUUID))
+                {
+                    return;
+                }
 
-            _delegate?.DidAddService(this, _services[serviceUUID], error);
+                _delegate?.DidAddService(this, _services[serviceUUID], error);
+            }, null);
         }
 
         void INativePeripheralManagerDelegate.DidStartAdvertising(CBError error)
         {
-            if (_disposed) return;
-            _delegate?.DidStartAdvertising(this, error);
+            CallbackContext.Post(_ =>
+            {
+                if (_disposed) return;
+                _delegate?.DidStartAdvertising(this, error);
+            }, null);
         }
 
         void INativePeripheralManagerDelegate.DidSubscribeToCharacteristic(SafeNativeCentralHandle centralHandle, string serviceUUID, string characteristicUUID)
         {
-            if (_disposed) return;
+            CallbackContext.Post(_ =>
+            {
+                if (_disposed) return;
 
-            var central = FindOrCreateCentral(centralHandle);
+                var central = FindOrCreateCentral(centralHandle);
 
-            var characteristic = ((IPeripheralManagerData)this).FindCharacteristic(serviceUUID, characteristicUUID);
-            _delegate?.DidSubscribeToCharacteristic(this, central, characteristic);
+                var characteristic = ((IPeripheralManagerData)this).FindCharacteristic(serviceUUID, characteristicUUID);
+                _delegate?.DidSubscribeToCharacteristic(this, central, characteristic);
+            }, null);
         }
 
         void INativePeripheralManagerDelegate.DidUnsubscribeFromCharacteristic(SafeNativeCentralHandle centralHandle, string serviceUUID, string characteristicUUID)
         {
-            if (_disposed) return;
+            CallbackContext.Post(_ =>
+            {
+                if (_disposed) return;
 
-            var central = FindOrCreateCentral(centralHandle);
+                var central = FindOrCreateCentral(centralHandle);
 
-            var characteristic = ((IPeripheralManagerData)this).FindCharacteristic(serviceUUID, characteristicUUID);
-            _delegate?.DidUnsubscribeFromCharacteristic(this, central, characteristic);
+                var characteristic = ((IPeripheralManagerData)this).FindCharacteristic(serviceUUID, characteristicUUID);
+                _delegate?.DidUnsubscribeFromCharacteristic(this, central, characteristic);
+            }, null);
         }
 
         void INativePeripheralManagerDelegate.IsReadyToUpdateSubscribers()
         {
-            if (_disposed) return;
-            _delegate?.IsReadyToUpdateSubscribers(this);
+            CallbackContext.Post(_ =>
+            {
+                if (_disposed) return;
+                _delegate?.IsReadyToUpdateSubscribers(this);
+            }, null);
         }
 
         void INativePeripheralManagerDelegate.DidReceiveReadRequest(SafeNativeATTRequestHandle requestHandle)
         {
-            if (_disposed) return;
-            var request = new CBATTRequest(requestHandle, new NativeATTRequestProxy(requestHandle, this));
-            _delegate?.DidReceiveReadRequest(this, request);
-            AddATTRequestDisposable(request);
+            CallbackContext.Post(_ =>
+            {
+                if (_disposed) return;
+                var request = new CBATTRequest(requestHandle, new NativeATTRequestProxy(requestHandle, this));
+                _delegate?.DidReceiveReadRequest(this, request);
+                AddATTRequestDisposable(request);
+            }, null);
         }
 
         void INativePeripheralManagerDelegate.DidReceiveWriteRequests(SafeNativeATTRequestsHandle requestsHandle)
         {
-            if (_disposed) return;
-            var requests = new CBATTRequests(requestsHandle, new NativeATTRequestsProxy(requestsHandle, this));
-            _delegate?.DidReceiveWriteRequests(this, requests.Requests);
-            AddATTRequestDisposable(requests);
+            CallbackContext.Post(_ =>
+            {
+                if (_disposed) return;
+                var requests = new CBATTRequests(requestsHandle, new NativeATTRequestsProxy(requestsHandle, this));
+                _delegate?.DidReceiveWriteRequests(this, requests.Requests);
+                AddATTRequestDisposable(requests);
+            }, null);
         }
 
         public void Dispose()
