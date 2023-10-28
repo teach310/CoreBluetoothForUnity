@@ -48,7 +48,7 @@ namespace CoreBluetooth
 
         NativeCentralManagerProxy _nativeCentralManagerProxy;
 
-        public CBCentralManager(ICBCentralManagerDelegate centralDelegate = null, CBCentralInitOptions options = null)
+        public CBCentralManager(ICBCentralManagerDelegate centralDelegate = null, CBCentralManagerInitOptions options = null)
         {
             if (options == null)
             {

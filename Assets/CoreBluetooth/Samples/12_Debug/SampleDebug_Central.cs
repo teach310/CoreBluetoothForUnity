@@ -18,7 +18,7 @@ namespace CoreBluetoothSample
 
         void Start()
         {
-            var initOptions = new CBCentralInitOptions() { ShowPowerAlert = true };
+            var initOptions = new CBCentralManagerInitOptions() { ShowPowerAlert = true };
             _centralManager = new CBCentralManager(this, initOptions);
         }
 

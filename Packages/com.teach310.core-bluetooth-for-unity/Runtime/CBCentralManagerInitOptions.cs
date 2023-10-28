@@ -2,12 +2,12 @@ using CoreBluetooth.Foundation;
 
 namespace CoreBluetooth
 {
-    public class CBCentralInitOptions
+    public class CBCentralManagerInitOptions
     {
         public static readonly string ShowPowerAlertKey = "kCBInitOptionShowPowerAlert";
         public bool? ShowPowerAlert { get; set; } = null;
 
-        public CBCentralInitOptions()
+        public CBCentralManagerInitOptions()
         {
         }
 
