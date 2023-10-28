@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace CoreBluetooth
 {
@@ -40,6 +41,11 @@ namespace CoreBluetooth
             }
         }
 
+        /// <summary>
+        /// ICBCentralManagerDelegate callbacks will be called in this context.
+        /// </summary>
+        public SynchronizationContext CallbackContext { get; set; }
+
         NativeCentralManagerProxy _nativeCentralManagerProxy;
 
         public CBCentralManager(ICBCentralManagerDelegate centralDelegate = null, CBCentralInitOptions options = null)
@@ -55,6 +61,7 @@ namespace CoreBluetooth
             }
             Delegate = centralDelegate;
             _nativeCentralManagerProxy = new NativeCentralManagerProxy(_handle, this);
+            CallbackContext = SynchronizationContext.Current;
         }
 
         public void Connect(CBPeripheral peripheral)
@@ -76,7 +83,7 @@ namespace CoreBluetooth
             var result = new CBPeripheral[peripheralHandles.Length];
             for (var i = 0; i < peripheralHandles.Length; i++)
             {
-                var peripheral = new CBPeripheral(peripheralHandles[i]);
+                var peripheral = new CBPeripheral(peripheralHandles[i], CallbackContext);
                 SetPeripheral(peripheral);
                 result[i] = peripheral;
             }
@@ -126,42 +133,56 @@ namespace CoreBluetooth
 
         void INativeCentralManagerDelegate.DidConnect(string peripheralId)
         {
-            if (_disposed) return;
-            var peripheral = GetPeripheral(peripheralId);
-            if (peripheral == null) return;
-            Delegate?.DidConnectPeripheral(this, peripheral);
+            CallbackContext.Post(_ =>
+            {
+                if (_disposed) return;
+                var peripheral = GetPeripheral(peripheralId);
+                if (peripheral == null) return;
+                Delegate?.DidConnectPeripheral(this, peripheral);
+            }, null);
         }
 
         void INativeCentralManagerDelegate.DidDisconnectPeripheral(string peripheralId, CBError error)
         {
-            if (_disposed) return;
-            var peripheral = GetPeripheral(peripheralId);
-            if (peripheral == null) return;
-            Delegate?.DidDisconnectPeripheral(this, peripheral, error);
+            CallbackContext.Post(_ =>
+            {
+                if (_disposed) return;
+                var peripheral = GetPeripheral(peripheralId);
+                if (peripheral == null) return;
+                Delegate?.DidDisconnectPeripheral(this, peripheral, error);
+            }, null);
         }
 
         void INativeCentralManagerDelegate.DidFailToConnect(string peripheralId, CBError error)
         {
-            if (_disposed) return;
-            var peripheral = GetPeripheral(peripheralId);
-            if (peripheral == null) return;
-            Delegate?.DidFailToConnectPeripheral(this, peripheral, error);
+            CallbackContext.Post(_ =>
+            {
+                if (_disposed) return;
+                var peripheral = GetPeripheral(peripheralId);
+                if (peripheral == null) return;
+                Delegate?.DidFailToConnectPeripheral(this, peripheral, error);
+            }, null);
         }
 
         void INativeCentralManagerDelegate.DidDiscoverPeripheral(SafeNativePeripheralHandle peripheralHandle, int rssi)
         {
-            if (_disposed) return;
-
-            var peripheral = new CBPeripheral(peripheralHandle);
-            SetPeripheral(peripheral);
-            Delegate?.DidDiscoverPeripheral(this, peripheral, rssi);
+            CallbackContext.Post(_ =>
+            {
+                if (_disposed) return;
+                var peripheral = new CBPeripheral(peripheralHandle, CallbackContext);
+                SetPeripheral(peripheral);
+                Delegate?.DidDiscoverPeripheral(this, peripheral, rssi);
+            }, null);
         }
 
         void INativeCentralManagerDelegate.DidUpdateState(CBManagerState state)
         {
-            if (_disposed) return;
-            this.State = state;
-            Delegate?.DidUpdateState(this);
+            CallbackContext.Post(_ =>
+            {
+                if (_disposed) return;
+                this.State = state;
+                Delegate?.DidUpdateState(this);
+            }, null);
         }
 
         public void Dispose()

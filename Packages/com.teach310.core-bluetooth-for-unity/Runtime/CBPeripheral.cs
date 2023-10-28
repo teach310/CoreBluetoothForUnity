@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 
 namespace CoreBluetooth
 {
@@ -61,14 +62,21 @@ namespace CoreBluetooth
         }
 
         public ICBPeripheralDelegate Delegate { get; set; }
+
+        /// <summary>
+        /// ICBPeripheralDelegate callbacks will be called in this context.
+        /// </summary>
+        public SynchronizationContext CallbackContext { get; set; }
+
         List<CBService> _services = new List<CBService>();
         public ReadOnlyCollection<CBService> Services { get; }
 
-        internal CBPeripheral(SafeNativePeripheralHandle nativePeripheral)
+        internal CBPeripheral(SafeNativePeripheralHandle nativePeripheral, SynchronizationContext callbackContext)
         {
             Handle = nativePeripheral;
             _nativePeripheral = new NativePeripheralProxy(Handle, this);
-            this.Services = _services.AsReadOnly();
+            Services = _services.AsReadOnly();
+            CallbackContext = callbackContext;
         }
 
         /// <summary>
@@ -189,87 +197,113 @@ namespace CoreBluetooth
 
         void INativePeripheralDelegate.DidDiscoverServices(string[] serviceUUIDs, CBError error)
         {
-            if (_disposed) return;
-            var services = serviceUUIDs.Select(uuid =>
+            CallbackContext.Post(_ =>
             {
-                return _services.FirstOrDefault(s => s.UUID == uuid) ?? new CBService(uuid, this);
-            }).ToArray();
-            _services.Clear();
-            _services.AddRange(services);
+                if (_disposed) return;
+                var services = serviceUUIDs.Select(uuid =>
+                {
+                    return _services.FirstOrDefault(s => s.UUID == uuid) ?? new CBService(uuid, this);
+                }).ToArray();
+                _services.Clear();
+                _services.AddRange(services);
 
-            Delegate?.DidDiscoverServices(this, error);
+                Delegate?.DidDiscoverServices(this, error);
+            }, null);
         }
 
         void INativePeripheralDelegate.DidDiscoverCharacteristics(string serviceUUID, string[] characteristicUUIDs, CBError error)
         {
-            if (_disposed) return;
-            var service = _services.FirstOrDefault(s => s.UUID == serviceUUID);
-            if (service == null) return;
-            var characteristics = characteristicUUIDs.Select(uuid => FindOrInitializeCharacteristic(service, uuid)).ToArray();
-            service.UpdateCharacteristics(characteristics);
-            Delegate?.DidDiscoverCharacteristics(this, service, error);
+            CallbackContext.Post(_ =>
+            {
+                if (_disposed) return;
+                var service = _services.FirstOrDefault(s => s.UUID == serviceUUID);
+                if (service == null) return;
+                var characteristics = characteristicUUIDs.Select(uuid => FindOrInitializeCharacteristic(service, uuid)).ToArray();
+                service.UpdateCharacteristics(characteristics);
+                Delegate?.DidDiscoverCharacteristics(this, service, error);
+            }, null);
         }
 
         void INativePeripheralDelegate.DidUpdateValueForCharacteristic(string serviceUUID, string characteristicUUID, byte[] data, CBError error)
         {
-            if (_disposed) return;
-            var characteristic = FindCharacteristic(serviceUUID, characteristicUUID);
-            if (characteristic == null) return;
-            characteristic.UpdateValue(data);
-            Delegate?.DidUpdateValueForCharacteristic(this, characteristic, error);
+            CallbackContext.Post(_ =>
+            {
+                if (_disposed) return;
+                var characteristic = FindCharacteristic(serviceUUID, characteristicUUID);
+                if (characteristic == null) return;
+                characteristic.UpdateValue(data);
+                Delegate?.DidUpdateValueForCharacteristic(this, characteristic, error);
+            }, null);
         }
 
         void INativePeripheralDelegate.DidWriteValueForCharacteristic(string serviceUUID, string characteristicUUID, CBError error)
         {
-            if (_disposed) return;
-            var characteristic = FindCharacteristic(serviceUUID, characteristicUUID);
-            if (characteristic == null) return;
-
-            Delegate?.DidWriteValueForCharacteristic(this, characteristic, error);
+            CallbackContext.Post(_ =>
+            {
+                if (_disposed) return;
+                var characteristic = FindCharacteristic(serviceUUID, characteristicUUID);
+                if (characteristic == null) return;
+                Delegate?.DidWriteValueForCharacteristic(this, characteristic, error);
+            }, null);
         }
 
         void INativePeripheralDelegate.IsReadyToSendWriteWithoutResponse()
         {
-            if (_disposed) return;
-            Delegate?.IsReadyToSendWriteWithoutResponse(this);
+            CallbackContext.Post(_ =>
+            {
+                if (_disposed) return;
+                Delegate?.IsReadyToSendWriteWithoutResponse(this);
+            }, null);
         }
 
         void INativePeripheralDelegate.DidUpdateNotificationStateForCharacteristic(string serviceUUID, string characteristicUUID, bool isNotifying, CBError error)
         {
-            if (_disposed) return;
-            var characteristic = FindCharacteristic(serviceUUID, characteristicUUID);
-            if (characteristic == null) return;
-            characteristic.UpdateIsNotifying(isNotifying);
-            Delegate?.DidUpdateNotificationStateForCharacteristic(this, characteristic, error);
+            CallbackContext.Post(_ =>
+            {
+                if (_disposed) return;
+                var characteristic = FindCharacteristic(serviceUUID, characteristicUUID);
+                if (characteristic == null) return;
+                characteristic.UpdateIsNotifying(isNotifying);
+                Delegate?.DidUpdateNotificationStateForCharacteristic(this, characteristic, error);
+            }, null);
         }
 
         void INativePeripheralDelegate.DidReadRSSI(int rssi, CBError error)
         {
-            if (_disposed) return;
-            Delegate?.DidReadRSSI(this, rssi, error);
+            CallbackContext.Post(_ =>
+            {
+                if (_disposed) return;
+                Delegate?.DidReadRSSI(this, rssi, error);
+            }, null);
         }
 
         void INativePeripheralDelegate.DidUpdateName()
         {
-            if (_disposed) return;
-            Delegate?.DidUpdateName(this);
+            CallbackContext.Post(_ =>
+            {
+                if (_disposed) return;
+                Delegate?.DidUpdateName(this);
+            }, null);
         }
 
         void INativePeripheralDelegate.DidModifyServices(string[] invalidatedServiceUUIDs)
         {
-            if (_disposed) return;
-            List<CBService> invalidatedServices = new List<CBService>();
-            foreach (var uuid in invalidatedServiceUUIDs)
+            CallbackContext.Post(_ =>
             {
-                var service = _services.FirstOrDefault(s => s.UUID == uuid);
-                if (service != null)
+                if (_disposed) return;
+                List<CBService> invalidatedServices = new List<CBService>();
+                foreach (var uuid in invalidatedServiceUUIDs)
                 {
-                    invalidatedServices.Add(service);
-                    _services.Remove(service);
+                    var service = _services.FirstOrDefault(s => s.UUID == uuid);
+                    if (service != null)
+                    {
+                        invalidatedServices.Add(service);
+                        _services.Remove(service);
+                    }
                 }
-            }
 
-            Delegate?.DidModifyServices(this, invalidatedServices.ToArray());
+                Delegate?.DidModifyServices(this, invalidatedServices.ToArray());
+            }, null);
         }
 
         public override string ToString()
