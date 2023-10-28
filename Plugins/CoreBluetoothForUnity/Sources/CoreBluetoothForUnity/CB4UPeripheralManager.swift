@@ -13,10 +13,10 @@ public class CB4UPeripheralManager : NSObject {
     public var didReceiveReadRequestHandler: CB4UPeripheralManagerDidReceiveReadRequestHandler?
     public var didReceiveWriteRequestsHandler: CB4UPeripheralManagerDidReceiveWriteRequestsHandler?
     
-    public override init() {
+    public init(_ options: [String: Any]? = nil) {
         super.init()
         
-        peripheralManager = CBPeripheralManager(delegate: self, queue: nil)
+        peripheralManager = CBPeripheralManager(delegate: self, queue: nil, options: options)
     }
     
     func selfPointer() -> UnsafeMutableRawPointer {
