@@ -322,8 +322,14 @@ public func cb4u_peripheral_characteristic_properties(
 }
 
 @_cdecl("cb4u_peripheral_manager_new")
-public func cb4u_peripheral_manager_new() -> UnsafeMutableRawPointer {
-    return Unmanaged.passRetained(CB4UPeripheralManager()).toOpaque()
+public func cb4u_peripheral_manager_new(_ optionsPtr: UnsafeRawPointer?) -> UnsafeMutableRawPointer {   
+    var options: [String: Any]? = nil
+    if let optionsPtr = optionsPtr {
+        let nsMutableDictionary = Unmanaged<NSMutableDictionary>.fromOpaque(optionsPtr).takeUnretainedValue()
+        options = nsMutableDictionary as? [String: Any]
+    }
+
+    return Unmanaged.passRetained(CB4UPeripheralManager(options)).toOpaque()
 }
 
 @_cdecl("cb4u_peripheral_manager_release")

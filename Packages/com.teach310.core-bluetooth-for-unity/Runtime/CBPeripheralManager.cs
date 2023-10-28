@@ -54,9 +54,17 @@ namespace CoreBluetooth
         static readonly int s_maxATTRequests = 10;
         Queue<IDisposable> _attRequestDisposables = new Queue<IDisposable>();
 
-        public CBPeripheralManager(ICBPeripheralManagerDelegate peripheralDelegate = null)
+        public CBPeripheralManager(ICBPeripheralManagerDelegate peripheralDelegate = null, CBPeripheralManagerInitOptions options = null)
         {
-            _handle = SafeNativePeripheralManagerHandle.Create();
+            if (options == null)
+            {
+                _handle = SafeNativePeripheralManagerHandle.Create();
+            }
+            else
+            {
+                using var optionsDict = options.ToNativeDictionary();
+                _handle = SafeNativePeripheralManagerHandle.Create(optionsDict.Handle);
+            }
             Delegate = peripheralDelegate;
             _nativePeripheralManagerProxy = new NativePeripheralManagerProxy(_handle, this);
             CallbackContext = SynchronizationContext.Current;

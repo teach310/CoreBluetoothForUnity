@@ -20,7 +20,8 @@ namespace CoreBluetoothSample
 
         void Start()
         {
-            _peripheralManager = new CBPeripheralManager(this);
+            var initOptions = new CBPeripheralManagerInitOptions() { ShowPowerAlert = true };
+            _peripheralManager = new CBPeripheralManager(this, initOptions);
             _disposables.Add(_peripheralManager);
         }
 
