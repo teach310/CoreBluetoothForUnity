@@ -17,7 +17,7 @@ namespace CoreBluetoothSample
         /// </summary>
         /// <param name="isPressed"></param>
         /// <returns></returns>
-        public static byte[] GetButtonInformationData(int buttonId, bool isPressed)
+        public static byte[] GetButtonInformation(int buttonId, bool isPressed)
         {
             byte[] buff = new byte[2];
             buff[0] = BitConverter.GetBytes(Mathf.Clamp(buttonId, 0, 255))[0];
