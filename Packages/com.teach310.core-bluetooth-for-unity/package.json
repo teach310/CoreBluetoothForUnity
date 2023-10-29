@@ -22,6 +22,11 @@
   },
   "samples": [
     {
+      "displayName": "01_LightControl",
+      "description": "Control light color from central device",
+      "path": "Samples~/01_LightControl"
+    },
+    {
       "displayName": "BuildPostprocessor",
       "description": "This is a sample build postprocessor that will automatically update Info.plist",
       "path": "Samples~/11_BuildPostprocessor"
