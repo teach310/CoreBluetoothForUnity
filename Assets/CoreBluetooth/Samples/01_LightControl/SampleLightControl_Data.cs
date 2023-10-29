@@ -8,7 +8,7 @@ namespace CoreBluetoothSample
         // See the following for generating UUIDs:
         // https://www.uuidgenerator.net/
         public static readonly string ServiceUUID = "068C47B7-FC04-4D47-975A-7952BE1A576F";
-        public static readonly string LightControlCharacteristicUUID = "068C47B7-FC04-4D47-975A-7952BE1A576F";
+        public static readonly string LightControlCharacteristicUUID = "2AE0B518-1DF2-4192-9E4A-EDEF2F30B04C";
 
         /// <summary>
         /// Convert color to byte array.
