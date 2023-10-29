@@ -96,16 +96,9 @@ namespace CoreBluetoothSample
                 }
             }
 
-            var color = ParseColor(firstRequest.Value);
+            var color = SampleLightControl_Data.ParseColor(firstRequest.Value);
             _light.color = color;
             peripheral.RespondToRequest(firstRequest, CBATTError.Success);
-        }
-
-        Color32 ParseColor(byte[] data)
-        {
-            if (data.Length != 7) return Color.black;
-
-            return new Color32(data[4], data[5], data[6], 255);
         }
 
         void OnAdvertiseToggleValueChanged(bool isOn)

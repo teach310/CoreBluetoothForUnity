@@ -1,4 +1,3 @@
-using System;
 using CoreBluetooth;
 using UnityEngine;
 using UnityEngine.UI;
@@ -124,16 +123,8 @@ namespace CoreBluetoothSample
         {
             if (_lightControlCharacteristic == null) return;
 
-            byte[] buff = new byte[7];
-            buff[0] = 3;
-            buff[1] = 0;
-            buff[2] = 1;
-            buff[3] = 1;
-            buff[4] = BitConverter.GetBytes(color.r)[0];
-            buff[5] = BitConverter.GetBytes(color.g)[0];
-            buff[6] = BitConverter.GetBytes(color.b)[0];
-
-            _peripheral.WriteValue(buff, _lightControlCharacteristic, CBCharacteristicWriteType.WithResponse);
+            var data = SampleLightControl_Data.GetLedOnData(color);
+            _peripheral.WriteValue(data, _lightControlCharacteristic, CBCharacteristicWriteType.WithResponse);
         }
 
         void OnColorChanged(Color32 color)
