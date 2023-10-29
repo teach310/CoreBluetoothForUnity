@@ -955,7 +955,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1378470631}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: CoreBluetoothSample.SampleLightControl_Central,
           Assembly-CSharp
         m_MethodName: OnClickRandomColor
@@ -1279,10 +1279,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 839500323}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e025590f02774d888e2db78a6d8eb16, type: 3}
+  m_Script: {fileID: 11500000, guid: a4fc84848aabb4e679c9f12463230e1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stateLabel: {fileID: 1660545182}
+  _logText: {fileID: 1660545182}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -1712,12 +1712,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1378470628}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 10cc692b4785046cebcd58be8b8ffbbf, type: 3}
+  m_Script: {fileID: 11500000, guid: 8c57b0debd98d4b6d84f816bb994b693, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _rgbSliders: {fileID: 792778011}
-  _colorImage: {fileID: 288462819}
-  _header: {fileID: 1878487717}
+  _log: {fileID: 839500325}
+  _stateLabel: {fileID: 1395834063}
 --- !u!1 &1395834061
 GameObject:
   m_ObjectHideFlags: 0
@@ -2071,7 +2070,7 @@ GameObject:
   - component: {fileID: 1660545183}
   - component: {fileID: 1660545182}
   m_Layer: 5
-  m_Name: StateLabel
+  m_Name: LogLabel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
