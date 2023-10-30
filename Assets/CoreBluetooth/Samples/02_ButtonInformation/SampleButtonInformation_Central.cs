@@ -18,7 +18,7 @@ namespace CoreBluetoothSample
             _centralManager = new CBCentralManager(this, initOptions);
         }
 
-        public void DidUpdateState(CBCentralManager central)
+        void ICBCentralManagerDelegate.DidUpdateState(CBCentralManager central)
         {
             if (central.State == CBManagerState.PoweredOn)
             {
@@ -27,7 +27,7 @@ namespace CoreBluetoothSample
             }
         }
 
-        public void DidDiscoverPeripheral(CBCentralManager central, CBPeripheral peripheral, int rssi)
+        void ICBCentralManagerDelegate.DidDiscoverPeripheral(CBCentralManager central, CBPeripheral peripheral, int rssi)
         {
             _stateLabel.text = "Connecting...";
             _peripheral = peripheral;
@@ -36,25 +36,25 @@ namespace CoreBluetoothSample
             central.Connect(peripheral);
         }
 
-        public void DidConnectPeripheral(CBCentralManager central, CBPeripheral peripheral)
+        void ICBCentralManagerDelegate.DidConnectPeripheral(CBCentralManager central, CBPeripheral peripheral)
         {
             _stateLabel.text = "Connected";
             peripheral.DiscoverServices();
         }
 
-        public void DidFailToConnectPeripheral(CBCentralManager central, CBPeripheral peripheral, CBError error)
+        void ICBCentralManagerDelegate.DidFailToConnectPeripheral(CBCentralManager central, CBPeripheral peripheral, CBError error)
         {
             _stateLabel.text = "Scanning...";
             central.ScanForPeripherals(new string[] { SampleButtonInformation_Data.ServiceUUID });
         }
 
-        public void DidDisconnectPeripheral(CBCentralManager central, CBPeripheral peripheral, CBError error)
+        void ICBCentralManagerDelegate.DidDisconnectPeripheral(CBCentralManager central, CBPeripheral peripheral, CBError error)
         {
             _stateLabel.text = "Scanning...";
             central.ScanForPeripherals(new string[] { SampleButtonInformation_Data.ServiceUUID });
         }
 
-        public void DidDiscoverServices(CBPeripheral peripheral, CBError error)
+        void ICBPeripheralDelegate.DidDiscoverServices(CBPeripheral peripheral, CBError error)
         {
             if (error != null)
             {
@@ -63,11 +63,14 @@ namespace CoreBluetoothSample
             }
             foreach (var service in peripheral.Services)
             {
-                peripheral.DiscoverCharacteristics(new string[] { SampleButtonInformation_Data.ButtonInformationCharacteristicUUID }, service);
+                if (service.UUID.Equals(SampleButtonInformation_Data.ServiceUUID))
+                {
+                    peripheral.DiscoverCharacteristics(new string[] { SampleButtonInformation_Data.ButtonInformationCharacteristicUUID }, service);
+                }
             }
         }
 
-        public void DidDiscoverCharacteristics(CBPeripheral peripheral, CBService service, CBError error)
+        void ICBPeripheralDelegate.DidDiscoverCharacteristics(CBPeripheral peripheral, CBService service, CBError error)
         {
             if (error != null)
             {
@@ -86,7 +89,7 @@ namespace CoreBluetoothSample
             }
         }
 
-        public void DidUpdateValue(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error)
+        void ICBPeripheralDelegate.DidUpdateValueForCharacteristic(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error)
         {
             if (error != null)
             {
@@ -96,8 +99,19 @@ namespace CoreBluetoothSample
 
             if (SampleButtonInformation_Data.ParseButtonInformation(characteristic.Value, out int buttonId, out bool isPressed))
             {
-                _log.AppendLog(buttonId);
+                _log.AppendLog(buttonId, isPressed);
+                Debug.Log($"[DidUpdateValue] buttonId: {buttonId}  isPressed: {isPressed}");
             }
+        }
+
+        void ICBPeripheralDelegate.DidUpdateNotificationStateForCharacteristic(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error)
+        {
+            if (error != null)
+            {
+                Debug.LogError($"[DidUpdateNotificationState] error: {error}");
+                return;
+            }
+            Debug.Log($"[DidUpdateNotificationState] characteristic: {characteristic}");
         }
 
         void OnDestroy()

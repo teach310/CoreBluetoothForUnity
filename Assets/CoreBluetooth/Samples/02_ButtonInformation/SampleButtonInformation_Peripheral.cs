@@ -60,14 +60,14 @@ namespace CoreBluetoothSample
             _peripheralManager.StartAdvertising(options);
         }
 
-        public void DidUpdateState(CBPeripheralManager peripheral)
+        void ICBPeripheralManagerDelegate.DidUpdateState(CBPeripheralManager peripheral)
         {
             if (peripheral.State == CBManagerState.PoweredOn && _buttonInformationCharacteristic == null)
             {
                 var service = new CBMutableService(SampleButtonInformation_Data.ServiceUUID, true);
                 _buttonInformationCharacteristic = new CBMutableCharacteristic(
                     SampleButtonInformation_Data.ButtonInformationCharacteristicUUID,
-                    CBCharacteristicProperties.Notify,
+                    CBCharacteristicProperties.Read | CBCharacteristicProperties.Notify,
                     null,
                     CBAttributePermissions.Readable
                 );
@@ -78,7 +78,7 @@ namespace CoreBluetoothSample
             }
         }
 
-        public void DidAddService(CBPeripheralManager peripheral, CBService service, CBError error)
+        void ICBPeripheralManagerDelegate.DidAddService(CBPeripheralManager peripheral, CBService service, CBError error)
         {
             if (error != null)
             {
@@ -89,7 +89,7 @@ namespace CoreBluetoothSample
             StartAdvertising();
         }
 
-        public void DidStartAdvertising(CBPeripheralManager peripheral, CBError error)
+        void ICBPeripheralManagerDelegate.DidStartAdvertising(CBPeripheralManager peripheral, CBError error)
         {
             if (error != null)
             {
@@ -100,7 +100,7 @@ namespace CoreBluetoothSample
             _stateLabel.text = "Advertising...";
         }
 
-        public void DidSubscribeToCharacteristic(CBPeripheralManager peripheral, CBCentral central, CBCharacteristic characteristic)
+        void ICBPeripheralManagerDelegate.DidSubscribeToCharacteristic(CBPeripheralManager peripheral, CBCentral central, CBCharacteristic characteristic)
         {
             if (_peripheralManager.IsAdvertising)
             {
@@ -110,7 +110,7 @@ namespace CoreBluetoothSample
             _central = central;
         }
 
-        public void DidUnsubscribeFromCharacteristic(CBPeripheralManager peripheral, CBCentral central, CBCharacteristic characteristic)
+        void ICBPeripheralManagerDelegate.DidUnsubscribeFromCharacteristic(CBPeripheralManager peripheral, CBCentral central, CBCharacteristic characteristic)
         {
             if (_peripheralManager.State == CBManagerState.PoweredOn && !_peripheralManager.IsAdvertising )
             {
@@ -120,7 +120,7 @@ namespace CoreBluetoothSample
             _central = null;
         }
 
-        public void IsReadyToUpdateSubscribers(CBPeripheralManager peripheral)
+        void ICBPeripheralManagerDelegate.IsReadyToUpdateSubscribers(CBPeripheralManager peripheral)
         {
             Debug.Log($"[IsReadyToUpdateSubscribers] {peripheral}");
         }
@@ -131,6 +131,7 @@ namespace CoreBluetoothSample
             {
                 return;
             }
+            UnityEngine.Debug.Log($"[OnButtonDown] buttonID: {buttonID}");
 
             var data = SampleButtonInformation_Data.GetButtonInformation(buttonID, true);
             _peripheralManager.UpdateValue(data, _buttonInformationCharacteristic, new CBCentral[] { _central });
@@ -142,7 +143,7 @@ namespace CoreBluetoothSample
             {
                 return;
             }
-
+            UnityEngine.Debug.Log($"[OnButtonUp] buttonID: {buttonID}");
             var data = SampleButtonInformation_Data.GetButtonInformation(buttonID, false);
             _peripheralManager.UpdateValue(data, _buttonInformationCharacteristic, new CBCentral[] { _central });
         }
