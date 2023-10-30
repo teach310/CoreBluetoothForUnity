@@ -25,7 +25,7 @@ namespace CoreBluetoothSample
             _disposables.Add(_peripheralManager);
         }
 
-        public void DidUpdateState(CBPeripheralManager peripheral)
+        void ICBPeripheralManagerDelegate.DidUpdateState(CBPeripheralManager peripheral)
         {
             Debug.Log($"[DidUpdateState] {peripheral.State}");
             if (peripheral.State == CBManagerState.PoweredOn)
@@ -44,7 +44,7 @@ namespace CoreBluetoothSample
             }
         }
 
-        public void DidAddService(CBPeripheralManager peripheral, CBService service, CBError error)
+        void ICBPeripheralManagerDelegate.DidAddService(CBPeripheralManager peripheral, CBService service, CBError error)
         {
             Debug.Log($"[DidAddService] peripheral: {peripheral}  service: {service}  error: {error}");
             if (error == null)
@@ -58,29 +58,29 @@ namespace CoreBluetoothSample
             }
         }
 
-        public void DidStartAdvertising(CBPeripheralManager peripheral, CBError error)
+        void ICBPeripheralManagerDelegate.DidStartAdvertising(CBPeripheralManager peripheral, CBError error)
         {
             Debug.Log($"[DidStartAdvertising] peripheral: {peripheral}  error: {error}");
         }
 
-        public void DidSubscribeToCharacteristic(CBPeripheralManager peripheral, CBCentral central, CBCharacteristic characteristic)
+        void ICBPeripheralManagerDelegate.DidSubscribeToCharacteristic(CBPeripheralManager peripheral, CBCentral central, CBCharacteristic characteristic)
         {
             Debug.Log($"[DidSubscribeToCharacteristic] peripheral: {peripheral}  central: {central}  characteristic: {characteristic}");
             _central = central;
         }
 
-        public void DidUnsubscribeFromCharacteristic(CBPeripheralManager peripheral, CBCentral central, CBCharacteristic characteristic)
+        void ICBPeripheralManagerDelegate.DidUnsubscribeFromCharacteristic(CBPeripheralManager peripheral, CBCentral central, CBCharacteristic characteristic)
         {
             Debug.Log($"[DidUnsubscribeFromCharacteristic] peripheral: {peripheral}  central: {central}  characteristic: {characteristic}");
             _central = null;
         }
 
-        public void IsReadyToUpdateSubscribers(CBPeripheralManager peripheral)
+        void ICBPeripheralManagerDelegate.IsReadyToUpdateSubscribers(CBPeripheralManager peripheral)
         {
             Debug.Log($"[IsReadyToUpdateSubscribers] {peripheral}");
         }
 
-        public void DidReceiveReadRequest(CBPeripheralManager peripheral, CBATTRequest request)
+        void ICBPeripheralManagerDelegate.DidReceiveReadRequest(CBPeripheralManager peripheral, CBATTRequest request)
         {
             if (request.Characteristic.UUID != _characteristicUUID)
             {
@@ -100,7 +100,7 @@ namespace CoreBluetoothSample
             Debug.Log($"[DidReceiveReadRequest] {System.Text.Encoding.UTF8.GetString(request.Value)}");
         }
 
-        public void DidReceiveWriteRequests(CBPeripheralManager peripheral, CBATTRequest[] requests)
+        void ICBPeripheralManagerDelegate.DidReceiveWriteRequests(CBPeripheralManager peripheral, CBATTRequest[] requests)
         {
             var firstRequest = requests[0];
             foreach (var request in requests)

@@ -35,7 +35,7 @@ namespace CoreBluetoothSample
             _peripheralManager.StartAdvertising(options);
         }
 
-        public void DidUpdateState(CBPeripheralManager peripheral)
+        void ICBPeripheralManagerDelegate.DidUpdateState(CBPeripheralManager peripheral)
         {
             if (peripheral.State == CBManagerState.PoweredOn)
             {
@@ -56,7 +56,7 @@ namespace CoreBluetoothSample
             }
         }
 
-        public void DidAddService(CBPeripheralManager peripheral, CBService service, CBError error)
+        void ICBPeripheralManagerDelegate.DidAddService(CBPeripheralManager peripheral, CBService service, CBError error)
         {
             if (error != null)
             {
@@ -67,7 +67,7 @@ namespace CoreBluetoothSample
             StartAdvertising();
         }
 
-        public void DidStartAdvertising(CBPeripheralManager peripheral, CBError error)
+        void ICBPeripheralManagerDelegate.DidStartAdvertising(CBPeripheralManager peripheral, CBError error)
         {
             if (error != null)
             {
@@ -78,7 +78,7 @@ namespace CoreBluetoothSample
             _header.SetStateText("Advertising...");
         }
 
-        public void DidReceiveWriteRequests(CBPeripheralManager peripheral, CBATTRequest[] requests)
+        void ICBPeripheralManagerDelegate.DidReceiveWriteRequests(CBPeripheralManager peripheral, CBATTRequest[] requests)
         {
             var firstRequest = requests[0];
             foreach (var request in requests)
