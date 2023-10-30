@@ -69,11 +69,6 @@ namespace CoreBluetooth
         internal static void DidDiscoverServices(IntPtr peripheralPtr, IntPtr commaSeparatedServiceUUIDsPtr, int errorCode)
         {
             string commaSeparatedServiceUUIDs = Marshal.PtrToStringUTF8(commaSeparatedServiceUUIDsPtr);
-            if (string.IsNullOrEmpty(commaSeparatedServiceUUIDs))
-            {
-                throw new ArgumentException("commaSeparatedServiceUUIDs is null or empty.");
-            }
-
             GetDelegate(peripheralPtr)?.DidDiscoverServices(
                 commaSeparatedServiceUUIDs.Split(','),
                 CBError.CreateOrNullFromCode(errorCode)
@@ -84,11 +79,6 @@ namespace CoreBluetooth
         internal static void DidDiscoverCharacteristics(IntPtr peripheralPtr, IntPtr serviceUUIDPtr, IntPtr commaSeparatedCharacteristicUUIDsPtr, int errorCode)
         {
             string commaSeparatedCharacteristicUUIDs = Marshal.PtrToStringUTF8(commaSeparatedCharacteristicUUIDsPtr);
-            if (string.IsNullOrEmpty(commaSeparatedCharacteristicUUIDs))
-            {
-                throw new ArgumentException("commaSeparatedCharacteristicUUIDs is null or empty.");
-            }
-
             GetDelegate(peripheralPtr)?.DidDiscoverCharacteristics(
                 Marshal.PtrToStringUTF8(serviceUUIDPtr),
                 commaSeparatedCharacteristicUUIDs.Split(','),
@@ -156,11 +146,6 @@ namespace CoreBluetooth
         internal static void DidModifyServices(IntPtr peripheralPtr, IntPtr commaSeparatedServiceUUIDsPtr)
         {
             string commaSeparatedServiceUUIDs = Marshal.PtrToStringUTF8(commaSeparatedServiceUUIDsPtr);
-            if (string.IsNullOrEmpty(commaSeparatedServiceUUIDs))
-            {
-                throw new ArgumentException("commaSeparatedServiceUUIDs is null or empty.");
-            }
-
             GetDelegate(peripheralPtr)?.DidModifyServices(
                 commaSeparatedServiceUUIDs.Split(',')
             );
