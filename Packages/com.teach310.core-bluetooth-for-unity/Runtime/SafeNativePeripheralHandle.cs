@@ -10,7 +10,11 @@ namespace CoreBluetooth
         void DidDiscoverCharacteristics(string serviceUUID, string[] characteristicUUIDs, CBError error) { }
         void DidUpdateValueForCharacteristic(string serviceUUID, string characteristicUUID, byte[] data, CBError error) { }
         void DidWriteValueForCharacteristic(string serviceUUID, string characteristicUUID, CBError error) { }
+        void IsReadyToSendWriteWithoutResponse() { }
         void DidUpdateNotificationStateForCharacteristic(string serviceUUID, string characteristicUUID, bool enabled, CBError error) { }
+        void DidReadRSSI(int rssi, CBError error) { }
+        void DidUpdateName() { }
+        void DidModifyServices(string[] invalidatedServiceUUIDs) { }
     }
 
     internal class SafeNativePeripheralHandle : SafeHandle
@@ -32,7 +36,11 @@ namespace CoreBluetooth
                 DidDiscoverCharacteristics,
                 DidUpdateValueForCharacteristic,
                 DidWriteValueForCharacteristic,
-                DidUpdateNotificationStateForCharacteristic
+                IsReadyToSendWriteWithoutResponse,
+                DidUpdateNotificationStateForCharacteristic,
+                DidReadRSSI,
+                DidUpdateName,
+                DidModifyServices
             );
         }
 
@@ -61,11 +69,6 @@ namespace CoreBluetooth
         internal static void DidDiscoverServices(IntPtr peripheralPtr, IntPtr commaSeparatedServiceUUIDsPtr, int errorCode)
         {
             string commaSeparatedServiceUUIDs = Marshal.PtrToStringUTF8(commaSeparatedServiceUUIDsPtr);
-            if (string.IsNullOrEmpty(commaSeparatedServiceUUIDs))
-            {
-                throw new ArgumentException("commaSeparatedServiceUUIDs is null or empty.");
-            }
-
             GetDelegate(peripheralPtr)?.DidDiscoverServices(
                 commaSeparatedServiceUUIDs.Split(','),
                 CBError.CreateOrNullFromCode(errorCode)
@@ -76,11 +79,6 @@ namespace CoreBluetooth
         internal static void DidDiscoverCharacteristics(IntPtr peripheralPtr, IntPtr serviceUUIDPtr, IntPtr commaSeparatedCharacteristicUUIDsPtr, int errorCode)
         {
             string commaSeparatedCharacteristicUUIDs = Marshal.PtrToStringUTF8(commaSeparatedCharacteristicUUIDsPtr);
-            if (string.IsNullOrEmpty(commaSeparatedCharacteristicUUIDs))
-            {
-                throw new ArgumentException("commaSeparatedCharacteristicUUIDs is null or empty.");
-            }
-
             GetDelegate(peripheralPtr)?.DidDiscoverCharacteristics(
                 Marshal.PtrToStringUTF8(serviceUUIDPtr),
                 commaSeparatedCharacteristicUUIDs.Split(','),
@@ -112,6 +110,12 @@ namespace CoreBluetooth
             );
         }
 
+        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralIsReadyToSendWriteWithoutResponseHandler))]
+        internal static void IsReadyToSendWriteWithoutResponse(IntPtr peripheralPtr)
+        {
+            GetDelegate(peripheralPtr)?.IsReadyToSendWriteWithoutResponse();
+        }
+
         [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralDidUpdateNotificationStateForCharacteristicHandler))]
         internal static void DidUpdateNotificationStateForCharacteristic(IntPtr peripheralPtr, IntPtr serviceUUIDPtr, IntPtr characteristicUUIDPtr, int notificationState, int errorCode)
         {
@@ -120,6 +124,30 @@ namespace CoreBluetooth
                 Marshal.PtrToStringUTF8(characteristicUUIDPtr),
                 notificationState == 1,
                 CBError.CreateOrNullFromCode(errorCode)
+            );
+        }
+
+        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralDidReadRSSIHandler))]
+        internal static void DidReadRSSI(IntPtr peripheralPtr, int rssi, int errorCode)
+        {
+            GetDelegate(peripheralPtr)?.DidReadRSSI(
+                rssi,
+                CBError.CreateOrNullFromCode(errorCode)
+            );
+        }
+
+        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralDidUpdateNameHandler))]
+        internal static void DidUpdateName(IntPtr peripheralPtr)
+        {
+            GetDelegate(peripheralPtr)?.DidUpdateName();
+        }
+
+        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralDidModifyServicesHandler))]
+        internal static void DidModifyServices(IntPtr peripheralPtr, IntPtr commaSeparatedServiceUUIDsPtr)
+        {
+            string commaSeparatedServiceUUIDs = Marshal.PtrToStringUTF8(commaSeparatedServiceUUIDsPtr);
+            GetDelegate(peripheralPtr)?.DidModifyServices(
+                commaSeparatedServiceUUIDs.Split(',')
             );
         }
     }

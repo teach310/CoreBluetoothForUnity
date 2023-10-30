@@ -7,7 +7,11 @@ public class CB4UPeripheral : NSObject {
     public var didDiscoverCharacteristicsHandler: CB4UPeripheralDidDiscoverCharacteristicsHandler?
     public var didUpdateValueForCharacteristicHandler: CB4UPeripheralDidUpdateValueForCharacteristicHandler?
     public var didWriteValueForCharacteristicHandler: CB4UPeripheralDidWriteValueForCharacteristicHandler?
+    public var isReadyToSendWriteWithoutResponseHandler: CB4UPeripheralIsReadyToSendWriteWithoutResponseHandler?
     public var didUpdateNotificationStateForCharacteristicHandler: CB4UPeripheralDidUpdateNotificationStateForCharacteristicHandler?
+    public var didReadRSSIHandler: CB4UPeripheralDidReadRSSIHandler?
+    public var didUpdateNameHandler: CB4UPeripheralDidUpdateNameHandler?
+    public var didModifyServicesHandler: CB4UPeripheralDidModifyServicesHandler?
     
     let success: Int32 = 0
     let serviceNotFound: Int32 = -2
@@ -80,6 +84,10 @@ public class CB4UPeripheral : NSObject {
         }
     }
     
+    public func maximumWriteValueLength(_ writeType: CBCharacteristicWriteType) -> Int32 {
+        return Int32(peripheral.maximumWriteValueLength(for: writeType))
+    }
+    
     public func setNotifyValue(_ serviceUUID: CBUUID, _ characteristicUUID: CBUUID, _ enabled: Bool) -> Int32 {
         return actionForCharacteristic(serviceUUID, characteristicUUID) { (service, characteristic) -> Void in
             peripheral.setNotifyValue(enabled, for: characteristic)
@@ -89,6 +97,14 @@ public class CB4UPeripheral : NSObject {
     public var state: CBPeripheralState {
         return peripheral.state
     }
+    
+    public var canSendWriteWithoutResponse: Bool {
+        return peripheral.canSendWriteWithoutResponse
+    }
+    
+    public func readRSSI() {
+        peripheral.readRSSI()
+    }
 }
 
 extension CB4UPeripheral : CBPeripheralDelegate {
@@ -97,7 +113,7 @@ extension CB4UPeripheral : CBPeripheralDelegate {
     
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
         let commaSeparatedServiceIds = peripheral.services?.map { $0.uuid.uuidString }.joined(separator: ",") ?? ""
-
+        
         commaSeparatedServiceIds.withCString { (commaSeparatedServiceIdsCString) in
             didDiscoverServicesHandler?(selfPointer(), commaSeparatedServiceIdsCString, errorToCode(error))
         }
@@ -106,7 +122,7 @@ extension CB4UPeripheral : CBPeripheralDelegate {
     public func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
         let serviceId = service.uuid.uuidString
         let commaSeparatedCharacteristicIds = service.characteristics?.map { $0.uuid.uuidString }.joined(separator: ",") ?? ""
-
+        
         serviceId.withCString { (serviceIdCString) in
             commaSeparatedCharacteristicIds.withCString { (commaSeparatedCharacteristicIdsCString) in
                 didDiscoverCharacteristicsHandler?(selfPointer(), serviceIdCString, commaSeparatedCharacteristicIdsCString, errorToCode(error))
@@ -140,6 +156,10 @@ extension CB4UPeripheral : CBPeripheralDelegate {
         }
     }
     
+    public func peripheralIsReady(toSendWriteWithoutResponse peripheral: CBPeripheral) {
+        isReadyToSendWriteWithoutResponseHandler?(selfPointer())
+    }
+    
     public func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
         let serviceId = characteristic.service?.uuid.uuidString ?? ""
         let characteristicId = characteristic.uuid.uuidString
@@ -149,6 +169,22 @@ extension CB4UPeripheral : CBPeripheralDelegate {
             characteristicId.withCString { (characteristicIdCString) in
                 didUpdateNotificationStateForCharacteristicHandler?(selfPointer(), serviceIdCString, characteristicIdCString, Int32(notificationState), errorToCode(error))
             }
+        }
+    }
+    
+    public func peripheral(_ peripheral: CBPeripheral, didReadRSSI RSSI: NSNumber, error: Error?) {
+        didReadRSSIHandler?(selfPointer(), Int32(RSSI.intValue), errorToCode(error))
+    }
+    
+    public func peripheralDidUpdateName(_ peripheral: CBPeripheral) {
+        didUpdateNameHandler?(selfPointer())
+    }
+    
+    public func peripheral(_ peripheral: CBPeripheral, didModifyServices invalidatedServices: [CBService]) {
+        let commaSeparatedServiceIds = invalidatedServices.map { $0.uuid.uuidString }.joined(separator: ",")
+        
+        commaSeparatedServiceIds.withCString { (commaSeparatedServiceIdsCString) in
+            didModifyServicesHandler?(selfPointer(), commaSeparatedServiceIdsCString)
         }
     }
 }

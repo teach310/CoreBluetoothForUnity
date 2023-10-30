@@ -106,6 +106,11 @@ namespace CoreBluetooth
             ExceptionUtils.ThrowIfCharacteristicNotFound(result, characteristic.UUID);
         }
 
+        internal int GetMaximumWriteValueLength(CBCharacteristicWriteType writeType)
+        {
+            return NativeMethods.cb4u_peripheral_maximum_write_value_length(_handle, (int)writeType);
+        }
+
         internal void SetNotifyValue(bool enabled, CBCharacteristic characteristic)
         {
             int result = NativeMethods.cb4u_peripheral_set_notify_value(
@@ -126,6 +131,19 @@ namespace CoreBluetooth
                 int state = NativeMethods.cb4u_peripheral_state(_handle);
                 return (CBPeripheralState)state;
             }
+        }
+
+        internal bool CanSendWriteWithoutResponse
+        {
+            get
+            {
+                return NativeMethods.cb4u_peripheral_can_send_write_without_response(_handle);
+            }
+        }
+
+        internal void ReadRSSI()
+        {
+            NativeMethods.cb4u_peripheral_read_rssi(_handle);
         }
     }
 }

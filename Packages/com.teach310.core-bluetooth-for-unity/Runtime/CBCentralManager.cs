@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace CoreBluetooth
 {
@@ -40,13 +41,27 @@ namespace CoreBluetooth
             }
         }
 
+        /// <summary>
+        /// ICBCentralManagerDelegate callbacks will be called in this context.
+        /// </summary>
+        public SynchronizationContext CallbackContext { get; set; }
+
         NativeCentralManagerProxy _nativeCentralManagerProxy;
 
-        public CBCentralManager(ICBCentralManagerDelegate centralDelegate = null)
+        public CBCentralManager(ICBCentralManagerDelegate centralDelegate = null, CBCentralManagerInitOptions options = null)
         {
-            _handle = SafeNativeCentralManagerHandle.Create();
+            if (options == null)
+            {
+                _handle = SafeNativeCentralManagerHandle.Create();
+            }
+            else
+            {
+                using var optionsDict = options.ToNativeDictionary();
+                _handle = SafeNativeCentralManagerHandle.Create(optionsDict.Handle);
+            }
             Delegate = centralDelegate;
             _nativeCentralManagerProxy = new NativeCentralManagerProxy(_handle, this);
+            CallbackContext = SynchronizationContext.Current;
         }
 
         public void Connect(CBPeripheral peripheral)
@@ -59,6 +74,20 @@ namespace CoreBluetooth
         {
             ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
             _nativeCentralManagerProxy.CancelPeripheralConnection(peripheral);
+        }
+
+        public CBPeripheral[] RetrievePeripherals(params string[] peripheralIds)
+        {
+            ExceptionUtils.ThrowObjectDisposedExceptionIf(_disposed, this);
+            var peripheralHandles = _nativeCentralManagerProxy.RetrievePeripherals(peripheralIds);
+            var result = new CBPeripheral[peripheralHandles.Length];
+            for (var i = 0; i < peripheralHandles.Length; i++)
+            {
+                var peripheral = new CBPeripheral(peripheralHandles[i], CallbackContext);
+                SetPeripheral(peripheral);
+                result[i] = peripheral;
+            }
+            return result;
         }
 
         public void ScanForPeripherals(string[] serviceUUIDs = null)
@@ -92,44 +121,68 @@ namespace CoreBluetooth
             return peripheral;
         }
 
+        void SetPeripheral(CBPeripheral peripheral)
+        {
+            if (_peripherals.ContainsKey(peripheral.Identifier))
+            {
+                _peripherals[peripheral.Identifier].Dispose();
+            }
+
+            _peripherals[peripheral.Identifier] = peripheral;
+        }
+
         void INativeCentralManagerDelegate.DidConnect(string peripheralId)
         {
-            if (_disposed) return;
-            var peripheral = GetPeripheral(peripheralId);
-            if (peripheral == null) return;
-            Delegate?.DidConnectPeripheral(this, peripheral);
+            CallbackContext.Post(_ =>
+            {
+                if (_disposed) return;
+                var peripheral = GetPeripheral(peripheralId);
+                if (peripheral == null) return;
+                Delegate?.DidConnectPeripheral(this, peripheral);
+            }, null);
         }
 
         void INativeCentralManagerDelegate.DidDisconnectPeripheral(string peripheralId, CBError error)
         {
-            if (_disposed) return;
-            var peripheral = GetPeripheral(peripheralId);
-            if (peripheral == null) return;
-            Delegate?.DidDisconnectPeripheral(this, peripheral, error);
+            CallbackContext.Post(_ =>
+            {
+                if (_disposed) return;
+                var peripheral = GetPeripheral(peripheralId);
+                if (peripheral == null) return;
+                Delegate?.DidDisconnectPeripheral(this, peripheral, error);
+            }, null);
         }
 
         void INativeCentralManagerDelegate.DidFailToConnect(string peripheralId, CBError error)
         {
-            if (_disposed) return;
-            var peripheral = GetPeripheral(peripheralId);
-            if (peripheral == null) return;
-            Delegate?.DidFailToConnectPeripheral(this, peripheral, error);
+            CallbackContext.Post(_ =>
+            {
+                if (_disposed) return;
+                var peripheral = GetPeripheral(peripheralId);
+                if (peripheral == null) return;
+                Delegate?.DidFailToConnectPeripheral(this, peripheral, error);
+            }, null);
         }
 
         void INativeCentralManagerDelegate.DidDiscoverPeripheral(SafeNativePeripheralHandle peripheralHandle, int rssi)
         {
-            if (_disposed) return;
-
-            var peripheral = new CBPeripheral(peripheralHandle);
-            _peripherals.Add(peripheral.Identifier, peripheral);
-            Delegate?.DidDiscoverPeripheral(this, peripheral, rssi);
+            CallbackContext.Post(_ =>
+            {
+                if (_disposed) return;
+                var peripheral = new CBPeripheral(peripheralHandle, CallbackContext);
+                SetPeripheral(peripheral);
+                Delegate?.DidDiscoverPeripheral(this, peripheral, rssi);
+            }, null);
         }
 
         void INativeCentralManagerDelegate.DidUpdateState(CBManagerState state)
         {
-            if (_disposed) return;
-            this.State = state;
-            Delegate?.DidUpdateState(this);
+            CallbackContext.Post(_ =>
+            {
+                if (_disposed) return;
+                this.State = state;
+                Delegate?.DidUpdateState(this);
+            }, null);
         }
 
         public void Dispose()

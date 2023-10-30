@@ -24,6 +24,14 @@ namespace CoreBluetoothTests
         }
 
         [Test]
+        public void CreateWithOptions()
+        {
+            var options = new CBCentralManagerInitOptions() { ShowPowerAlert = true };
+            using var centralManager = new CBCentralManager(null, options);
+            Assert.That(centralManager, Is.Not.Null);
+        }
+
+        [Test]
         public void Release()
         {
             var centralManager = new CBCentralManager();
@@ -67,6 +75,18 @@ namespace CoreBluetoothTests
 
             centralManager.StopScan();
             Assert.That(centralManager.IsScanning, Is.False);
+        }
+
+        [UnityTest]
+        public IEnumerator RetrievePeripherals()
+        {
+            using var centralManager = new CBCentralManager();
+            yield return WaitUntilWithTimeout(() => centralManager.State != CBManagerState.Unknown, 1f);
+            if (centralManager.State != CBManagerState.PoweredOn) yield break;
+
+            var peripherals = centralManager.RetrievePeripherals(validUUID1);
+            Assert.That(peripherals, Is.Not.Null);
+            Assert.That(peripherals.Length, Is.EqualTo(0));
         }
     }
 }

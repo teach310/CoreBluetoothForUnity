@@ -6,6 +6,15 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/CoreBluetooth/Samples/02_ButtonInformation/SampleButtonInformation_PeripheralScene.unity
+    guid: 94e11c1c393aa4c86bee8512f55a339c
+  - enabled: 1
+    path: Assets/CoreBluetooth/Samples/02_ButtonInformation/SampleButtonInformation_CentralScene.unity
+    guid: 98989787415d845b7a41d606f97fb87b
+  - enabled: 1
+    path: Assets/CoreBluetooth/Samples/01_LightControl/SampleLightControl_CentralScene.unity
+    guid: b43432a5283d04079877f3caf7575d64
+  - enabled: 1
     path: Assets/CoreBluetooth/Samples/12_Debug/SampleDebug_HomeScene.unity
     guid: 23e434e4762674c2992cc53e7057e164
   - enabled: 1

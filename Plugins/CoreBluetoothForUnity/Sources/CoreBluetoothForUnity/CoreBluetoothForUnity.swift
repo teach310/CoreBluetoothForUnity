@@ -28,8 +28,14 @@ public func cb4u_central_maximum_update_value_length(_ centralPtr: UnsafeRawPoin
 }
 
 @_cdecl("cb4u_central_manager_new")
-public func cb4u_central_manager_new() -> UnsafeMutableRawPointer {
-    return Unmanaged.passRetained(CB4UCentralManager()).toOpaque()
+public func cb4u_central_manager_new(_ optionsPtr: UnsafeRawPointer?) -> UnsafeMutableRawPointer {
+    var options: [String: Any]? = nil
+    if let optionsPtr = optionsPtr {
+        let nsMutableDictionary = Unmanaged<NSMutableDictionary>.fromOpaque(optionsPtr).takeUnretainedValue()
+        options = nsMutableDictionary as? [String: Any]
+    }
+    
+    return Unmanaged.passRetained(CB4UCentralManager(options)).toOpaque()
 }
 
 @_cdecl("cb4u_central_manager_release")
@@ -77,6 +83,26 @@ public func cb4u_central_manager_cancel_peripheral_connection(_ centralPtr: Unsa
     instance.cancelPeripheralConnection(peripheral: peripheral)
 }
 
+@_cdecl("cb4u_central_manager_retrieve_peripherals")
+public func cb4u_central_manager_retrieve_peripherals(
+    _ centralPtr: UnsafeRawPointer,
+    _ peripheralIds: UnsafePointer<UnsafePointer<CChar>?>,
+    _ peripheralIdsCount: Int32
+) -> UnsafeMutableRawPointer {
+    let instance = Unmanaged<CB4UCentralManager>.fromOpaque(centralPtr).takeUnretainedValue()
+    
+    let peripheralIdsArray = (0..<Int(peripheralIdsCount)).compactMap { index -> UUID? in
+        let uuidString = String(cString: peripheralIds[index]!)
+        guard let uuid = UUID(uuidString: uuidString) else {
+            return nil
+        }
+        return uuid
+    }
+    
+    let peripherals = instance.retrievePeripherals(withIdentifiers: peripheralIdsArray)
+    return Unmanaged.passRetained(peripherals).toOpaque()
+}
+
 @_cdecl("cb4u_central_manager_scan_for_peripherals")
 public func cb4u_central_manager_scan_for_peripherals(
     _ centralPtr: UnsafeRawPointer,
@@ -116,7 +142,11 @@ public typealias CB4UPeripheralDidDiscoverServicesHandler = @convention(c) (Unsa
 public typealias CB4UPeripheralDidDiscoverCharacteristicsHandler = @convention(c) (UnsafeRawPointer, UnsafePointer<CChar>, UnsafePointer<CChar>, Int32) -> Void
 public typealias CB4UPeripheralDidUpdateValueForCharacteristicHandler = @convention(c) (UnsafeRawPointer, UnsafePointer<CChar>, UnsafePointer<CChar>, UnsafePointer<UInt8>, Int32, Int32) -> Void
 public typealias CB4UPeripheralDidWriteValueForCharacteristicHandler = @convention(c) (UnsafeRawPointer, UnsafePointer<CChar>, UnsafePointer<CChar>, Int32) -> Void
+public typealias CB4UPeripheralIsReadyToSendWriteWithoutResponseHandler = @convention(c) (UnsafeRawPointer) -> Void
 public typealias CB4UPeripheralDidUpdateNotificationStateForCharacteristicHandler = @convention(c) (UnsafeRawPointer, UnsafePointer<CChar>, UnsafePointer<CChar>, Int32, Int32) -> Void
+public typealias CB4UPeripheralDidReadRSSIHandler = @convention(c) (UnsafeRawPointer, Int32, Int32) -> Void
+public typealias CB4UPeripheralDidUpdateNameHandler = @convention(c) (UnsafeRawPointer) -> Void
+public typealias CB4UPeripheralDidModifyServicesHandler = @convention(c) (UnsafeRawPointer, UnsafePointer<CChar>) -> Void
 
 @_cdecl("cb4u_peripheral_register_handlers")
 public func cb4u_peripheral_register_handlers(
@@ -125,7 +155,11 @@ public func cb4u_peripheral_register_handlers(
     _ didDiscoverCharacteristicsHandler: @escaping CB4UPeripheralDidDiscoverCharacteristicsHandler,
     _ didUpdateValueForCharacteristicHandler: @escaping CB4UPeripheralDidUpdateValueForCharacteristicHandler,
     _ didWriteValueForCharacteristicHandler: @escaping CB4UPeripheralDidWriteValueForCharacteristicHandler,
-    _ didUpdateNotificationStateForCharacteristicHandler: @escaping CB4UPeripheralDidUpdateNotificationStateForCharacteristicHandler
+    _ isReadyToSendWriteWithoutResponseHandler: @escaping CB4UPeripheralIsReadyToSendWriteWithoutResponseHandler,
+    _ didUpdateNotificationStateForCharacteristicHandler: @escaping CB4UPeripheralDidUpdateNotificationStateForCharacteristicHandler,
+    _ didReadRSSIHandler: @escaping CB4UPeripheralDidReadRSSIHandler,
+    _ didUpdateNameHandler: @escaping CB4UPeripheralDidUpdateNameHandler,
+    _ didModifyServicesHandler: @escaping CB4UPeripheralDidModifyServicesHandler
 ) {
     let instance = Unmanaged<CB4UPeripheral>.fromOpaque(peripheralPtr).takeUnretainedValue()
     
@@ -133,7 +167,11 @@ public func cb4u_peripheral_register_handlers(
     instance.didDiscoverCharacteristicsHandler = didDiscoverCharacteristicsHandler
     instance.didUpdateValueForCharacteristicHandler = didUpdateValueForCharacteristicHandler
     instance.didWriteValueForCharacteristicHandler = didWriteValueForCharacteristicHandler
+    instance.isReadyToSendWriteWithoutResponseHandler = isReadyToSendWriteWithoutResponseHandler
     instance.didUpdateNotificationStateForCharacteristicHandler = didUpdateNotificationStateForCharacteristicHandler
+    instance.didReadRSSIHandler = didReadRSSIHandler
+    instance.didUpdateNameHandler = didUpdateNameHandler
+    instance.didModifyServicesHandler = didModifyServicesHandler
 }
 
 @_cdecl("cb4u_peripheral_identifier")
@@ -229,6 +267,16 @@ public func cb4u_peripheral_write_characteristic_value(
     return instance.writeCharacteristicValue(CBUUID(string: String(cString: serviceUUID)), CBUUID(string: String(cString: characteristicUUID)), data, CBCharacteristicWriteType(rawValue: Int(writeType))!)
 }
 
+@_cdecl("cb4u_peripheral_maximum_write_value_length")
+public func cb4u_peripheral_maximum_write_value_length(
+    _ peripheralPtr: UnsafeRawPointer,
+    _ writeType: Int32
+) -> Int32 {
+    let instance = Unmanaged<CB4UPeripheral>.fromOpaque(peripheralPtr).takeUnretainedValue()
+    
+    return Int32(instance.maximumWriteValueLength(CBCharacteristicWriteType(rawValue: Int(writeType))!))
+}
+
 @_cdecl("cb4u_peripheral_set_notify_value")
 public func cb4u_peripheral_set_notify_value(
     _ peripheralPtr: UnsafeRawPointer,
@@ -248,6 +296,20 @@ public func cb4u_peripheral_state(_ peripheralPtr: UnsafeRawPointer) -> Int32 {
     return Int32(instance.state.rawValue)
 }
 
+@_cdecl("cb4u_peripheral_can_send_write_without_response")
+public func cb4u_peripheral_can_send_write_without_response(_ peripheralPtr: UnsafeRawPointer) -> Bool {
+    let instance = Unmanaged<CB4UPeripheral>.fromOpaque(peripheralPtr).takeUnretainedValue()
+    
+    return instance.canSendWriteWithoutResponse
+}
+
+@_cdecl("cb4u_peripheral_read_rssi")
+public func cb4u_peripheral_read_rssi(_ peripheralPtr: UnsafeRawPointer) {
+    let instance = Unmanaged<CB4UPeripheral>.fromOpaque(peripheralPtr).takeUnretainedValue()
+    
+    instance.readRSSI()
+}
+
 @_cdecl("cb4u_peripheral_characteristic_properties")
 public func cb4u_peripheral_characteristic_properties(
     _ peripheralPtr: UnsafeRawPointer,
@@ -260,8 +322,14 @@ public func cb4u_peripheral_characteristic_properties(
 }
 
 @_cdecl("cb4u_peripheral_manager_new")
-public func cb4u_peripheral_manager_new() -> UnsafeMutableRawPointer {
-    return Unmanaged.passRetained(CB4UPeripheralManager()).toOpaque()
+public func cb4u_peripheral_manager_new(_ optionsPtr: UnsafeRawPointer?) -> UnsafeMutableRawPointer {   
+    var options: [String: Any]? = nil
+    if let optionsPtr = optionsPtr {
+        let nsMutableDictionary = Unmanaged<NSMutableDictionary>.fromOpaque(optionsPtr).takeUnretainedValue()
+        options = nsMutableDictionary as? [String: Any]
+    }
+
+    return Unmanaged.passRetained(CB4UPeripheralManager(options)).toOpaque()
 }
 
 @_cdecl("cb4u_peripheral_manager_release")
@@ -308,6 +376,21 @@ public func cb4u_peripheral_manager_add_service(_ peripheralPtr: UnsafeRawPointe
     let service = Unmanaged<CB4UMutableService>.fromOpaque(servicePtr).takeUnretainedValue()
     
     instance.add(service)
+}
+
+@_cdecl("cb4u_peripheral_manager_remove_service")
+public func cb4u_peripheral_manager_remove_service(_ peripheralPtr: UnsafeRawPointer, _ servicePtr: UnsafeRawPointer) {
+    let instance = Unmanaged<CB4UPeripheralManager>.fromOpaque(peripheralPtr).takeUnretainedValue()
+    let service = Unmanaged<CB4UMutableService>.fromOpaque(servicePtr).takeUnretainedValue()
+    
+    instance.remove(service)
+}
+
+@_cdecl("cb4u_peripheral_manager_remove_all_services")
+public func cb4u_peripheral_manager_remove_all_services(_ peripheralPtr: UnsafeRawPointer) {
+    let instance = Unmanaged<CB4UPeripheralManager>.fromOpaque(peripheralPtr).takeUnretainedValue()
+    
+    instance.removeAllServices()
 }
 
 @_cdecl("cb4u_peripheral_manager_start_advertising")

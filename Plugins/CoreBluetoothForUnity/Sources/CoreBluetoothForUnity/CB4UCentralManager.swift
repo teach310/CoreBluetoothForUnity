@@ -11,10 +11,10 @@ public class CB4UCentralManager : NSObject {
     public var didDiscoverPeripheralHandler: CB4UCentralManagerDidDiscoverPeripheralHandler?
     public var didUpdateStateHandler: CB4UCentralManagerDidUpdateStateHandler?
     
-    public override init() {
+    public init(_ options: [String: Any]? = nil) {
         super.init()
         
-        centralManager = CBCentralManager(delegate: self, queue: nil)
+        centralManager = CBCentralManager(delegate: self, queue: nil, options: options)
     }
     
     func selfPointer() -> UnsafeMutableRawPointer {
@@ -40,6 +40,17 @@ public class CB4UCentralManager : NSObject {
     
     public func cancelPeripheralConnection(peripheral: CB4UPeripheral) {
         centralManager.cancelPeripheralConnection(peripheral.peripheral)
+    }
+
+    public func retrievePeripherals(withIdentifiers identifiers: [UUID]) -> NSMutableArray {
+        let peripherals = centralManager.retrievePeripherals(withIdentifiers: identifiers)
+        let array = NSMutableArray()
+        for peripheral in peripherals {
+            let cb4u_peripheral = CB4UPeripheral(peripheral: peripheral)
+            peripheral.delegate = cb4u_peripheral
+            array.add(cb4u_peripheral)
+        }
+        return array
     }
     
     public func scanForPeripherals(withServices serviceUUIDs: [CBUUID]?) {
