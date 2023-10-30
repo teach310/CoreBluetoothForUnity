@@ -131,7 +131,6 @@ namespace CoreBluetoothSample
             {
                 return;
             }
-            UnityEngine.Debug.Log($"[OnButtonDown] buttonID: {buttonID}");
 
             var data = SampleButtonInformation_Data.GetButtonInformation(buttonID, true);
             _peripheralManager.UpdateValue(data, _buttonInformationCharacteristic, new CBCentral[] { _central });
@@ -143,7 +142,7 @@ namespace CoreBluetoothSample
             {
                 return;
             }
-            UnityEngine.Debug.Log($"[OnButtonUp] buttonID: {buttonID}");
+
             var data = SampleButtonInformation_Data.GetButtonInformation(buttonID, false);
             _peripheralManager.UpdateValue(data, _buttonInformationCharacteristic, new CBCentral[] { _central });
         }
