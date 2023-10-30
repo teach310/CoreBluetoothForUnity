@@ -39,7 +39,7 @@ namespace CoreBluetoothSample
             }
         }
 
-        public void DidUpdateState(CBCentralManager central)
+        void ICBCentralManagerDelegate.DidUpdateState(CBCentralManager central)
         {
             if (central.State == CBManagerState.PoweredOn)
             {
@@ -48,7 +48,7 @@ namespace CoreBluetoothSample
             }
         }
 
-        public void DidDiscoverPeripheral(CBCentralManager central, CBPeripheral peripheral, int rssi)
+        void ICBCentralManagerDelegate.DidDiscoverPeripheral(CBCentralManager central, CBPeripheral peripheral, int rssi)
         {
             _header.SetStateText("Connecting...");
             _peripheral = peripheral;
@@ -57,27 +57,27 @@ namespace CoreBluetoothSample
             central.Connect(peripheral);
         }
 
-        public void DidConnectPeripheral(CBCentralManager central, CBPeripheral peripheral)
+        void ICBCentralManagerDelegate.DidConnectPeripheral(CBCentralManager central, CBPeripheral peripheral)
         {
             _header.SetStateText("Connected");
             peripheral.DiscoverServices(new string[] { SampleLightControl_Data.ServiceUUID });
         }
 
-        public void DidFailToConnectPeripheral(CBCentralManager central, CBPeripheral peripheral, CBError error)
+        void ICBCentralManagerDelegate.DidFailToConnectPeripheral(CBCentralManager central, CBPeripheral peripheral, CBError error)
         {
             _header.SetStateText("Scanning...");
             _lightControlCharacteristic = null;
             central.ScanForPeripherals(new string[] { SampleLightControl_Data.ServiceUUID });
         }
 
-        public void DidDisconnectPeripheral(CBCentralManager central, CBPeripheral peripheral, CBError error)
+        void ICBCentralManagerDelegate.DidDisconnectPeripheral(CBCentralManager central, CBPeripheral peripheral, CBError error)
         {
             _header.SetStateText("Scanning...");
             _lightControlCharacteristic = null;
             central.ScanForPeripherals(new string[] { SampleLightControl_Data.ServiceUUID });
         }
 
-        public void DidDiscoverServices(CBPeripheral peripheral, CBError error)
+        void ICBPeripheralDelegate.DidDiscoverServices(CBPeripheral peripheral, CBError error)
         {
             if (error != null)
             {
@@ -91,7 +91,7 @@ namespace CoreBluetoothSample
             }
         }
 
-        public void DidDiscoverCharacteristics(CBPeripheral peripheral, CBService service, CBError error)
+        void ICBPeripheralDelegate.DidDiscoverCharacteristics(CBPeripheral peripheral, CBService service, CBError error)
         {
             if (error != null)
             {
@@ -110,7 +110,7 @@ namespace CoreBluetoothSample
             }
         }
 
-        public void DidWriteValueForCharacteristic(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error)
+        void ICBPeripheralDelegate.DidWriteValueForCharacteristic(CBPeripheral peripheral, CBCharacteristic characteristic, CBError error)
         {
             if (error != null)
             {
