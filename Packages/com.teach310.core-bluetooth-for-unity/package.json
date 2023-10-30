@@ -27,6 +27,11 @@
       "path": "Samples~/01_LightControl"
     },
     {
+      "displayName": "02_ButtonInformation",
+      "description": "Notify button id and press information from peripheral device",
+      "path": "Samples~/02_ButtonInformation"
+    },
+    {
       "displayName": "BuildPostprocessor",
       "description": "This is a sample build postprocessor that will automatically update Info.plist",
       "path": "Samples~/11_BuildPostprocessor"
