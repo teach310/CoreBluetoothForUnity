@@ -100,7 +100,6 @@ namespace CoreBluetoothSample
             if (SampleButtonInformation_Data.ParseButtonInformation(characteristic.Value, out int buttonId, out bool isPressed))
             {
                 _log.AppendLog(buttonId, isPressed);
-                Debug.Log($"[DidUpdateValue] buttonId: {buttonId}  isPressed: {isPressed}");
             }
         }
 
@@ -111,7 +110,6 @@ namespace CoreBluetoothSample
                 Debug.LogError($"[DidUpdateNotificationState] error: {error}");
                 return;
             }
-            Debug.Log($"[DidUpdateNotificationState] characteristic: {characteristic}");
         }
 
         void OnDestroy()
