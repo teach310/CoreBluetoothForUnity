@@ -112,7 +112,7 @@ namespace CoreBluetoothSample
 
         void ICBPeripheralManagerDelegate.DidUnsubscribeFromCharacteristic(CBPeripheralManager peripheral, CBCentral central, CBCharacteristic characteristic)
         {
-            if (_peripheralManager.State == CBManagerState.PoweredOn && !_peripheralManager.IsAdvertising )
+            if (_peripheralManager.State == CBManagerState.PoweredOn && !_peripheralManager.IsAdvertising)
             {
                 StartAdvertising();
             }

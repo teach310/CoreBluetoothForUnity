@@ -7,6 +7,7 @@ namespace CoreBluetoothSample
     public class SampleButtonInformation_Central : MonoBehaviour, ICBCentralManagerDelegate, ICBPeripheralDelegate
     {
         [SerializeField] SampleButtonInformation_Log _log;
+        [SerializeField] SampleButtonInformation_Cube _cube;
         [SerializeField] Text _stateLabel;
 
         CBCentralManager _centralManager;
@@ -100,6 +101,7 @@ namespace CoreBluetoothSample
             if (SampleButtonInformation_Data.ParseButtonInformation(characteristic.Value, out int buttonId, out bool isPressed))
             {
                 _log.AppendLog(buttonId, isPressed);
+                _cube.Action(buttonId, isPressed);
             }
         }
 
