@@ -33,10 +33,15 @@ jobs:
           unityVersion: ${{ matrix.unityVersion }}
           projectPath: Unity${{ matrix.unityVersion }}
           artifactsPath: Unity${{ matrix.unityVersion }}-artifacts
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          # githubToken: ${{ secrets.GITHUB_TOKEN }}
           checkName: Unity${{ matrix.unityVersion }} Test Results
-      - uses: actions/upload-artifact@v3
-        if: always()
-        with:
-          name: Test results for Unity${{ matrix.unityVersion }}
-          path: ${{ steps.tests.outputs.artifactsPath }}
+      # projectPathの中身をlsで確認する
+      - name: ls
+        run: |
+          ls Unity${{ matrix.unityVersion }}
+
+      # - uses: actions/upload-artifact@v3
+      #   if: always()
+      #   with:
+      #     name: Test results for Unity${{ matrix.unityVersion }}
+      #     path: ${{ steps.tests.outputs.artifactsPath }}
