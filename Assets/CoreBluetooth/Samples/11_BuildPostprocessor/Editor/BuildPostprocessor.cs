@@ -5,7 +5,9 @@ using System.IO;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
+#if UNITY_IOS
 using UnityEditor.iOS.Xcode;
+#endif
 using UnityEngine;
 
 namespace CoreBluetoothEditor
@@ -16,6 +18,7 @@ namespace CoreBluetoothEditor
 
         public void OnPostprocessBuild(BuildReport report)
         {
+#if UNITY_IOS
             var buildTarget = report.summary.platform;
             if (buildTarget == BuildTarget.iOS)
             {
@@ -23,8 +26,10 @@ namespace CoreBluetoothEditor
             }
 
             Debug.Log("BuildPostprocessor.OnPostprocessBuild for target " + report.summary.platform + " at path " + report.summary.outputPath);
+#endif
         }
 
+#if UNITY_IOS
         void ProcessForiOS(BuildReport report)
         {
             var buildOutputPath = report.summary.outputPath;
@@ -73,5 +78,6 @@ namespace CoreBluetoothEditor
             var unityFrameworkTargetGuid = project.GetUnityFrameworkTargetGuid();
             project.SetBuildProperty(unityFrameworkTargetGuid, "ENABLE_BITCODE", "NO");
         }
+#endif
     }
 }
