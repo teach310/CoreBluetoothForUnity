@@ -16,6 +16,7 @@ namespace CoreBluetoothTests
 
     public class CBCentralManagerTests : CBTests
     {
+#if UNITY_IOS || UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
         [Test]
         public void Create()
         {
@@ -88,5 +89,6 @@ namespace CoreBluetoothTests
             Assert.That(peripherals, Is.Not.Null);
             Assert.That(peripherals.Length, Is.EqualTo(0));
         }
+#endif
     }
 }
