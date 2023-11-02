@@ -27,6 +27,19 @@ namespace CoreBluetooth
         void DidModifyServices(CBPeripheral peripheral, CBService[] services) { }
     }
 
+    internal interface INativePeripheralDelegate
+    {
+        void DidDiscoverServices(string[] serviceUUIDs, CBError error) { }
+        void DidDiscoverCharacteristics(string serviceUUID, string[] characteristicUUIDs, CBError error) { }
+        void DidUpdateValueForCharacteristic(string serviceUUID, string characteristicUUID, byte[] data, CBError error) { }
+        void DidWriteValueForCharacteristic(string serviceUUID, string characteristicUUID, CBError error) { }
+        void IsReadyToSendWriteWithoutResponse() { }
+        void DidUpdateNotificationStateForCharacteristic(string serviceUUID, string characteristicUUID, bool enabled, CBError error) { }
+        void DidReadRSSI(int rssi, CBError error) { }
+        void DidUpdateName() { }
+        void DidModifyServices(string[] invalidatedServiceUUIDs) { }
+    }
+
     /// <summary>
     /// A remote peripheral device.
     /// https://developer.apple.com/documentation/corebluetooth/cbperipheral
@@ -315,6 +328,7 @@ namespace CoreBluetooth
         {
             if (_disposed) return;
 
+            _nativePeripheral?.Dispose();
             Handle?.Dispose();
 
             _disposed = true;

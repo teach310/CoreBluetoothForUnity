@@ -1,19 +1,27 @@
 using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace CoreBluetooth
 {
-    internal class NativePeripheralProxy
+    internal class NativePeripheralProxy : IDisposable
     {
+        readonly static Dictionary<IntPtr, INativePeripheralDelegate> s_nativePeripheralDelegateMap = new Dictionary<IntPtr, INativePeripheralDelegate>();
+
         readonly SafeNativePeripheralHandle _handle;
 
-        internal NativePeripheralProxy(SafeNativePeripheralHandle handle, INativePeripheralDelegate peripheralDelegate)
+        public NativePeripheralProxy(SafeNativePeripheralHandle handle, INativePeripheralDelegate peripheralDelegate)
         {
             _handle = handle;
-            _handle.SetDelegate(peripheralDelegate);
+            if (peripheralDelegate != null)
+            {
+                s_nativePeripheralDelegateMap[handle.DangerousGetHandle()] = peripheralDelegate;
+            }
+            RegisterHandlers();
         }
 
-        internal string Identifier
+        public string Identifier
         {
             get
             {
@@ -23,7 +31,7 @@ namespace CoreBluetooth
             }
         }
 
-        internal string Name
+        public string Name
         {
             get
             {
@@ -38,7 +46,7 @@ namespace CoreBluetooth
             }
         }
 
-        internal void DiscoverServices(string[] serviceUUIDs)
+        public void DiscoverServices(string[] serviceUUIDs)
         {
             if (serviceUUIDs != null)
             {
@@ -55,7 +63,7 @@ namespace CoreBluetooth
             );
         }
 
-        internal void DiscoverCharacteristics(string[] characteristicUUIDs, CBService service)
+        public void DiscoverCharacteristics(string[] characteristicUUIDs, CBService service)
         {
             if (characteristicUUIDs != null)
             {
@@ -75,7 +83,7 @@ namespace CoreBluetooth
             ExceptionUtils.ThrowIfServiceNotFound(result, service.UUID);
         }
 
-        internal void ReadValue(CBCharacteristic characteristic)
+        public void ReadValue(CBCharacteristic characteristic)
         {
             int result = NativeMethods.cb4u_peripheral_read_characteristic_value(
                 _handle,
@@ -87,7 +95,7 @@ namespace CoreBluetooth
             ExceptionUtils.ThrowIfCharacteristicNotFound(result, characteristic.UUID);
         }
 
-        internal void WriteValue(byte[] data, CBCharacteristic characteristic, CBCharacteristicWriteType writeType)
+        public void WriteValue(byte[] data, CBCharacteristic characteristic, CBCharacteristicWriteType writeType)
         {
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
@@ -106,12 +114,12 @@ namespace CoreBluetooth
             ExceptionUtils.ThrowIfCharacteristicNotFound(result, characteristic.UUID);
         }
 
-        internal int GetMaximumWriteValueLength(CBCharacteristicWriteType writeType)
+        public int GetMaximumWriteValueLength(CBCharacteristicWriteType writeType)
         {
             return NativeMethods.cb4u_peripheral_maximum_write_value_length(_handle, (int)writeType);
         }
 
-        internal void SetNotifyValue(bool enabled, CBCharacteristic characteristic)
+        public void SetNotifyValue(bool enabled, CBCharacteristic characteristic)
         {
             int result = NativeMethods.cb4u_peripheral_set_notify_value(
                 _handle,
@@ -124,7 +132,7 @@ namespace CoreBluetooth
             ExceptionUtils.ThrowIfCharacteristicNotFound(result, characteristic.UUID);
         }
 
-        internal CBPeripheralState State
+        public CBPeripheralState State
         {
             get
             {
@@ -133,7 +141,7 @@ namespace CoreBluetooth
             }
         }
 
-        internal bool CanSendWriteWithoutResponse
+        public bool CanSendWriteWithoutResponse
         {
             get
             {
@@ -141,9 +149,121 @@ namespace CoreBluetooth
             }
         }
 
-        internal void ReadRSSI()
+        public void ReadRSSI()
         {
             NativeMethods.cb4u_peripheral_read_rssi(_handle);
+        }
+
+        void RegisterHandlers()
+        {
+            NativeMethods.cb4u_peripheral_register_handlers(
+                _handle,
+                DidDiscoverServices,
+                DidDiscoverCharacteristics,
+                DidUpdateValueForCharacteristic,
+                DidWriteValueForCharacteristic,
+                IsReadyToSendWriteWithoutResponse,
+                DidUpdateNotificationStateForCharacteristic,
+                DidReadRSSI,
+                DidUpdateName,
+                DidModifyServices
+            );
+        }
+
+        public void Dispose()
+        {
+            s_nativePeripheralDelegateMap.Remove(_handle.DangerousGetHandle());
+        }
+
+        static INativePeripheralDelegate GetDelegate(IntPtr peripheralPtr)
+        {
+            return s_nativePeripheralDelegateMap.GetValueOrDefault(peripheralPtr);
+        }
+
+        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralDidDiscoverServicesHandler))]
+        public static void DidDiscoverServices(IntPtr peripheralPtr, IntPtr commaSeparatedServiceUUIDsPtr, int errorCode)
+        {
+            string commaSeparatedServiceUUIDs = Marshal.PtrToStringUTF8(commaSeparatedServiceUUIDsPtr);
+            GetDelegate(peripheralPtr)?.DidDiscoverServices(
+                commaSeparatedServiceUUIDs.Split(','),
+                CBError.CreateOrNullFromCode(errorCode)
+            );
+        }
+
+        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralDidDiscoverCharacteristicsHandler))]
+        public static void DidDiscoverCharacteristics(IntPtr peripheralPtr, IntPtr serviceUUIDPtr, IntPtr commaSeparatedCharacteristicUUIDsPtr, int errorCode)
+        {
+            string commaSeparatedCharacteristicUUIDs = Marshal.PtrToStringUTF8(commaSeparatedCharacteristicUUIDsPtr);
+            GetDelegate(peripheralPtr)?.DidDiscoverCharacteristics(
+                Marshal.PtrToStringUTF8(serviceUUIDPtr),
+                commaSeparatedCharacteristicUUIDs.Split(','),
+                CBError.CreateOrNullFromCode(errorCode)
+            );
+        }
+
+        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralDidUpdateValueForCharacteristicHandler))]
+        public static void DidUpdateValueForCharacteristic(IntPtr peripheralPtr, IntPtr serviceUUIDPtr, IntPtr characteristicUUIDPtr, IntPtr dataPtr, int dataLength, int errorCode)
+        {
+            var dataBytes = new byte[dataLength];
+            Marshal.Copy(dataPtr, dataBytes, 0, dataLength);
+
+            GetDelegate(peripheralPtr)?.DidUpdateValueForCharacteristic(
+                Marshal.PtrToStringUTF8(serviceUUIDPtr),
+                Marshal.PtrToStringUTF8(characteristicUUIDPtr),
+                dataBytes,
+                CBError.CreateOrNullFromCode(errorCode)
+            );
+        }
+
+        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralDidWriteValueForCharacteristicHandler))]
+        public static void DidWriteValueForCharacteristic(IntPtr peripheralPtr, IntPtr serviceUUIDPtr, IntPtr characteristicUUIDPtr, int errorCode)
+        {
+            GetDelegate(peripheralPtr)?.DidWriteValueForCharacteristic(
+                Marshal.PtrToStringUTF8(serviceUUIDPtr),
+                Marshal.PtrToStringUTF8(characteristicUUIDPtr),
+                CBError.CreateOrNullFromCode(errorCode)
+            );
+        }
+
+        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralIsReadyToSendWriteWithoutResponseHandler))]
+        public static void IsReadyToSendWriteWithoutResponse(IntPtr peripheralPtr)
+        {
+            GetDelegate(peripheralPtr)?.IsReadyToSendWriteWithoutResponse();
+        }
+
+        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralDidUpdateNotificationStateForCharacteristicHandler))]
+        public static void DidUpdateNotificationStateForCharacteristic(IntPtr peripheralPtr, IntPtr serviceUUIDPtr, IntPtr characteristicUUIDPtr, int notificationState, int errorCode)
+        {
+            GetDelegate(peripheralPtr)?.DidUpdateNotificationStateForCharacteristic(
+                Marshal.PtrToStringUTF8(serviceUUIDPtr),
+                Marshal.PtrToStringUTF8(characteristicUUIDPtr),
+                notificationState == 1,
+                CBError.CreateOrNullFromCode(errorCode)
+            );
+        }
+
+        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralDidReadRSSIHandler))]
+        public static void DidReadRSSI(IntPtr peripheralPtr, int rssi, int errorCode)
+        {
+            GetDelegate(peripheralPtr)?.DidReadRSSI(
+                rssi,
+                CBError.CreateOrNullFromCode(errorCode)
+            );
+        }
+
+        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralDidUpdateNameHandler))]
+        public static void DidUpdateName(IntPtr peripheralPtr)
+        {
+            GetDelegate(peripheralPtr)?.DidUpdateName();
+        }
+
+        [AOT.MonoPInvokeCallback(typeof(NativeMethods.CB4UPeripheralDidModifyServicesHandler))]
+        public static void DidModifyServices(IntPtr peripheralPtr, IntPtr commaSeparatedServiceUUIDsPtr)
+        {
+            string commaSeparatedServiceUUIDs = Marshal.PtrToStringUTF8(commaSeparatedServiceUUIDsPtr);
+            GetDelegate(peripheralPtr)?.DidModifyServices(
+                commaSeparatedServiceUUIDs.Split(',')
+            );
         }
     }
 }
