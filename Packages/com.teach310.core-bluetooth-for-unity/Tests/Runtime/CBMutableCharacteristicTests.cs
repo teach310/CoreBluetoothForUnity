@@ -6,6 +6,7 @@ namespace CoreBluetoothTests
 {
     public class CBMutableCharacteristicTests : CBTests
     {
+#if UNITY_IOS || UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
         [Test]
         public void Create()
         {
@@ -62,5 +63,6 @@ namespace CoreBluetoothTests
             using var characteristic = new CBMutableCharacteristic(validUUID1, CBCharacteristicProperties.Broadcast, null, CBAttributePermissions.Readable);
             Assert.That(characteristic.ToString(), Is.EqualTo($"CBMutableCharacteristic: UUID = {validUUID1}, properties = Broadcast, value = null, notifying = NO, permissions = Readable"));
         }
+#endif
     }
 }

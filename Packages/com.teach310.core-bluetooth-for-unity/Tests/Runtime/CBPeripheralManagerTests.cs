@@ -25,6 +25,7 @@ namespace CoreBluetoothTests
 
     public class CBPeripheralManagerTests : CBTests
     {
+#if UNITY_IOS || UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
         [Test]
         public void Create()
         {
@@ -176,5 +177,6 @@ namespace CoreBluetoothTests
             Assert.That(delegateMock.DidStartAdvertisingCount, Is.EqualTo(2));
             Assert.That(delegateMock.Error.ErrorCode, Is.EqualTo(CBError.Code.AlreadyAdvertising));
         }
+#endif
     }
 }
