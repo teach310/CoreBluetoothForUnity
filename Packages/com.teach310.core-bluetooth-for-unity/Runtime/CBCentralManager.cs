@@ -18,6 +18,15 @@ namespace CoreBluetooth
         void DidUpdateState(CBCentralManager central);
     }
 
+    internal interface INativeCentralManagerDelegate
+    {
+        void DidConnect(string peripheralId) { }
+        void DidDisconnectPeripheral(string peripheralId, CBError error) { }
+        void DidFailToConnect(string peripheralId, CBError error) { }
+        void DidDiscoverPeripheral(SafeNativePeripheralHandle peripheral, int rssi) { }
+        void DidUpdateState(CBManagerState state) { }
+    }
+
     /// <summary>
     /// An object that scans for, discovers, connects to, and manages peripherals.
     /// https://developer.apple.com/documentation/corebluetooth/cbcentralmanager
@@ -189,6 +198,7 @@ namespace CoreBluetooth
         {
             if (_disposed) return;
 
+            _nativeCentralManagerProxy?.Dispose();
             _handle?.Dispose();
             foreach (var peripheral in _peripherals.Values)
             {
