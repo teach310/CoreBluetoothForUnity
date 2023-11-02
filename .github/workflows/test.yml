@@ -5,6 +5,10 @@ jobs:
   test:
     name: Test in Unity${{ matrix.unityVersion }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      repository-projects: write
     strategy:
       fail-fast: false
       matrix:
