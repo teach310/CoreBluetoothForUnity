@@ -5,6 +5,7 @@ namespace CoreBluetoothTests.Foundation
 {
     public class NSNumberTests
     {
+#if UNITY_IOS || UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
         [Test]
         public void IntValue()
         {
@@ -27,5 +28,6 @@ namespace CoreBluetoothTests.Foundation
             Assert.That(falseNumber.Handle.IsInvalid, Is.False);
             Assert.That(falseNumber.BoolValue, Is.False);
         }
+#endif
     }
 }

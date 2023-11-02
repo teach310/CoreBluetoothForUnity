@@ -5,6 +5,7 @@ namespace CoreBluetoothTests.Foundation
 {
     public class NSStringTests
     {
+#if UNITY_IOS || UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
         [Test]
         public void New()
         {
@@ -50,5 +51,6 @@ namespace CoreBluetoothTests.Foundation
                 Assert.That(NSString.HandleToString(nsString.Handle), Is.EqualTo(string.Empty));
             }
         }
+#endif
     }
 }

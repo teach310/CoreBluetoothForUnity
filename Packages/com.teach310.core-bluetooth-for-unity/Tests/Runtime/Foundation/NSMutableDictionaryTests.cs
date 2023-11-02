@@ -5,6 +5,7 @@ namespace CoreBluetoothTests.Foundation
 {
     public class NSMutableDictionaryTests
     {
+#if UNITY_IOS || UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
         [Test]
         public void New()
         {
@@ -51,5 +52,6 @@ namespace CoreBluetoothTests.Foundation
             using var notFoundKey = new NSString("dummy");
             Assert.That(nsDictionary.TryGetValue(notFoundKey.Handle, out gotPtr), Is.False);
         }
+#endif
     }
 }
