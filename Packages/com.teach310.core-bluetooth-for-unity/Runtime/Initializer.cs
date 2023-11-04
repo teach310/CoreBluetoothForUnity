@@ -8,6 +8,7 @@ namespace CoreBluetooth
         static void Initialize()
         {
             ServiceLocator.Instance.Register<INativeCentralManagerCallbacks>(new NativeCentralManagerCallbacks());
+            ServiceLocator.Instance.Register<INativePeripheralManagerCallbacks>(new NativePeripheralManagerCallbacks());
         }
     }
 }
