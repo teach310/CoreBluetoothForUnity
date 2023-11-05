@@ -4,8 +4,13 @@
       "src": [
         {
           "files": [
-            "bin/**/*.dll"
-          ]
+            "Packages/com.teach310.core-bluetooth-for-unity/Runtime/**/*.cs"
+          ],
+          "exclude": [
+            "Packages/com.teach310.core-bluetooth-for-unity/Runtime/Initializer.cs",
+            "Packages/com.teach310.core-bluetooth-for-unity/Runtime/NativeCallbacks/*.cs"
+          ],
+          "src": ".."
         }
       ],
       "dest": "api",
