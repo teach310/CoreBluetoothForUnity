@@ -18,6 +18,7 @@
       "includePrivateMembers": false,
       "disableGitFeatures": false,
       "disableDefaultFilter": false,
+      "filter": "filterConfig.yml",
       "noRestore": false,
       "namespaceLayout": "flattened",
       "memberLayout": "samePage",
