@@ -47,7 +47,12 @@
       }
     ],
     "output": "_site",
-    "globalMetadataFiles": [],
+    "globalMetadata": {
+      "_appTitle": "CoreBluetoothForUnity",
+      "_appName": "CoreBluetoothForUnity",
+      "_enableSearch": true,
+      "_enableNewTab": true
+    },
     "fileMetadataFiles": [],
     "template": [
       "default",
