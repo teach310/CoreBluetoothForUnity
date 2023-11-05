@@ -1,0 +1,66 @@
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "files": [
+            "Packages/com.teach310.core-bluetooth-for-unity/Runtime/**/*.cs"
+          ],
+          "exclude": [
+            "Packages/com.teach310.core-bluetooth-for-unity/Runtime/Initializer.cs",
+            "Packages/com.teach310.core-bluetooth-for-unity/Runtime/NativeCallbacks/*.cs"
+          ],
+          "src": ".."
+        }
+      ],
+      "dest": "api",
+      "outputFormat": "mref",
+      "includePrivateMembers": false,
+      "disableGitFeatures": false,
+      "disableDefaultFilter": false,
+      "filter": "filterConfig.yml",
+      "noRestore": false,
+      "namespaceLayout": "flattened",
+      "memberLayout": "samePage",
+      "enumSortOrder": "declaringOrder",
+      "allowCompilationErrors": false
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "files": [
+          "api/**.yml"
+        ]
+      },
+      {
+        "files": [
+          "toc.yml",
+          "*.md"
+        ]
+      }
+    ],
+    "resource": [
+      {
+        "files": [
+          "images/**"
+        ]
+      }
+    ],
+    "output": "_site",
+    "globalMetadata": {
+      "_appTitle": "CoreBluetoothForUnity",
+      "_appName": "CoreBluetoothForUnity",
+      "_enableSearch": true,
+      "_enableNewTab": true
+    },
+    "fileMetadataFiles": [],
+    "template": [
+      "default",
+      "modern"
+    ],
+    "postProcessors": [],
+    "keepFileLink": false,
+    "disableGitFeatures": false
+  }
+}
