@@ -34,3 +34,7 @@ plugins/build:
 .PHONY: docs/clean
 docs/clean:
 	rm -rf ./docs/_site
+
+.PHONY: docs/build
+docs/build:
+	dotnet docfx docs/docfx.json
