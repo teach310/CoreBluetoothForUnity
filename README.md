@@ -56,6 +56,10 @@ This plugin isn't support all of CoreBluetooth features yet.
 
 If you want to add some features, please create an issue or pull request.
 
+## References
+
+- [API Reference](https://teach310.github.io/CoreBluetoothForUnity/api/CoreBluetooth.html)
+
 ## License
 
 MIT License (see `LICENSE` file).
