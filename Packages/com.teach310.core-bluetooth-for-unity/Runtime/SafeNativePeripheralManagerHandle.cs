@@ -3,7 +3,7 @@ using Microsoft.Win32.SafeHandles;
 
 namespace CoreBluetooth
 {
-    public class SafeNativePeripheralManagerHandle : SafeHandleZeroOrMinusOneIsInvalid
+    internal class SafeNativePeripheralManagerHandle : SafeHandleZeroOrMinusOneIsInvalid
     {
         SafeNativePeripheralManagerHandle() : base(true) { }
 
