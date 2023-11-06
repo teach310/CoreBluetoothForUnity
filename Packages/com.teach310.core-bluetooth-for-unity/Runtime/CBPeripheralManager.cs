@@ -16,6 +16,18 @@ namespace CoreBluetooth
         void DidReceiveWriteRequests(CBPeripheralManager peripheral, CBATTRequest[] requests) { }
     }
 
+    internal interface INativePeripheralManagerDelegate
+    {
+        void DidUpdateState(CBManagerState state) { }
+        void DidAddService(string serviceUUID, CBError error) { }
+        void DidStartAdvertising(CBError error) { }
+        void DidSubscribeToCharacteristic(SafeNativeCentralHandle central, string serviceUUID, string characteristicUUID) { }
+        void DidUnsubscribeFromCharacteristic(SafeNativeCentralHandle central, string serviceUUID, string characteristicUUID) { }
+        void IsReadyToUpdateSubscribers() { }
+        void DidReceiveReadRequest(SafeNativeATTRequestHandle request) { }
+        void DidReceiveWriteRequests(SafeNativeATTRequestsHandle requests) { }
+    }
+
     internal interface IPeripheralManagerData
     {
         void AddCentral(CBCentral central);
@@ -283,6 +295,7 @@ namespace CoreBluetooth
         {
             if (_disposed) return;
 
+            _nativePeripheralManagerProxy.Dispose();
             _handle?.Dispose();
             foreach (var central in _centrals.Values)
             {

@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 
 namespace CoreBluetooth
 {
-    public static class StringExtensions
+    internal static class StringExtensions
     {
         private static readonly Regex CBUUIDRegex = new Regex(@"^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|[0-9a-f]{8}|[0-9a-f]{4})$", RegexOptions.IgnoreCase);
 

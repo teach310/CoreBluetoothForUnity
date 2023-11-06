@@ -6,6 +6,7 @@ namespace CoreBluetoothTests
 {
     public class CBMutableServiceTests : CBTests
     {
+#if UNITY_IOS || UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
         [Test]
         public void Create()
         {
@@ -40,5 +41,6 @@ namespace CoreBluetoothTests
                 item.Dispose();
             }
         }
+#endif
     }
 }

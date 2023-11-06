@@ -6,6 +6,7 @@ namespace CoreBluetoothTests
 {
     public class CBServiceTests : CBTests
     {
+#if UNITY_IOS || UNITY_EDITOR_OSX || UNITY_STANDALONE_OSX
         [Test]
         public void Characteristics_Set_NotImplemented()
         {
@@ -36,5 +37,6 @@ namespace CoreBluetoothTests
             service.UpdateCharacteristics(null);
             Assert.That(service.Characteristics, Is.Null);
         }
+#endif
     }
 }

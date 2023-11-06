@@ -30,3 +30,11 @@ package/build:
 plugins/build:
 	make -C Plugins/CoreBluetoothForUnity dylib
 	make -C Plugins/CoreBluetoothForUnity framework
+
+.PHONY: docs/clean
+docs/clean:
+	rm -rf ./docs/_site
+
+.PHONY: docs/build
+docs/build:
+	dotnet docfx docs/docfx.json

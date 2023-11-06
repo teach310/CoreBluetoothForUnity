@@ -1,15 +1,27 @@
+using System;
 using System.Linq;
 
 namespace CoreBluetooth
 {
-    internal class NativeCentralManagerProxy
+    internal interface INativeCentralManagerCallbacks
+    {
+        void Register(SafeNativeCentralManagerHandle centralPtr, INativeCentralManagerDelegate centralManagerDelegate);
+        void Unregister(SafeNativeCentralManagerHandle centralPtr);
+    }
+
+    internal class NativeCentralManagerProxy : IDisposable
     {
         readonly SafeNativeCentralManagerHandle _handle;
+        readonly INativeCentralManagerCallbacks _callbacks;
 
         public NativeCentralManagerProxy(SafeNativeCentralManagerHandle handle, INativeCentralManagerDelegate centralManagerDelegate)
         {
             _handle = handle;
-            _handle.SetDelegate(centralManagerDelegate);
+            _callbacks = ServiceLocator.Instance.Resolve<INativeCentralManagerCallbacks>();
+            if (centralManagerDelegate != null)
+            {
+                _callbacks.Register(handle, centralManagerDelegate);
+            }
         }
 
         public void Connect(CBPeripheral peripheral)
@@ -51,6 +63,11 @@ namespace CoreBluetooth
         public bool IsScanning()
         {
             return NativeMethods.cb4u_central_manager_is_scanning(_handle);
+        }
+
+        public void Dispose()
+        {
+            _callbacks.Unregister(_handle);
         }
     }
 }

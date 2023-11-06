@@ -1,19 +1,32 @@
 using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace CoreBluetooth
 {
-    internal class NativePeripheralProxy
+    internal interface INativePeripheralCallbacks
+    {
+        void Register(SafeNativePeripheralHandle handle, INativePeripheralDelegate peripheralDelegate);
+        void Unregister(SafeNativePeripheralHandle handle);
+    }
+
+    internal class NativePeripheralProxy : IDisposable
     {
         readonly SafeNativePeripheralHandle _handle;
+        readonly INativePeripheralCallbacks _callbacks;
 
-        internal NativePeripheralProxy(SafeNativePeripheralHandle handle, INativePeripheralDelegate peripheralDelegate)
+        public NativePeripheralProxy(SafeNativePeripheralHandle handle, INativePeripheralDelegate peripheralDelegate)
         {
             _handle = handle;
-            _handle.SetDelegate(peripheralDelegate);
+            _callbacks = ServiceLocator.Instance.Resolve<INativePeripheralCallbacks>();
+            if (peripheralDelegate != null)
+            {
+                _callbacks.Register(handle, peripheralDelegate);
+            }
         }
 
-        internal string Identifier
+        public string Identifier
         {
             get
             {
@@ -23,7 +36,7 @@ namespace CoreBluetooth
             }
         }
 
-        internal string Name
+        public string Name
         {
             get
             {
@@ -38,7 +51,7 @@ namespace CoreBluetooth
             }
         }
 
-        internal void DiscoverServices(string[] serviceUUIDs)
+        public void DiscoverServices(string[] serviceUUIDs)
         {
             if (serviceUUIDs != null)
             {
@@ -55,7 +68,7 @@ namespace CoreBluetooth
             );
         }
 
-        internal void DiscoverCharacteristics(string[] characteristicUUIDs, CBService service)
+        public void DiscoverCharacteristics(string[] characteristicUUIDs, CBService service)
         {
             if (characteristicUUIDs != null)
             {
@@ -75,7 +88,7 @@ namespace CoreBluetooth
             ExceptionUtils.ThrowIfServiceNotFound(result, service.UUID);
         }
 
-        internal void ReadValue(CBCharacteristic characteristic)
+        public void ReadValue(CBCharacteristic characteristic)
         {
             int result = NativeMethods.cb4u_peripheral_read_characteristic_value(
                 _handle,
@@ -87,7 +100,7 @@ namespace CoreBluetooth
             ExceptionUtils.ThrowIfCharacteristicNotFound(result, characteristic.UUID);
         }
 
-        internal void WriteValue(byte[] data, CBCharacteristic characteristic, CBCharacteristicWriteType writeType)
+        public void WriteValue(byte[] data, CBCharacteristic characteristic, CBCharacteristicWriteType writeType)
         {
             if (data == null)
                 throw new ArgumentNullException(nameof(data));
@@ -106,12 +119,12 @@ namespace CoreBluetooth
             ExceptionUtils.ThrowIfCharacteristicNotFound(result, characteristic.UUID);
         }
 
-        internal int GetMaximumWriteValueLength(CBCharacteristicWriteType writeType)
+        public int GetMaximumWriteValueLength(CBCharacteristicWriteType writeType)
         {
             return NativeMethods.cb4u_peripheral_maximum_write_value_length(_handle, (int)writeType);
         }
 
-        internal void SetNotifyValue(bool enabled, CBCharacteristic characteristic)
+        public void SetNotifyValue(bool enabled, CBCharacteristic characteristic)
         {
             int result = NativeMethods.cb4u_peripheral_set_notify_value(
                 _handle,
@@ -124,7 +137,7 @@ namespace CoreBluetooth
             ExceptionUtils.ThrowIfCharacteristicNotFound(result, characteristic.UUID);
         }
 
-        internal CBPeripheralState State
+        public CBPeripheralState State
         {
             get
             {
@@ -133,7 +146,7 @@ namespace CoreBluetooth
             }
         }
 
-        internal bool CanSendWriteWithoutResponse
+        public bool CanSendWriteWithoutResponse
         {
             get
             {
@@ -141,9 +154,14 @@ namespace CoreBluetooth
             }
         }
 
-        internal void ReadRSSI()
+        public void ReadRSSI()
         {
             NativeMethods.cb4u_peripheral_read_rssi(_handle);
+        }
+
+        public void Dispose()
+        {
+            _callbacks.Unregister(_handle);
         }
     }
 }

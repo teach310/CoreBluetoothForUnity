@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace CoreBluetooth
 {
-    public class SafeNativeATTRequestsHandle : SafeHandle
+    internal class SafeNativeATTRequestsHandle : SafeHandle
     {
         public override bool IsInvalid => handle == IntPtr.Zero;
 

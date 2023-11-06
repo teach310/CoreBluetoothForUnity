@@ -1,16 +1,29 @@
 
 using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace CoreBluetooth
 {
-    internal class NativePeripheralManagerProxy
+    internal interface INativePeripheralManagerCallbacks
+    {
+        void Register(SafeNativePeripheralManagerHandle handle, INativePeripheralManagerDelegate peripheralManagerDelegate);
+        void Unregister(SafeNativePeripheralManagerHandle handle);
+    }
+
+    internal class NativePeripheralManagerProxy : IDisposable
     {
         readonly SafeNativePeripheralManagerHandle _handle;
+        readonly INativePeripheralManagerCallbacks _callbacks;
 
         internal NativePeripheralManagerProxy(SafeNativePeripheralManagerHandle handle, INativePeripheralManagerDelegate peripheralManagerDelegate)
         {
             _handle = handle;
-            _handle.SetDelegate(peripheralManagerDelegate);
+            _callbacks = ServiceLocator.Instance.Resolve<INativePeripheralManagerCallbacks>();
+            if (_callbacks != null)
+            {
+                _callbacks.Register(handle, peripheralManagerDelegate);
+            }
         }
 
         internal void AddService(SafeNativeMutableServiceHandle service)
@@ -89,6 +102,11 @@ namespace CoreBluetooth
         internal void RespondToRequest(CBATTRequest request, CBATTError result)
         {
             NativeMethods.cb4u_peripheral_manager_respond_to_request(_handle, request.Handle, (int)result);
+        }
+
+        public void Dispose()
+        {
+            _callbacks?.Unregister(_handle);
         }
     }
 }
