@@ -85,13 +85,13 @@ namespace CoreBluetoothSample
             {
                 if (request.Characteristic.UUID != SampleLightControl_Data.LightControlCharacteristicUUID)
                 {
-                    peripheral.RespondToRequest(request, CBATTError.RequestNotSupported);
+                    peripheral.RespondToRequest(firstRequest, CBATTError.RequestNotSupported);
                     return;
                 }
 
                 if (request.Value.Length != 7)
                 {
-                    peripheral.RespondToRequest(request, CBATTError.InvalidAttributeValueLength);
+                    peripheral.RespondToRequest(firstRequest, CBATTError.InvalidAttributeValueLength);
                     return;
                 }
             }
