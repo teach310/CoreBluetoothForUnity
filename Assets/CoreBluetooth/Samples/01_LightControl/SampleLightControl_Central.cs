@@ -142,7 +142,7 @@ namespace CoreBluetoothSample
             _rgbSliders.SetColor(color);
         }
 
-        void OnDestory()
+        void OnDestroy()
         {
             if (_centralManager != null)
             {
