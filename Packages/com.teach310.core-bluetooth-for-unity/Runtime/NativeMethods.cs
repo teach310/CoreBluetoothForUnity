@@ -13,9 +13,6 @@ namespace CoreBluetooth
         const string DLL_NAME = "libCoreBluetoothForUnity";
 #endif
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern void cb4u_central_release(IntPtr handle);
-
-        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern IntPtr cb4u_central_identifier(
             SafeNativeCentralHandle handle,
             [MarshalAs(UnmanagedType.LPStr), Out] StringBuilder identifier,
@@ -73,9 +70,6 @@ namespace CoreBluetooth
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         [return: MarshalAs(UnmanagedType.I1)]
         internal static extern bool cb4u_central_manager_is_scanning(SafeNativeCentralManagerHandle handle);
-
-        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern void cb4u_peripheral_release(IntPtr handle);
 
         // NOTE: using comma-separated service UUIDs instead of an array of service UUIDs to avoid marshalling issues
         internal delegate void CB4UPeripheralDidDiscoverServicesHandler(IntPtr peripheralPtr, IntPtr commaSeparatedServiceUUIDsPtr, int errorCode);
@@ -179,9 +173,6 @@ namespace CoreBluetooth
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern SafeNativePeripheralManagerHandle cb4u_peripheral_manager_new(IntPtr options);
 
-        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern void cb4u_peripheral_manager_release(IntPtr handle);
-
         internal delegate void CB4UPeripheralManagerDidUpdateStateHandler(IntPtr peripheralManagerPtr, CBManagerState state);
         internal delegate void CB4UPeripheralManagerDidAddServiceHandler(IntPtr peripheralManagerPtr, IntPtr serviceUUIDPtr, int errorCode);
         internal delegate void CB4UPeripheralManagerDidStartAdvertisingHandler(IntPtr peripheralManagerPtr, int errorCode);
@@ -252,9 +243,6 @@ namespace CoreBluetooth
         internal static extern SafeNativeMutableServiceHandle cb4u_mutable_service_new([MarshalAs(UnmanagedType.LPStr), In] string uuid, [MarshalAs(UnmanagedType.I1)] bool primary);
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern void cb4u_mutable_service_release(IntPtr handle);
-
-        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern int cb4u_mutable_service_set_characteristics(SafeNativeMutableServiceHandle handle, IntPtr[] characteristics, int characteristicsCount);
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
@@ -265,9 +253,6 @@ namespace CoreBluetooth
             int dataLength,
             int permissions
         );
-
-        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern void cb4u_mutable_characteristic_release(IntPtr handle);
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern int cb4u_mutable_characteristic_value_length(SafeNativeMutableCharacteristicHandle handle);
@@ -289,9 +274,6 @@ namespace CoreBluetooth
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern void cb4u_mutable_characteristic_set_permissions(SafeNativeMutableCharacteristicHandle handle, int permissions);
-
-        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern void cb4u_att_request_release(IntPtr handle);
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern IntPtr cb4u_att_request_central(SafeNativeATTRequestHandle handle);
@@ -316,9 +298,6 @@ namespace CoreBluetooth
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern int cb4u_att_request_offset(SafeNativeATTRequestHandle handle);
-
-        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern IntPtr cb4u_att_requests_release(IntPtr handle);
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern int cb4u_att_requests_count(SafeNativeATTRequestsHandle handle);

@@ -1,3 +1,4 @@
+using CoreBluetooth.Foundation;
 using Microsoft.Win32.SafeHandles;
 
 namespace CoreBluetooth
@@ -13,7 +14,7 @@ namespace CoreBluetooth
 
         protected override bool ReleaseHandle()
         {
-            NativeMethods.cb4u_mutable_service_release(handle);
+            AnyObject.Release(handle);
             return true;
         }
     }
