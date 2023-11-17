@@ -25,9 +25,6 @@ namespace CoreBluetooth
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern SafeNativeCentralManagerHandle cb4u_central_manager_new(IntPtr options);
 
-        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern void cb4u_central_manager_release(IntPtr handle);
-
         internal delegate void CB4UCentralManagerDidConnectHandler(IntPtr centralPtr, IntPtr peripheralIdPtr);
         internal delegate void CB4UCentralManagerDidDisconnectPeripheralHandler(IntPtr centralPtr, IntPtr peripheralIdPtr, int errorCode);
         internal delegate void CB4UCentralManagerDidFailToConnectHandler(IntPtr centralPtr, IntPtr peripheralIdPtr, int errorCode);
