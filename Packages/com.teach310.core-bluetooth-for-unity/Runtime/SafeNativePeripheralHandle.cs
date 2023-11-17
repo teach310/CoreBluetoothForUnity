@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using CoreBluetooth.Foundation;
 
 namespace CoreBluetooth
 {
@@ -13,7 +14,7 @@ namespace CoreBluetooth
 
         protected override bool ReleaseHandle()
         {
-            NativeMethods.cb4u_peripheral_release(handle);
+            AnyObject.Release(handle);
             return true;
         }
     }

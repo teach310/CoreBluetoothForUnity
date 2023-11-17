@@ -13,7 +13,7 @@ namespace CoreBluetooth.Foundation
 
         protected override bool ReleaseHandle()
         {
-            NativeMethods.ns_object_release(handle);
+            AnyObject.Release(handle);
             return true;
         }
     }
