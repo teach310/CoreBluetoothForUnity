@@ -1,8 +1,8 @@
 import Foundation
 
-@_cdecl("ns_object_release")
-public func ns_object_release(_ handle: UnsafeRawPointer) {
-    Unmanaged<NSObject>.fromOpaque(handle).release()
+@_cdecl("any_object_release")
+public func any_object_release(_ handle: UnsafeRawPointer) {
+    Unmanaged<AnyObject>.fromOpaque(handle).release()
 }
 
 @_cdecl("ns_number_new_bool")
@@ -85,19 +85,19 @@ public func ns_mutable_dictionary_new() -> UnsafeMutableRawPointer {
 @_cdecl("ns_mutable_dictionary_get_value")
 public func ns_mutable_dictionary_get_value(_ handle: UnsafeRawPointer, _ keyPtr: UnsafeRawPointer) -> UnsafeMutableRawPointer? {
     let instance = Unmanaged<NSMutableDictionary>.fromOpaque(handle).takeUnretainedValue()
-
+    
     let key = Unmanaged<NSObject>.fromOpaque(keyPtr).takeUnretainedValue()
     if let value = instance[key] as? NSObject {
         return Unmanaged.passRetained(value).toOpaque()
     }
-
+    
     return nil
 }
 
 @_cdecl("ns_mutable_dictionary_set_value")
 public func ns_mutable_dictionary_set_value(_ handle: UnsafeRawPointer, _ keyPtr: UnsafeRawPointer, _ valuePtr: UnsafeRawPointer?) {
     let instance = Unmanaged<NSMutableDictionary>.fromOpaque(handle).takeUnretainedValue()
-
+    
     let key = Unmanaged<NSObject>.fromOpaque(keyPtr).takeUnretainedValue()
     if let valuePtr = valuePtr {
         let value = Unmanaged<NSObject>.fromOpaque(valuePtr).takeUnretainedValue()
