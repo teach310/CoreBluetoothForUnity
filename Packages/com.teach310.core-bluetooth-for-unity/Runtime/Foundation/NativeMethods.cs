@@ -12,7 +12,7 @@ namespace CoreBluetooth.Foundation
 #endif
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern void ns_object_release(IntPtr handle);
+        internal static extern void any_object_release(IntPtr handle);
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern SafeNSNumberHandle ns_number_new_bool([MarshalAs(UnmanagedType.I1)] bool value);

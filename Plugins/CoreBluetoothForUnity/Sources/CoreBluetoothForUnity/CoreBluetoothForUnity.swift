@@ -1,10 +1,5 @@
 import CoreBluetooth
 
-@_cdecl("cb4u_central_release")
-public func cb4u_central_release(_ centralPtr: UnsafeRawPointer) {
-    Unmanaged<CB4UCentral>.fromOpaque(centralPtr).release()
-}
-
 @_cdecl("cb4u_central_identifier")
 public func cb4u_central_identifier(_ centralPtr: UnsafeRawPointer, _ identifier: UnsafeMutablePointer<CChar>, _ identifierSize: Int32) {
     let instance = Unmanaged<CB4UCentral>.fromOpaque(centralPtr).takeUnretainedValue()
@@ -36,11 +31,6 @@ public func cb4u_central_manager_new(_ optionsPtr: UnsafeRawPointer?) -> UnsafeM
     }
     
     return Unmanaged.passRetained(CB4UCentralManager(options)).toOpaque()
-}
-
-@_cdecl("cb4u_central_manager_release")
-public func cb4u_central_manager_release(_ centralManagerPtr: UnsafeRawPointer) {
-    Unmanaged<CB4UCentralManager>.fromOpaque(centralManagerPtr).release()
 }
 
 public typealias CB4UCentralManagerDidConnectHandler = @convention(c) (UnsafeRawPointer, UnsafePointer<CChar>) -> Void
@@ -131,11 +121,6 @@ public func cb4u_central_manager_is_scanning(_ centralPtr: UnsafeRawPointer) -> 
     let instance = Unmanaged<CB4UCentralManager>.fromOpaque(centralPtr).takeUnretainedValue()
     
     return instance.isScanning
-}
-
-@_cdecl("cb4u_peripheral_release")
-public func cb4u_peripheral_release(_ peripheralPtr: UnsafeRawPointer) {
-    Unmanaged<CB4UPeripheral>.fromOpaque(peripheralPtr).release()
 }
 
 public typealias CB4UPeripheralDidDiscoverServicesHandler = @convention(c) (UnsafeRawPointer, UnsafePointer<CChar>, Int32) -> Void
@@ -328,13 +313,8 @@ public func cb4u_peripheral_manager_new(_ optionsPtr: UnsafeRawPointer?) -> Unsa
         let nsMutableDictionary = Unmanaged<NSMutableDictionary>.fromOpaque(optionsPtr).takeUnretainedValue()
         options = nsMutableDictionary as? [String: Any]
     }
-
+    
     return Unmanaged.passRetained(CB4UPeripheralManager(options)).toOpaque()
-}
-
-@_cdecl("cb4u_peripheral_manager_release")
-public func cb4u_peripheral_manager_release(_ peripheralManagerPtr: UnsafeRawPointer) {
-    Unmanaged<CB4UPeripheralManager>.fromOpaque(peripheralManagerPtr).release()
 }
 
 public typealias CB4UPeripheralManagerDidUpdateStateHandler = @convention(c) (UnsafeRawPointer, Int32) -> Void
@@ -457,11 +437,6 @@ public func cb4u_mutable_service_new(_ serviceUUID: UnsafePointer<CChar>, _ prim
     return Unmanaged.passRetained(CB4UMutableService(service: service)).toOpaque()
 }
 
-@_cdecl("cb4u_mutable_service_release")
-public func cb4u_mutable_service_release(_ servicePtr: UnsafeRawPointer) {
-    Unmanaged<CB4UMutableService>.fromOpaque(servicePtr).release()
-}
-
 @_cdecl("cb4u_mutable_service_set_characteristics")
 public func cb4u_mutable_service_set_characteristics(_ servicePtr: UnsafeRawPointer, _ characteristicsPtr: UnsafePointer<UnsafeRawPointer>?, _ characteristicsCount: Int32) {
     let service = Unmanaged<CB4UMutableService>.fromOpaque(servicePtr).takeUnretainedValue()
@@ -493,11 +468,6 @@ public func cb4u_mutable_characteristic_new(
         permissions: CBAttributePermissions(rawValue: UInt(permissions))
     )
     return Unmanaged.passRetained(CB4UMutableCharacteristic(characteristic: characteristic)).toOpaque()
-}
-
-@_cdecl("cb4u_mutable_characteristic_release")
-public func cb4u_mutable_characteristic_release(_ characteristicPtr: UnsafeRawPointer) {
-    Unmanaged<CB4UMutableCharacteristic>.fromOpaque(characteristicPtr).release()
 }
 
 @_cdecl("cb4u_mutable_characteristic_value_length")
@@ -559,11 +529,6 @@ public func cb4u_mutable_characteristic_set_permissions(_ characteristicPtr: Uns
     let instance = Unmanaged<CB4UMutableCharacteristic>.fromOpaque(characteristicPtr).takeUnretainedValue()
     
     instance.permissions = CBAttributePermissions(rawValue: UInt(permissions))
-}
-
-@_cdecl("cb4u_att_request_release")
-public func cb4u_att_request_release(_ requestPtr: UnsafeRawPointer) {
-    Unmanaged<CB4UATTRequest>.fromOpaque(requestPtr).release()
 }
 
 @_cdecl("cb4u_att_request_central")
@@ -644,11 +609,6 @@ public func cb4u_att_request_offset(_ requestPtr: UnsafeRawPointer) -> Int32 {
     let instance = Unmanaged<CB4UATTRequest>.fromOpaque(requestPtr).takeUnretainedValue()
     
     return Int32(instance.offset)
-}
-
-@_cdecl("cb4u_att_requests_release")
-public func cb4u_att_requests_release(_ requestsPtr: UnsafeRawPointer) {
-    Unmanaged<CB4UATTRequests>.fromOpaque(requestsPtr).release()
 }
 
 @_cdecl("cb4u_att_requests_count")
