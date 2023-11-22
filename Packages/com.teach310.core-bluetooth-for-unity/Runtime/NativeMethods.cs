@@ -25,9 +25,6 @@ namespace CoreBluetooth
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern SafeNativeCentralManagerHandle cb4u_central_manager_new(IntPtr options);
 
-        [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern void cb4u_central_manager_release(IntPtr handle);
-
         internal delegate void CB4UCentralManagerDidConnectHandler(IntPtr centralPtr, IntPtr peripheralIdPtr);
         internal delegate void CB4UCentralManagerDidDisconnectPeripheralHandler(IntPtr centralPtr, IntPtr peripheralIdPtr, int errorCode);
         internal delegate void CB4UCentralManagerDidFailToConnectHandler(IntPtr centralPtr, IntPtr peripheralIdPtr, int errorCode);
@@ -249,7 +246,7 @@ namespace CoreBluetooth
         internal static extern SafeNativeMutableCharacteristicHandle cb4u_mutable_characteristic_new(
             [MarshalAs(UnmanagedType.LPStr), In] string uuid,
             int properties,
-            [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.U1, SizeParamIndex = 3)] byte[] dataBytes,
+            byte[] dataBytes,
             int dataLength,
             int permissions
         );
@@ -261,7 +258,7 @@ namespace CoreBluetooth
         internal static extern int cb4u_mutable_characteristic_value(SafeNativeMutableCharacteristicHandle handle, byte[] dataBytes, int dataLength);
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
-        internal static extern void cb4u_mutable_characteristic_set_value(SafeNativeMutableCharacteristicHandle handle, [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.U1, SizeParamIndex = 2), In] byte[] dataBytes, int dataLength);
+        internal static extern void cb4u_mutable_characteristic_set_value(SafeNativeMutableCharacteristicHandle handle, byte[] dataBytes, int dataLength);
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern int cb4u_mutable_characteristic_properties(SafeNativeMutableCharacteristicHandle handle);
