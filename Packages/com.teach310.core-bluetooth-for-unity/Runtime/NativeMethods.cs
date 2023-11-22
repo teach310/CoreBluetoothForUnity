@@ -25,10 +25,15 @@ namespace CoreBluetooth
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern SafeNativeCentralManagerHandle cb4u_central_manager_new(IntPtr options);
 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CB4UCentralManagerDidConnectHandler(IntPtr centralPtr, IntPtr peripheralIdPtr);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CB4UCentralManagerDidDisconnectPeripheralHandler(IntPtr centralPtr, IntPtr peripheralIdPtr, int errorCode);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CB4UCentralManagerDidFailToConnectHandler(IntPtr centralPtr, IntPtr peripheralIdPtr, int errorCode);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CB4UCentralManagerDidDiscoverPeripheralHandler(IntPtr centralPtr, IntPtr peripheralPtr, int rssi);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CB4UCentralManagerDidUpdateStateHandler(IntPtr centralPtr, CBManagerState state);
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
@@ -69,14 +74,23 @@ namespace CoreBluetooth
         internal static extern bool cb4u_central_manager_is_scanning(SafeNativeCentralManagerHandle handle);
 
         // NOTE: using comma-separated service UUIDs instead of an array of service UUIDs to avoid marshalling issues
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CB4UPeripheralDidDiscoverServicesHandler(IntPtr peripheralPtr, IntPtr commaSeparatedServiceUUIDsPtr, int errorCode);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CB4UPeripheralDidDiscoverCharacteristicsHandler(IntPtr peripheralPtr, IntPtr serviceUUIDPtr, IntPtr commaSeparatedCharacteristicUUIDsPtr, int errorCode);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CB4UPeripheralDidUpdateValueForCharacteristicHandler(IntPtr peripheralPtr, IntPtr serviceUUIDPtr, IntPtr characteristicUUIDPtr, IntPtr dataPtr, int dataLength, int errorCode);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CB4UPeripheralDidWriteValueForCharacteristicHandler(IntPtr peripheralPtr, IntPtr serviceUUIDPtr, IntPtr characteristicUUIDPtr, int errorCode);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CB4UPeripheralIsReadyToSendWriteWithoutResponseHandler(IntPtr peripheralPtr);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CB4UPeripheralDidUpdateNotificationStateForCharacteristicHandler(IntPtr peripheralPtr, IntPtr serviceUUIDPtr, IntPtr characteristicUUIDPtr, int notificationState, int errorCode);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CB4UPeripheralDidReadRSSIHandler(IntPtr peripheralPtr, int rssi, int errorCode);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CB4UPeripheralDidUpdateNameHandler(IntPtr peripheralPtr);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CB4UPeripheralDidModifyServicesHandler(IntPtr peripheralPtr, IntPtr commaSeparatedServiceUUIDsPtr);
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
@@ -170,13 +184,21 @@ namespace CoreBluetooth
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
         internal static extern SafeNativePeripheralManagerHandle cb4u_peripheral_manager_new(IntPtr options);
 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CB4UPeripheralManagerDidUpdateStateHandler(IntPtr peripheralManagerPtr, CBManagerState state);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CB4UPeripheralManagerDidAddServiceHandler(IntPtr peripheralManagerPtr, IntPtr serviceUUIDPtr, int errorCode);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CB4UPeripheralManagerDidStartAdvertisingHandler(IntPtr peripheralManagerPtr, int errorCode);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CB4UPeripheralManagerDidSubscribeToCharacteristicHandler(IntPtr peripheralManagerPtr, IntPtr centralPtr, IntPtr serviceUUIDPtr, IntPtr characteristicUUIDPtr);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CB4UPeripheralManagerDidUnsubscribeFromCharacteristicHandler(IntPtr peripheralManagerPtr, IntPtr centralPtr, IntPtr serviceUUIDPtr, IntPtr characteristicUUIDPtr);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CB4UPeripheralManagerIsReadyToUpdateSubscribersHandler(IntPtr peripheralManagerPtr);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CB4UPeripheralManagerDidReceiveReadRequestHandler(IntPtr peripheralManagerPtr, IntPtr requestPtr);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         internal delegate void CB4UPeripheralManagerDidReceiveWriteRequestsHandler(IntPtr peripheralManagerPtr, IntPtr requestsPtr);
 
         [DllImport(DLL_NAME, CallingConvention = CallingConvention.Cdecl)]
