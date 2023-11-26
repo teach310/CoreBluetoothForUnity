@@ -1,4 +1,5 @@
 using System;
+using CoreBluetooth.Foundation;
 
 namespace CoreBluetooth
 {
@@ -31,10 +32,7 @@ namespace CoreBluetooth
             _nativeMutableService = new NativeMutableServiceProxy(Handle);
         }
 
-        public override string ToString()
-        {
-            return $"CBMutableService: UUID = {UUID}";
-        }
+        public override string ToString() => NSObject.ToString(this, Handle);
 
         public void Dispose()
         {

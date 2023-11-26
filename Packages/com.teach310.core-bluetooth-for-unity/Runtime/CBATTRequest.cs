@@ -1,4 +1,5 @@
 using System;
+using CoreBluetooth.Foundation;
 
 namespace CoreBluetooth
 {
@@ -58,6 +59,8 @@ namespace CoreBluetooth
             Handle = handle;
             _nativeATTRequest = nativeATTRequest;
         }
+
+        public override string ToString() => NSObject.ToString(this, Handle);
 
         public void Dispose()
         {

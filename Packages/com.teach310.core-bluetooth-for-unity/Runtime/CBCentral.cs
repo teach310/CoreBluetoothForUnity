@@ -1,4 +1,5 @@
 using System;
+using CoreBluetooth.Foundation;
 
 namespace CoreBluetooth
 {
@@ -41,10 +42,7 @@ namespace CoreBluetooth
             _nativeCentral = new NativeCentralProxy(Handle);
         }
 
-        public override string ToString()
-        {
-            return $"CBCentral: identifier = {Identifier}, maximumUpdateValueLength = {MaximumUpdateValueLength}";
-        }
+        public override string ToString() => NSObject.ToString(this, Handle);
 
         public void Dispose()
         {

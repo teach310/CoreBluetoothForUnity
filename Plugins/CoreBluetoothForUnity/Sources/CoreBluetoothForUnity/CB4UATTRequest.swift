@@ -32,3 +32,9 @@ public class CB4UATTRequest {
         return request.offset
     }
 }
+
+extension CB4UATTRequest: CustomStringConvertible {
+    public var description: String {
+        return request.description
+    }
+}

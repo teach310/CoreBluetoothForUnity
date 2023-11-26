@@ -41,7 +41,7 @@ public class CB4UCentralManager : NSObject {
     public func cancelPeripheralConnection(peripheral: CB4UPeripheral) {
         centralManager.cancelPeripheralConnection(peripheral.peripheral)
     }
-
+    
     public func retrievePeripherals(withIdentifiers identifiers: [UUID]) -> NSMutableArray {
         let peripherals = centralManager.retrievePeripherals(withIdentifiers: identifiers)
         let array = NSMutableArray()
@@ -63,6 +63,10 @@ public class CB4UCentralManager : NSObject {
     
     public var isScanning: Bool {
         return centralManager.isScanning
+    }
+    
+    override public var description: String {
+        return centralManager.description
     }
 }
 

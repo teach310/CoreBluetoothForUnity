@@ -5,6 +5,14 @@ public func any_object_release(_ handle: UnsafeRawPointer) {
     Unmanaged<AnyObject>.fromOpaque(handle).release()
 }
 
+@_cdecl("any_object_to_string")
+public func any_object_to_string(_ handle: UnsafeRawPointer) -> UnsafeMutableRawPointer {
+    let instance = Unmanaged<AnyObject>.fromOpaque(handle).takeUnretainedValue()
+    let str = String(describing: instance)
+    let nsstring = str as NSString
+    return Unmanaged.passRetained(nsstring).toOpaque()
+}
+
 @_cdecl("ns_number_new_bool")
 public func ns_number_new_bool(_ value: Bool) -> UnsafeMutableRawPointer {
     let instance = NSNumber(value: value)

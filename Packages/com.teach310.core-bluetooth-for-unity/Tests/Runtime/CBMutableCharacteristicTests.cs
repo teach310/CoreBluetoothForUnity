@@ -61,7 +61,7 @@ namespace CoreBluetoothTests
         public void ToString_Output()
         {
             using var characteristic = new CBMutableCharacteristic(validUUID1, CBCharacteristicProperties.Broadcast, null, CBAttributePermissions.Readable);
-            Assert.That(characteristic.ToString(), Is.EqualTo($"CBMutableCharacteristic: UUID = {validUUID1}, properties = Broadcast, value = null, notifying = NO, permissions = Readable"));
+            Assert.That(characteristic.ToString(), Is.EqualTo($"CBMutableCharacteristic: UUID = {validUUID1}, Value = (null), Properties = 0x1, Permissions = 0x1, Descriptors = (null), SubscribedCentrals = (\n)"));
         }
 #endif
     }
