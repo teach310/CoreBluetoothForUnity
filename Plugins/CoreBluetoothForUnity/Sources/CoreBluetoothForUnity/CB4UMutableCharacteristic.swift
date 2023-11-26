@@ -11,7 +11,7 @@ public class CB4UMutableCharacteristic {
             characteristic.value = newValue
         }
     }
-
+    
     public var valueLength: Int {
         return characteristic.value?.count ?? 0
     }
@@ -36,5 +36,11 @@ public class CB4UMutableCharacteristic {
     
     public init(characteristic: CBMutableCharacteristic) {
         self.characteristic = characteristic
+    }
+}
+
+extension CB4UMutableCharacteristic: CustomStringConvertible {
+    public var description: String {
+        return characteristic.description
     }
 }

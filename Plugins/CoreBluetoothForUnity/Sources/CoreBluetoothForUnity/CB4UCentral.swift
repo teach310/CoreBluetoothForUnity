@@ -15,3 +15,9 @@ public class CB4UCentral {
         return central.maximumUpdateValueLength
     }
 }
+
+extension CB4UCentral: CustomStringConvertible {
+    public var description: String {
+        return central.description
+    }
+}

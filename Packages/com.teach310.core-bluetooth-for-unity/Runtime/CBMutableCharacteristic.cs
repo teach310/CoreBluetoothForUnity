@@ -1,4 +1,5 @@
 using System;
+using CoreBluetooth.Foundation;
 
 namespace CoreBluetooth
 {
@@ -65,12 +66,7 @@ namespace CoreBluetooth
             _nativeMutableCharacteristic = new NativeMutableCharacteristicProxy(Handle);
         }
 
-        public override string ToString()
-        {
-            var valueText = Value == null ? "null" : $"{{length = {Value.Length}, bytes = {BitConverter.ToString(Value).Replace("-", "")}}}";
-            var notifyingText = IsNotifying ? "YES" : "NO";
-            return $"CBMutableCharacteristic: UUID = {UUID}, properties = {Properties}, value = {valueText}, notifying = {notifyingText}, permissions = {Permissions}";
-        }
+        public override string ToString() => NSObject.ToString(this, Handle);
 
         public void Dispose()
         {

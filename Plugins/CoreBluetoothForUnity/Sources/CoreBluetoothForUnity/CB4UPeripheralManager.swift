@@ -67,6 +67,10 @@ public class CB4UPeripheralManager : NSObject {
     public func respond(to request: CB4UATTRequest, withResult result: CBATTError.Code) {
         peripheralManager.respond(to: request.request, withResult: result)
     }
+    
+    override public var description: String {
+        return peripheralManager.description
+    }
 }
 
 extension CB4UPeripheralManager : CBPeripheralManagerDelegate {
