@@ -15,3 +15,9 @@ public class CB4UMutableService {
         }
     }
 }
+
+extension CB4UMutableService: CustomStringConvertible {
+    public var description: String {
+        return service.description
+    }
+}

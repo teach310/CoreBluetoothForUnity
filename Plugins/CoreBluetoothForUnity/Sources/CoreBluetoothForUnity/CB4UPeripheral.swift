@@ -105,6 +105,10 @@ public class CB4UPeripheral : NSObject {
     public func readRSSI() {
         peripheral.readRSSI()
     }
+    
+    override public var description: String {
+        return peripheral.description
+    }
 }
 
 extension CB4UPeripheral : CBPeripheralDelegate {
